@@ -3,7 +3,7 @@
     <q-form @submit.prevent="submit" class="q-gutter-y-sm">
       <div class="text-h6 text-center text-weight-bold">Create Item</div>
       <q-input v-model="formData.name" label="Name" required />
-      <q-input v-model="formData.description" label="Description" />
+      <q-input v-model="formData.description" label="Description" required />
       <div class="text-right">
         <q-btn label="Submit" no-caps type="submit" />
       </div>
@@ -26,8 +26,9 @@ const submit = () => {
     url: "items",
     data: pickBy(formData.value),
   })
-    .then((response) => {
-      console.log(response);
+    .then(() => {
+      formData.value.name = "";
+      formData.value.description = "";
     })
     .catch((e) => {
       console.warn(e);
