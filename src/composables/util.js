@@ -3,7 +3,7 @@ import { useQuasar } from "quasar";
 import useUitl from "src/composables/util";
 
 export default function useUtil () {
-  const { loading } = useQuasar();
+  const { loading, notify } = useQuasar();
 
   return {
     pickBy (data) {
@@ -21,6 +21,15 @@ export default function useUtil () {
         axios(options).then(response => {
           resolve(response)
         }).catch(error => {
+          notify({
+            message: error.message,
+            type: 'negative'
+          })
+          notify({
+            message: error.response.data.message,
+            type: 'negative'
+          })
+
           reject(error)
         }).finally(() => {
           loading.hide()

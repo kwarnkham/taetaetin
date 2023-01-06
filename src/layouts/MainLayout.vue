@@ -24,10 +24,12 @@
 </template>
 
 <script setup>
+import { useQuasar } from "quasar";
 import LeftDrawer from "src/components/LeftDrawer.vue";
 import { ref } from "vue";
 
-const leftDrawerOpen = ref(true);
+const { platform } = useQuasar();
+const leftDrawerOpen = ref(!platform.is.mobile);
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 };

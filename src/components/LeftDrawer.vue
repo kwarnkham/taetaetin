@@ -23,6 +23,11 @@ const links = [
     icon: "storefront",
     route: "products",
   },
+  {
+    title: "Login",
+    icon: "login",
+    route: "index",
+  },
 ];
 const props = defineProps(["modelValue"]);
 const emit = defineEmits(["update:modelValue"]);
