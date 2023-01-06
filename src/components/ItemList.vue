@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="full-height column">
     <div>
       <q-input v-model="search" label="Search" />
     </div>
 
-    <q-list bordered separator class="overflow-auto items">
+    <q-list bordered separator class="overflow-auto col">
       <q-item v-for="item in items?.data" :key="item.id">
         <q-item-section>
           <q-item-label>{{ item.name }}</q-item-label>
@@ -117,9 +117,3 @@ onMounted(() => {
   });
 });
 </script>
-
-<style lang="scss" scoped>
-.items {
-  height: 500px;
-}
-</style>

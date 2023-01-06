@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page padding class="column">
     <q-tabs
       v-model="tab"
       dense
@@ -15,12 +15,12 @@
 
     <q-separator />
 
-    <q-tab-panels v-model="tab" animated>
+    <q-tab-panels v-model="tab" animated class="col">
       <q-tab-panel name="create-item">
         <CreateItem />
       </q-tab-panel>
 
-      <q-tab-panel name="item-list">
+      <q-tab-panel name="item-list" id="item-list">
         <ItemList />
       </q-tab-panel>
     </q-tab-panels>
@@ -30,7 +30,7 @@
 <script setup>
 import CreateItem from "src/components/CreateItem.vue";
 import ItemList from "src/components/ItemList.vue";
-import { ref, watch } from "vue";
+import { ref, watch, onUpdated, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
@@ -45,4 +45,11 @@ watch(tab, () => {
     },
   });
 });
+const updateItemListHeight = () => {
+  if (tab.value == "item-list")
+    document.getElementById("item-list").style.height =
+      document.querySelector(".q-tab-panels").clientHeight + "px";
+};
+onUpdated(updateItemListHeight);
+onMounted(updateItemListHeight);
 </script>
