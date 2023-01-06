@@ -1,5 +1,5 @@
 <template>
-  <q-drawer v-model="leftDrawerOpen" bordered>
+  <q-drawer bordered :modelValue="modelValue" @update:modelValue="toggle">
     <q-list>
       <q-item-label header> Main Menu </q-item-label>
       <LeftDrawerLink v-for="link in links" :key="link.title" v-bind="link" />
@@ -9,7 +9,6 @@
 
 <script setup>
 import LeftDrawerLink from "src/components/LeftDrawerLink.vue";
-import { ref, watch } from "vue";
 
 const links = [
   {
@@ -25,18 +24,9 @@ const links = [
     route: "products",
   },
 ];
-
-const props = defineProps(["open"]);
-
-watch(
-  props,
-  () => {
-    leftDrawerOpen.value = props.open;
-  },
-  {
-    deep: true,
-  }
-);
-
-const leftDrawerOpen = ref(props.open);
+const props = defineProps(["modelValue"]);
+const emit = defineEmits(["update:modelValue"]);
+const toggle = (value) => {
+  emit("update:modelValue", value);
+};
 </script>
