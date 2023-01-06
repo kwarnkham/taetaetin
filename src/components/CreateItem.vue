@@ -1,14 +1,12 @@
 <template>
-  <q-page padding>
-    <q-form @submit.prevent="submit" class="q-gutter-y-sm">
-      <div class="text-h6 text-center text-weight-bold">Create Item</div>
-      <q-input v-model="formData.name" label="Name" required />
-      <q-input v-model="formData.description" label="Description" required />
-      <div class="text-right">
-        <q-btn label="Submit" no-caps type="submit" />
-      </div>
-    </q-form>
-  </q-page>
+  <q-form @submit.prevent="submit" class="q-gutter-y-sm">
+    <div class="text-h6 text-center text-weight-bold">Create Item</div>
+    <q-input v-model="formData.name" label="Name" required />
+    <q-input v-model="formData.description" label="Description" required />
+    <div class="text-right">
+      <q-btn label="Submit" no-caps type="submit" />
+    </div>
+  </q-form>
 </template>
 
 <script setup>
