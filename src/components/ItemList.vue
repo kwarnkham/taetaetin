@@ -11,7 +11,12 @@
           <div class="row justify-start q-gutter-x-sm q-mt-sm">
             <q-btn round icon="add" dense />
             <q-btn round icon="edit" dense @click="showEditItemDialog(item)" />
-            <q-btn round icon="open_in_new" dense />
+            <q-btn
+              round
+              icon="open_in_new"
+              dense
+              @click="showItemDetailsDialog(item)"
+            />
           </div>
         </q-item-section>
       </q-item>
@@ -29,6 +34,7 @@ import { onMounted, ref, watch, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { debounce, useQuasar } from "quasar";
 import EditItemDialog from "./dialogs/EditItemDialog.vue";
+import ItemDetailDialog from "./dialogs/ItemDetailDialog.vue";
 
 const { api, pickBy } = useUtil();
 const { dialog } = useQuasar();
@@ -50,6 +56,15 @@ const showEditItemDialog = (item) => {
   }).onOk((item) => {
     const index = items.value.data.findIndex((e) => e.id == item.id);
     if (index >= 0) items.value.data.splice(index, 1, item);
+  });
+};
+
+const showItemDetailsDialog = (item) => {
+  dialog({
+    component: ItemDetailDialog,
+    componentProps: {
+      item: item,
+    },
   });
 };
 
