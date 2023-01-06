@@ -12,12 +12,18 @@ const routes = [
       {
         path: 'items',
         component: () => import('pages/ItemMenu.vue'),
-        name: 'items'
+        name: 'items',
+        meta: {
+          requireAuth: true
+        }
       },
       {
         path: 'products',
         component: () => import('pages/ProductMenu.vue'),
-        name: 'products'
+        name: 'products',
+        meta: {
+          requireAuth: true
+        }
       }
     ]
   },

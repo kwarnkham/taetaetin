@@ -28,6 +28,7 @@ import { useQuasar } from "quasar";
 import LeftDrawerLink from "src/components/LeftDrawerLink.vue";
 import useUtil from "src/composables/util";
 import { useUserStore } from "src/stores/user-store";
+import { useRouter } from "vue-router";
 
 const links = [
   {
@@ -59,7 +60,7 @@ const { api } = useUtil();
 const { notify, localStorage, dialog } = useQuasar();
 const { setUser } = useUserStore();
 const { getUser } = storeToRefs(useUserStore());
-
+const router = useRouter();
 const logout = () => {
   dialog({
     title: "Confirm",
@@ -77,6 +78,7 @@ const logout = () => {
       });
       localStorage.remove("token");
       setUser(null);
+      router.replace({ name: "index" });
     });
   });
 };
