@@ -1,6 +1,5 @@
 import { api as axios } from "boot/axios";
 import { useQuasar } from "quasar";
-import useUitl from "src/composables/util";
 
 export default function useUtil () {
   const { loading, notify } = useQuasar();

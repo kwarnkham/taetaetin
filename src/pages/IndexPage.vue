@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <q-form @submit.prevent="submit" class="q-gutter-y-sm">
+    <q-form @submit.prevent="submit" class="q-gutter-y-sm" v-if="!getUser">
       <q-input
         label="Email"
         v-model="formData.email"
@@ -34,7 +34,9 @@
 import { useQuasar } from "quasar";
 import useUtil from "src/composables/util";
 import { ref } from "vue";
-
+import { api as axios } from "boot/axios";
+import { useUserStore } from "stores/user-store";
+import { storeToRefs } from "pinia";
 const formData = ref({
   name: "",
   password: "",
@@ -43,6 +45,8 @@ const formData = ref({
 const isPwd = ref(true);
 const { localStorage } = useQuasar();
 const { api } = useUtil();
+const { setUser } = useUserStore();
+const { getUser } = storeToRefs(useUserStore());
 
 const submit = () => {
   api({
@@ -52,6 +56,10 @@ const submit = () => {
   })
     .then((response) => {
       localStorage.set("token", response.data.token);
+      axios.defaults.headers.common["Authorization"] =
+        "Bearer " + response.data.token;
+      setUser(response.data.user);
+      formData.value.password = "";
     })
     .catch((e) => {
       console.log(e);
