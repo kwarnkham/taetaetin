@@ -28,8 +28,8 @@ import { useQuasar } from "quasar";
 import LeftDrawer from "src/components/LeftDrawer.vue";
 import { ref } from "vue";
 
-const { platform } = useQuasar();
-const leftDrawerOpen = ref(!platform.is.mobile);
+const { screen } = useQuasar();
+const leftDrawerOpen = ref(screen.gt.sm);
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 };
