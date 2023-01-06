@@ -10,24 +10,14 @@ const routes = [
         name: 'index'
       },
       {
-        path: 'item',
+        path: 'items',
         component: () => import('pages/ItemMenu.vue'),
-        name: 'item'
+        name: 'items'
       },
       {
-        path: 'item/create',
-        component: () => import('pages/CreateItem.vue'),
-        name: 'item.create'
-      },
-      {
-        path: 'item/index',
-        component: () => import('pages/ItemList.vue'),
-        name: 'item.index'
-      },
-      {
-        path: 'product',
+        path: 'products',
         component: () => import('pages/ProductMenu.vue'),
-        name: 'product'
+        name: 'products'
       }
     ]
   },

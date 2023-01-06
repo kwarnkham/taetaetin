@@ -17,9 +17,8 @@
       <q-separator />
 
       <q-tab-panels v-model="tab" animated>
-        <q-tab-panel name="mails">
-          <div class="text-h6">Mails</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        <q-tab-panel name="create-item">
+          <CreateItem />
         </q-tab-panel>
 
         <q-tab-panel name="alarms">
@@ -32,6 +31,7 @@
 </template>
 
 <script setup>
+import CreateItem from "src/components/CreateItem.vue";
 import { ref } from "vue";
 import { useRoute } from "vue-router";
 

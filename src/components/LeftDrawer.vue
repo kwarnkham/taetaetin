@@ -16,13 +16,13 @@ const links = [
     title: "Item",
     caption: "Manage items",
     icon: "inventory_2",
-    route: "item",
+    route: "items",
   },
   {
     title: "Product",
     caption: "Manage Product",
     icon: "storefront",
-    route: "product",
+    route: "products",
   },
 ];
 
