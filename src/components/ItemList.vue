@@ -10,7 +10,7 @@
           <q-item-label>{{ item.name }}</q-item-label>
           <div class="row justify-start q-gutter-x-sm q-mt-sm">
             <q-btn round icon="add" dense />
-            <q-btn round icon="edit" dense />
+            <q-btn round icon="edit" dense @click="showEditItemDialog(item)" />
             <q-btn round icon="open_in_new" dense />
           </div>
         </q-item-section>
@@ -27,9 +27,11 @@
 import useUtil from "src/composables/util";
 import { onMounted, ref, watch, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { debounce } from "quasar";
+import { debounce, useQuasar } from "quasar";
+import EditItemDialog from "./dialogs/EditItemDialog.vue";
 
 const { api, pickBy } = useUtil();
+const { dialog } = useQuasar();
 const items = ref(null);
 const router = useRouter();
 const route = useRoute();
@@ -38,6 +40,18 @@ const search = ref(route.query.search ?? "");
 const max = computed(
   () => Math.ceil(items.value?.total / items.value?.per_page) || 1
 );
+
+const showEditItemDialog = (item) => {
+  dialog({
+    component: EditItemDialog,
+    componentProps: {
+      item: item,
+    },
+  }).onOk((item) => {
+    const index = items.value.data.findIndex((e) => e.id == item.id);
+    if (index >= 0) items.value.data.splice(index, 1, item);
+  });
+};
 
 watch(
   search,
