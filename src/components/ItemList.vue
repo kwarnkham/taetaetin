@@ -5,7 +5,7 @@
     </div>
 
     <q-list bordered separator class="overflow-auto col">
-      <q-item v-for="item in items?.data" :key="item.id">
+      <q-item v-for="item in pagination?.data" :key="item.id">
         <q-item-section>
           <q-item-label>{{ item.name }}</q-item-label>
           <div class="row justify-start q-gutter-x-sm q-mt-sm">
@@ -35,23 +35,32 @@
 
 <script setup>
 import useUtil from "src/composables/util";
-import { onMounted, ref, watch, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { debounce, useQuasar } from "quasar";
+import { useQuasar } from "quasar";
 import EditItemDialog from "./dialogs/EditItemDialog.vue";
 import ItemDetailDialog from "./dialogs/ItemDetailDialog.vue";
 import CreateProductDialog from "./dialogs/CreateProductDialog.vue";
+import usePagination from "src/composables/pagination";
 
-const { api, pickBy } = useUtil();
+const { api } = useUtil();
 const { dialog } = useQuasar();
-const items = ref(null);
-const router = useRouter();
-const route = useRoute();
-const current = ref(Number(route.query.page ?? 1) ?? 1);
-const search = ref(route.query.search ?? "");
-const max = computed(
-  () => Math.ceil(items.value?.total / items.value?.per_page) || 1
-);
+
+const fetchItems = (params) => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: "GET",
+      url: "items",
+      params: params,
+    })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
+const { pagination, max, search, current } = usePagination(fetchItems);
 
 const showCreateProductDialog = (item) => {
   dialog({
@@ -69,8 +78,8 @@ const showEditItemDialog = (item) => {
       item: item,
     },
   }).onOk((item) => {
-    const index = items.value.data.findIndex((e) => e.id == item.id);
-    if (index >= 0) items.value.data.splice(index, 1, item);
+    const index = pagination.value.data.findIndex((e) => e.id == item.id);
+    if (index >= 0) pagination.value.data.splice(index, 1, item);
   });
 };
 
@@ -82,53 +91,4 @@ const showItemDetailsDialog = (item) => {
     },
   });
 };
-
-watch(
-  search,
-  debounce(() => {
-    router
-      .replace({
-        name: route.name,
-        query: pickBy({
-          ...route.query,
-          search: search.value,
-          page: undefined,
-        }),
-      })
-      .then(() => {
-        if (current.value != 1) {
-          current.value = 1;
-        } else {
-          fetchMore();
-        }
-      });
-  }, 500)
-);
-const fetchMore = () => {
-  api({
-    method: "GET",
-    url: "items",
-    params: route.query,
-  }).then((response) => {
-    items.value = response.data.items;
-  });
-};
-watch(current, () => {
-  router
-    .replace({
-      name: route.name,
-      query: { ...route.query, page: current.value },
-    })
-    .then(fetchMore);
-});
-onMounted(() => {
-  api({
-    method: "GET",
-    url: "items",
-    params: route.query,
-  }).then((response) => {
-    items.value = response.data.items;
-    current.value = response.data.items.current_page;
-  });
-});
 </script>

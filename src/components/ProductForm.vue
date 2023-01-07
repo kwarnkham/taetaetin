@@ -1,22 +1,30 @@
 <template>
   <q-form @submit.prevent="submit" class="q-gutter-y-sm">
     <div class="text-h6 text-center text-weight-bold" v-if="update">
-      Update Product {{ feature?.name }}
+      Update Product {{ product?.name }}
     </div>
     <q-input v-model="formData.name" label="Name" required dense />
     <q-input
       v-model.number="formData.purchase_price"
+      type="tel"
       label="Purchase Price"
       required
       dense
     />
     <q-input
       v-model.number="formData.price"
+      type="tel"
       label="Sale Price"
       required
       dense
     />
-    <q-input v-model.number="formData.stock" label="Stock" required dense />
+    <q-input
+      v-model.number="formData.stock"
+      label="Stock"
+      required
+      dense
+      type="tel"
+    />
     <q-date
       :landscape="$q.screen.gt.xs"
       v-model="formData.expired_on"
@@ -47,7 +55,7 @@ const props = defineProps({
     type: Number,
     required: true,
   },
-  feature: {
+  product: {
     type: Object,
     default: () => ({
       name: "",
@@ -60,27 +68,27 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["featureUpdated"]);
+const emit = defineEmits(["productUpdated"]);
 
 const formData = ref({
-  name: props.feature.name,
-  price: props.feature.price,
-  purchase_price: props.feature.purchase_price,
-  stock: props.feature.stock,
-  note: props.feature.note,
+  name: props.product.name,
+  price: props.product.price,
+  purchase_price: props.product.purchase_price,
+  stock: props.product.stock,
+  note: props.product.note,
   expired_on: null,
   item_id: props.item_id,
 });
 
 const submit = () => {
-  const url = props.update ? "features/" + props.feature.id : "features";
+  const url = props.update ? "features/" + props.product.id : "features";
   api({
     method: props.update ? "PUT" : "POST",
     url,
     data: pickBy(formData.value),
   })
     .then((response) => {
-      emit("featureUpdated", response.data.feature);
+      emit("productUpdated", response.data.feature);
       notify({
         message: "Success",
         type: "positive",

@@ -4,7 +4,7 @@
       class="q-dialog-plugin q-pa-sm"
       style="width: 700px; max-width: 100vw"
     >
-      <ProductForm :item_id="item.id" @feature-updated="onDialogOK" />
+      <ProductForm :item_id="item.id" @product-updated="onDialogOK" />
     </q-card>
   </q-dialog>
 </template>
