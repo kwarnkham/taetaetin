@@ -1,5 +1,5 @@
 <template>
-  <q-drawer bordered :modelValue="modelValue" @update:modelValue="toggle">
+  <q-drawer bordered :modelValue="modelValue" @update:model-value="toggle">
     <q-list>
       <q-item-label header> {{ getUser?.name ?? "Welcome" }}</q-item-label>
       <template v-for="link in links" :key="link.title">
