@@ -13,6 +13,7 @@ export default function usePagination (fetcher) {
     () => Math.ceil(pagination.value?.total / pagination.value?.per_page) || 1
   );
   const current = ref(Number(route.query.page ?? 1) ?? 1);
+  const onlyStocked = ref(route.query.stocked ? true : false);
 
   const fetchMore = () => {
     fetcher(route.query).then((response) => {
@@ -37,7 +38,7 @@ export default function usePagination (fetcher) {
   });
 
   watch(
-    search,
+    [search, onlyStocked],
     debounce(() => {
       router
         .replace({
@@ -46,6 +47,7 @@ export default function usePagination (fetcher) {
             ...route.query,
             search: search.value,
             page: undefined,
+            stocked: onlyStocked.value ? 1 : 0
           }),
         })
         .then(() => {
@@ -62,6 +64,7 @@ export default function usePagination (fetcher) {
     pagination,
     max,
     search,
-    current
+    current,
+    onlyStocked
   }
 }

@@ -1,7 +1,8 @@
 <template>
   <div class="full-height column">
-    <div>
-      <q-input v-model="search" label="Search" />
+    <div class="row justify-between">
+      <q-input v-model="search" label="Search" class="col" />
+      <q-checkbox left-label v-model="onlyStocked" label="Only stocked" />
     </div>
 
     <q-list bordered separator class="overflow-auto col">
@@ -60,7 +61,8 @@ const fetchProducts = (params) => {
   });
 };
 
-const { pagination, max, search, current } = usePagination(fetchProducts);
+const { pagination, max, search, current, onlyStocked } =
+  usePagination(fetchProducts);
 
 const showCreateProductDialog = (item) => {
   dialog({
