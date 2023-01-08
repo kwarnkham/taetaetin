@@ -24,6 +24,14 @@ const routes = [
         meta: {
           requireAuth: true
         }
+      },
+      {
+        path: 'financial-records',
+        component: () => import('src/pages/FinancialRecords.vue'),
+        name: 'financial-records',
+        meta: {
+          requireAuth: true
+        }
       }
     ]
   },

@@ -49,6 +49,12 @@ const links = [
     icon: "login",
     route: "index",
   },
+  {
+    title: "Financial Records",
+    caption: "All income and outcome",
+    icon: "price_change",
+    route: "financial-records",
+  },
 ];
 
 const props = defineProps(["modelValue"]);

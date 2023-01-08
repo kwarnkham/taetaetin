@@ -2,8 +2,10 @@ import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import useUtil from "src/composables/util";
 import { debounce } from "quasar";
+import { date } from "quasar";
+const { subtractFromDate, formatDate } = date;
 
-export default function usePagination (fetcher) {
+export default function usePagination (fetcher, hasDateFilter = false) {
   const { pickBy } = useUtil();
   const route = useRoute();
   const router = useRouter();
@@ -15,14 +17,44 @@ export default function usePagination (fetcher) {
   const current = ref(Number(route.query.page ?? 1) ?? 1);
   const onlyStocked = ref(route.query.stocked ? true : false);
 
+  const from = ref(
+    route.query.from ??
+    formatDate(subtractFromDate(new Date(), { months: 1 }), "YYYY-MM-DD")
+  );
+  const to = ref(route.query.to ?? formatDate(new Date(), "YYYY-MM-DD"));
+
   const fetchMore = () => {
     fetcher(route.query).then((response) => {
       pagination.value = response.data;
     });
   };
 
+  const findByDates = () => {
+    router
+      .replace({
+        name: route.name,
+        query: { ...route.query, from: from.value, to: to.value },
+      })
+      .then(() => {
+        fetcher(route.query).then((response) => {
+          pagination.value = response.data;
+          current.value = response.data.current_page;
+        });;
+      });
+  };
+
   onMounted(() => {
-    fetcher(route.query).then((response) => {
+    if (hasDateFilter) router.replace({
+      name: route.name,
+      query: { ...route.query, from: from.value, to: to.value }
+    }).then(() => {
+      fetcher(route.query).then((response) => {
+        pagination.value = response.data;
+        current.value = response.data.current_page;
+      });
+    })
+
+    else fetcher(route.query).then((response) => {
       pagination.value = response.data;
       current.value = response.data.current_page;
     });
@@ -65,6 +97,9 @@ export default function usePagination (fetcher) {
     max,
     search,
     current,
-    onlyStocked
+    onlyStocked,
+    findByDates,
+    from,
+    to
   }
 }
