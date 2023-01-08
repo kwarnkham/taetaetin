@@ -25,7 +25,7 @@ export default function useUtil () {
             type: 'negative'
           })
           notify({
-            message: error.response.data.message,
+            message: error?.response?.data?.message,
             type: 'negative'
           })
 

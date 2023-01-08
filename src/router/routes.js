@@ -32,6 +32,14 @@ const routes = [
         meta: {
           requireAuth: true
         }
+      },
+      {
+        path: 'set-up',
+        component: () => import('src/pages/SetUp.vue'),
+        name: 'set-up',
+        meta: {
+          requireAuth: true
+        }
       }
     ]
   },

@@ -55,6 +55,12 @@ const links = [
     icon: "price_change",
     route: "financial-records",
   },
+  {
+    title: "Set Up",
+    caption: "Payments, expense, etc...",
+    icon: "topic",
+    route: "set-up",
+  },
 ];
 
 const props = defineProps(["modelValue"]);
