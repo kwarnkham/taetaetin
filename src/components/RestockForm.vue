@@ -9,6 +9,7 @@
       required
       dense
       type="tel"
+      autofocus
     />
     <q-input
       v-model.number="formData.quantity"

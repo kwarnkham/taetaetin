@@ -3,7 +3,7 @@
     <div class="text-h6 text-center text-weight-bold">
       {{ update ? "Update" : "Create" }} Item {{ item?.name }}
     </div>
-    <q-input v-model="formData.name" label="Name" required />
+    <q-input v-model="formData.name" label="Name" required autofocus />
     <q-input v-model="formData.description" label="Description" required />
     <div class="text-right">
       <q-btn label="Submit" no-caps type="submit" />

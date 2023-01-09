@@ -8,6 +8,7 @@
       label="Price"
       required
       type="tel"
+      autofocus
     />
     <q-input v-model="formData.note" label="Note" required type="text" />
     <div class="text-right">

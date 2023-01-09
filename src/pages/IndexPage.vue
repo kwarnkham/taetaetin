@@ -7,6 +7,7 @@
         autocomplete="username"
         type="email"
         required
+        autofocus
       />
       <q-input
         label="Password"
