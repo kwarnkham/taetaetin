@@ -23,7 +23,7 @@
       <q-item v-for="purchase in pagination?.data" :key="purchase.id">
         <q-item-section>
           <q-item-label>
-            {{ purchase.purchasable.name }}
+            {{ purchase.name || purchase.purchasable.name }}
           </q-item-label>
           <q-item-label caption v-if="purchase.purchasable.item">
             {{ purchase.purchasable.item?.name }}
