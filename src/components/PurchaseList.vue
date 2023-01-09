@@ -23,8 +23,10 @@
       <q-item v-for="purchase in pagination?.data" :key="purchase.id">
         <q-item-section>
           <q-item-label>
-            {{ purchase.purchasable.name }} :
-            {{ purchase.purchasable.item.name }}
+            {{ purchase.purchasable.name }}
+          </q-item-label>
+          <q-item-label caption v-if="purchase.purchasable.item">
+            {{ purchase.purchasable.item?.name }}
           </q-item-label>
           <q-item-label>Price: {{ purchase.price }}</q-item-label>
           <q-item-label>Quantity: {{ purchase.quantity }}</q-item-label>
@@ -58,6 +60,7 @@ const { api } = useUtil();
 const { dialog, notify } = useQuasar();
 const purchaseType = {
   "App\\Models\\Feature": "Product",
+  "App\\Models\\Expense": "Expense",
 };
 const fetchPurchases = (params = {}) => {
   return new Promise((resolve, reject) => {
