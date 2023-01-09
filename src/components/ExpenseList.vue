@@ -9,6 +9,7 @@
           </q-item-label>
           <div class="row justify-start q-gutter-x-sm q-mt-sm">
             <q-btn round icon="add" dense @click="showRecordExpense(expense)" />
+            <q-btn round icon="edit" dense @click="showEditExpense(expense)" />
           </div>
         </q-item-section>
       </q-item>
@@ -25,6 +26,7 @@ import useUtil from "src/composables/util";
 import { useQuasar } from "quasar";
 import usePagination from "src/composables/pagination";
 import RecordExpenseDialog from "./dialogs/RecordExpenseDialog.vue";
+import EditExpenseDialog from "./dialogs/EditExpenseDialog.vue";
 
 const { api } = useUtil();
 const { dialog } = useQuasar();
@@ -52,6 +54,18 @@ const showRecordExpense = (expense) => {
     componentProps: {
       expense,
     },
+  });
+};
+
+const showEditExpense = (expense) => {
+  dialog({
+    component: EditExpenseDialog,
+    componentProps: {
+      expense,
+    },
+  }).onOk((updatedExpense) => {
+    const index = pagination.value.data.findIndex((e) => e.id == expense.id);
+    if (index >= 0) pagination.value.data.splice(index, 1, updatedExpense);
   });
 };
 </script>
