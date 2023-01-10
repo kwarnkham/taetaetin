@@ -1,5 +1,5 @@
 <template>
-  <q-form @submit.prevent="submit" class="q-gutter-y-sm">
+  <q-form @submit.prevent="submit" class="q-gutter-y-sm full-width">
     <div class="text-h6 text-center text-weight-bold">
       {{ update ? "Update" : "Create" }} Payment {{ payment?.name }}
     </div>
@@ -25,6 +25,7 @@
         @rejected="onRejected"
         clearable
         use-chips
+        required
       >
         <template v-slot:prepend>
           <q-icon name="qr_code" />
@@ -39,12 +40,14 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, inject } from "vue";
 import useUtil from "src/composables/util";
 import { useQuasar } from "quasar";
 
 const { pickBy, api, buildForm } = useUtil();
 const { notify, localStorage } = useQuasar();
+const bus = inject("bus");
+
 const props = defineProps({
   update: {
     type: Boolean,
@@ -93,6 +96,7 @@ const submit = () => {
   })
     .then((response) => {
       emit("paymentSubmitted", response.data.payment);
+      if (!props.update) bus.emit("paymentCreated", response.data.payment);
       formData.value.number = "";
       formData.value.account_name = "";
       formData.value.qr = null;

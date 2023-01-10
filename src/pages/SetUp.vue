@@ -16,11 +16,11 @@
     <q-separator />
 
     <q-tab-panels v-model="tab" animated class="col">
-      <q-tab-panel name="expense" id="expense" class="column">
+      <q-tab-panel name="expense" id="expense" class="column no-wrap">
         <ExpenseForm />
         <ExpenseList class="col q-mt-sm" />
       </q-tab-panel>
-      <q-tab-panel name="payment" id="payment" class="column">
+      <q-tab-panel name="payment" id="payment" class="column no-wrap">
         <PaymentForm />
         <PaymentList />
       </q-tab-panel>

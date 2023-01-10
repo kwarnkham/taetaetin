@@ -43,9 +43,20 @@ import useUtil from "src/composables/util";
 import { useQuasar } from "quasar";
 import usePagination from "src/composables/pagination";
 import EditPaymentDialog from "src/components/dialogs/EditPaymentDialog.vue";
+import { inject, onBeforeUnmount } from "vue";
 
 const { api } = useUtil();
 const { dialog } = useQuasar();
+const bus = inject("bus");
+
+const updatePaymentList = (payment) => {
+  pagination.value.data.unshift(payment);
+};
+bus.on("paymentCreated", updatePaymentList);
+
+onBeforeUnmount(() => {
+  bus.off("paymentCreated", updatePaymentList);
+});
 
 const fetchPayments = () => {
   return new Promise((resolve, reject) => {
