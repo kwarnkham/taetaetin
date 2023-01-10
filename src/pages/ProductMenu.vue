@@ -9,15 +9,12 @@
       align="justify"
       narrow-indicator
     >
-      <q-tab name="create-product" label="Create Product" no-caps />
       <q-tab name="product-list" label="Product List" no-caps />
     </q-tabs>
 
     <q-separator />
 
     <q-tab-panels v-model="tab" animated class="col">
-      <q-tab-panel name="create-product"> </q-tab-panel>
-
       <q-tab-panel name="product-list" id="product-list">
         <ProductList />
       </q-tab-panel>

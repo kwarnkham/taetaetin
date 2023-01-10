@@ -28,6 +28,13 @@ onMounted(() => {
           router.replace({ name: "index" });
         }
       });
+
+    api({
+      method: "GET",
+      url: "payment-types",
+    }).then((response) => {
+      localStorage.set("paymentTypes", response.data.payment_types);
+    });
   }
 });
 </script>

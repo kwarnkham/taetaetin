@@ -11,12 +11,13 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, inject } from "vue";
 import useUtil from "src/composables/util";
 import { useQuasar } from "quasar";
 
 const { pickBy, api } = useUtil();
 const { notify } = useQuasar();
+const bus = inject("bus");
 const props = defineProps({
   update: {
     type: Boolean,
@@ -45,6 +46,7 @@ const submit = () => {
   })
     .then((response) => {
       emit("expenseSubmitted", response.data.expense);
+      if (!props.update) bus.emit("expenseCreated", response.data.expense);
       formData.value.name = "";
       notify({
         message: "Success",

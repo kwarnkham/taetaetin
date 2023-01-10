@@ -23,7 +23,15 @@
       <q-item v-for="purchase in pagination?.data" :key="purchase.id">
         <q-item-section>
           <q-item-label>
-            {{ purchase.name || purchase.purchasable.name }}
+            <span>
+              {{ purchase.name || purchase.purchasable.name }}
+            </span>
+            <span
+              v-if="purchase.name != purchase.purchasable.name"
+              class="text-overline"
+            >
+              ({{ purchase.purchasable.name }})
+            </span>
           </q-item-label>
           <q-item-label caption v-if="purchase.purchasable.item">
             {{ purchase.purchasable.item?.name }}
@@ -45,7 +53,13 @@
       </q-item>
     </q-list>
 
-    <div class="row justify-center full-width">
+    <div
+      class="row justify-center full-width"
+      :class="{
+        hidden:
+          pagination?.current_page == 1 && pagination?.next_page_url == null,
+      }"
+    >
       <q-pagination v-model="current" :max="max" input />
     </div>
   </div>

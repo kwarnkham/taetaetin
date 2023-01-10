@@ -15,7 +15,13 @@
       </q-item>
     </q-list>
 
-    <div class="row justify-center full-width">
+    <div
+      class="row justify-center full-width"
+      :class="{
+        hidden:
+          pagination?.current_page == 1 && pagination?.next_page_url == null,
+      }"
+    >
       <q-pagination v-model="current" :max="max" input />
     </div>
   </div>
@@ -27,10 +33,18 @@ import { useQuasar } from "quasar";
 import usePagination from "src/composables/pagination";
 import RecordExpenseDialog from "./dialogs/RecordExpenseDialog.vue";
 import EditExpenseDialog from "./dialogs/EditExpenseDialog.vue";
+import { inject, onBeforeUnmount } from "vue";
 
 const { api } = useUtil();
 const { dialog } = useQuasar();
-
+const bus = inject("bus");
+const updateExpenseList = (expense) => {
+  pagination.value?.data.unshift(expense);
+};
+bus.on("expenseCreated", updateExpenseList);
+onBeforeUnmount(() => {
+  bus.off("expenseCreated", updateExpenseList);
+});
 const fetchExpenses = () => {
   return new Promise((resolve, reject) => {
     api({

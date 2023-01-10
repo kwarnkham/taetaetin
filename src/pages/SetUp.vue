@@ -10,6 +10,7 @@
       narrow-indicator
     >
       <q-tab name="expense" label="Expense" no-caps />
+      <q-tab name="payment" label="Payment" no-caps />
     </q-tabs>
 
     <q-separator />
@@ -19,6 +20,10 @@
         <ExpenseForm />
         <ExpenseList class="col q-mt-sm" />
       </q-tab-panel>
+      <q-tab-panel name="payment" id="payment" class="column">
+        <PaymentForm />
+        <PaymentList />
+      </q-tab-panel>
     </q-tab-panels>
   </q-page>
 </template>
@@ -26,6 +31,8 @@
 <script setup>
 import ExpenseForm from "src/components/ExpenseForm.vue";
 import ExpenseList from "src/components/ExpenseList.vue";
+import PaymentForm from "src/components/PaymentForm.vue";
+import PaymentList from "src/components/PaymentList.vue";
 import { ref, watch, onUpdated, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -41,11 +48,10 @@ watch(tab, () => {
     },
   });
 });
-const updateExpenseHeight = () => {
-  if (tab.value == "expense")
-    document.getElementById("expense").style.height =
-      document.querySelector(".q-tab-panels").clientHeight + "px";
+const updateTabPanelHeight = () => {
+  document.getElementById(tab.value).style.height =
+    document.querySelector(".q-tab-panels").clientHeight + "px";
 };
-onUpdated(updateExpenseHeight);
-onMounted(updateExpenseHeight);
+onUpdated(updateTabPanelHeight);
+onMounted(updateTabPanelHeight);
 </script>

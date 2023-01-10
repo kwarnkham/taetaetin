@@ -20,7 +20,13 @@
       </q-item>
     </q-list>
 
-    <div class="row justify-center full-width">
+    <div
+      class="row justify-center full-width"
+      :class="{
+        hidden:
+          pagination?.current_page == 1 && pagination?.next_page_url == null,
+      }"
+    >
       <q-pagination v-model="current" :max="max" input />
     </div>
   </div>
