@@ -11,6 +11,7 @@
     >
       <q-tab name="expense" label="Expense" no-caps />
       <q-tab name="payment" label="Payment" no-caps />
+      <q-tab name="topping" label="Topping" no-caps />
     </q-tabs>
 
     <q-separator />
@@ -24,6 +25,10 @@
         <PaymentForm />
         <PaymentList />
       </q-tab-panel>
+      <q-tab-panel name="topping" id="topping" class="column no-wrap">
+        <ToppingForm />
+        <ToppingList />
+      </q-tab-panel>
     </q-tab-panels>
   </q-page>
 </template>
@@ -33,6 +38,8 @@ import ExpenseForm from "src/components/ExpenseForm.vue";
 import ExpenseList from "src/components/ExpenseList.vue";
 import PaymentForm from "src/components/PaymentForm.vue";
 import PaymentList from "src/components/PaymentList.vue";
+import ToppingForm from "src/components/ToppingForm.vue";
+import ToppingList from "src/components/ToppingList.vue";
 import { ref, watch, onUpdated, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 

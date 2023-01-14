@@ -4,17 +4,18 @@
       <q-input v-model="search" label="Search" />
     </div>
     <div class="row justify-between items-center">
-      <q-input v-model="from" type="date">
+      <q-input v-model="from" type="date" :class="{ 'col-6': screen.lt.sm }">
         <template v-slot:prepend>
-          <span>From</span>
+          <span class="text-caption text-weight-bold">From</span>
         </template>
       </q-input>
-      <q-input v-model="to" type="date">
+      <q-separator vertical v-if="screen.lt.sm" />
+      <q-input v-model="to" type="date" :class="{ 'col-5': screen.lt.sm }">
         <template v-slot:prepend>
-          <span>To</span>
+          <span class="text-caption text-weight-bold">To</span>
         </template>
       </q-input>
-      <div>
+      <div class="q-my-sm" :class="{ 'text-right col-12': screen.lt.sm }">
         <q-btn icon="search" @click="findByDates" />
       </div>
     </div>
@@ -27,7 +28,7 @@
               {{ purchase.name || purchase.purchasable.name }}
             </span>
             <span
-              v-if="purchase.name != purchase.purchasable.name"
+              v-if="purchase.name && purchase.name != purchase.purchasable.name"
               class="text-overline"
             >
               ({{ purchase.purchasable.name }})
@@ -71,7 +72,7 @@ import { useQuasar } from "quasar";
 import usePagination from "src/composables/pagination";
 
 const { api } = useUtil();
-const { dialog, notify } = useQuasar();
+const { dialog, notify, screen } = useQuasar();
 const purchaseType = {
   "App\\Models\\Feature": "Product",
   "App\\Models\\Expense": "Expense",
