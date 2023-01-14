@@ -1,5 +1,6 @@
 <template>
   <div class="full-height column">
+    <div v-if="total">Total: {{ total.toLocaleString() }} MMK</div>
     <div>
       <q-input v-model="search" label="Search" />
     </div>
@@ -93,7 +94,7 @@ const fetchPurchases = (params = {}) => {
   });
 };
 
-const { pagination, max, search, current, findByDates, from, to } =
+const { pagination, max, search, current, findByDates, from, to, total } =
   usePagination(fetchPurchases, true);
 
 const cancelPurchase = (purchase) => {

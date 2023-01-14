@@ -14,6 +14,7 @@ export default function usePagination (fetcher, hasDateFilter = false) {
   const max = computed(
     () => Math.ceil(pagination.value?.total / pagination.value?.per_page) || 1
   );
+  const total = ref(0)
   const current = ref(Number(route.query.page ?? 1) ?? 1);
   const onlyStocked = ref(route.query.stocked ? true : false);
 
@@ -25,7 +26,7 @@ export default function usePagination (fetcher, hasDateFilter = false) {
 
   const fetchMore = () => {
     fetcher(route.query).then((response) => {
-      pagination.value = response.data;
+      pagination.value = response.data.data;
     });
   };
 
@@ -37,26 +38,29 @@ export default function usePagination (fetcher, hasDateFilter = false) {
       })
       .then(() => {
         fetcher(route.query).then((response) => {
-          pagination.value = response.data;
-          current.value = response.data.current_page;
+          pagination.value = response.data.data;
+          current.value = response.data.data.current_page;
         });;
       });
   };
 
   onMounted(() => {
+    console.log('hi')
     if (hasDateFilter) router.replace({
       name: route.name,
       query: { ...route.query, from: from.value, to: to.value }
     }).then(() => {
       fetcher(route.query).then((response) => {
-        pagination.value = response.data;
-        current.value = response.data.current_page;
+        pagination.value = response.data.data;
+        current.value = response.data.data.current_page;
+        total.value = response.data.total
       });
     })
 
     else fetcher(route.query).then((response) => {
-      pagination.value = response.data;
-      current.value = response.data.current_page;
+      pagination.value = response.data.data;
+      current.value = response.data.data.current_page;
+      total.value = response.data.total
     });
   })
 
@@ -100,6 +104,6 @@ export default function usePagination (fetcher, hasDateFilter = false) {
     onlyStocked,
     findByDates,
     from,
-    to
+    to, total
   }
 }
