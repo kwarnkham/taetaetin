@@ -10,6 +10,7 @@
       label="Purchase Price"
       required
       dense
+      v-if="!update"
     />
     <q-input
       v-model.number="formData.price"
@@ -24,14 +25,17 @@
       required
       dense
       type="tel"
+      :disabled="update"
     />
     <q-date
       :landscape="$q.screen.gt.xs"
       v-model="formData.expired_on"
       title="Expire Date"
       subtitle="Optional"
+      v-if="!update"
     />
     <q-input v-model="formData.note" label="Note" dense />
+    <FileInput v-model="formData.picture" icon="image" />
 
     <div class="text-right">
       <q-btn label="Submit" no-caps type="submit" />
@@ -43,8 +47,9 @@
 import { ref } from "vue";
 import useUtil from "src/composables/util";
 import { useQuasar } from "quasar";
+import FileInput from "./FileInput.vue";
 
-const { pickBy, api } = useUtil();
+const { pickBy, api, buildForm } = useUtil();
 const { notify } = useQuasar();
 const props = defineProps({
   update: {
@@ -64,6 +69,7 @@ const props = defineProps({
       stock: "1",
       note: "",
       expired_on: null,
+      picture: null,
     }),
   },
 });
@@ -78,6 +84,7 @@ const formData = ref({
   note: props.product.note,
   expired_on: null,
   item_id: props.item_id,
+  picture: null,
 });
 
 const submit = () => {
@@ -85,7 +92,10 @@ const submit = () => {
   api({
     method: props.update ? "PUT" : "POST",
     url,
-    data: pickBy(formData.value),
+    data: buildForm(pickBy(formData.value)),
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   })
     .then((response) => {
       emit("productUpdated", response.data.feature);

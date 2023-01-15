@@ -28,7 +28,7 @@ import { ref, watch, onUpdated, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
-const tab = ref(route.query.tab ?? "create-product");
+const tab = ref(route.query.tab ?? "product-list");
 const router = useRouter();
 
 watch(tab, () => {
