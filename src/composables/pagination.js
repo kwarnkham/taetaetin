@@ -45,7 +45,6 @@ export default function usePagination (fetcher, hasDateFilter = false) {
   };
 
   onMounted(() => {
-    console.log('hi')
     if (hasDateFilter) router.replace({
       name: route.name,
       query: { ...route.query, from: from.value, to: to.value }

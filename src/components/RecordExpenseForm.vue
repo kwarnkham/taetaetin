@@ -11,6 +11,19 @@
       autofocus
     />
     <q-input v-model="formData.note" label="Note" required type="text" />
+    <q-file
+      v-model="formData.picture"
+      label="Picture"
+      accept=".jpg, image/*"
+      capture="environment"
+      @rejected="onRejected"
+      clearable
+      use-chips
+    >
+      <template v-slot:prepend>
+        <q-icon name="image" />
+      </template>
+    </q-file>
     <div class="text-right">
       <q-btn label="Submit" no-caps type="submit" />
     </div>
@@ -22,7 +35,7 @@ import { ref } from "vue";
 import useUtil from "src/composables/util";
 import { useQuasar } from "quasar";
 
-const { pickBy, api } = useUtil();
+const { pickBy, api, buildForm } = useUtil();
 const { notify } = useQuasar();
 const props = defineProps({
   expense: {
@@ -38,13 +51,17 @@ const emit = defineEmits(["expenseRecorded"]);
 const formData = ref({
   price: "",
   note: "",
+  picture: null,
 });
 
 const submit = () => {
   api({
-    method: props.update ? "PUT" : "POST",
+    method: "POST",
     url: `expenses/${props.expense.id}/record`,
-    data: pickBy(formData.value),
+    data: buildForm(pickBy(formData.value)),
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   })
     .then((response) => {
       emit("expenseRecorded", response.data.purchase);
@@ -58,5 +75,12 @@ const submit = () => {
     .catch((e) => {
       console.warn(e);
     });
+};
+
+const onRejected = () => {
+  notify({
+    message: "Please select image file type",
+    type: "warning",
+  });
 };
 </script>
