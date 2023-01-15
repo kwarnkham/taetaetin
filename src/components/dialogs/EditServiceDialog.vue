@@ -4,17 +4,17 @@
       class="q-dialog-plugin q-pa-sm"
       style="width: 500px; max-width: 100vw"
     >
-      <ToppingForm :topping="topping" update @topping-submitted="onDialogOK" />
+      <ServiceForm :service="service" update @service-submitted="onDialogOK" />
     </q-card>
   </q-dialog>
 </template>
 
 <script setup>
 import { useDialogPluginComponent } from "quasar";
-import ToppingForm from "../ToppingForm.vue";
+import ServiceForm from "../ServiceForm.vue";
 
 const props = defineProps({
-  topping: {
+  service: {
     type: Object,
     required: true,
   },

@@ -8,7 +8,7 @@ export default function useUtil () {
     pickBy (data) {
       const temp = {}
       for (const property in data) {
-        if (data[property] != undefined && data[property] != '') {
+        if (data[property] !== undefined && data[property] !== '') {
           temp[property] = data[property]
         }
       }

@@ -1,7 +1,7 @@
 <template>
   <q-form @submit.prevent="submit" class="q-gutter-y-sm full-width">
     <div class="text-h6 text-center text-weight-bold">
-      {{ update ? "Update" : "Create" }} Topping {{ topping?.name }}
+      {{ update ? "Update" : "Create" }} Service {{ service?.name }}
     </div>
     <q-input v-model="formData.name" label="Name" required />
 
@@ -24,7 +24,7 @@ import { ref, inject } from "vue";
 import useUtil from "src/composables/util";
 import { useQuasar } from "quasar";
 
-const { pickBy, api, buildForm } = useUtil();
+const { pickBy, api } = useUtil();
 const { notify } = useQuasar();
 const bus = inject("bus");
 
@@ -33,27 +33,28 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  topping: {
+  service: {
     type: Object,
     default: () => ({
       name: "",
-      account_name: "",
+      price: "",
+      cost: "",
     }),
   },
 });
 
-const emit = defineEmits(["toppingSubmitted"]);
+const emit = defineEmits(["serviceSubmitted"]);
 
 const formData = ref({
-  name: props.topping.name,
-  price: props.topping.price,
-  cost: props.topping.cost,
+  name: props.service.name,
+  price: props.service.price,
+  cost: props.service.cost,
 });
 
 if (props.update) formData.value._method = "PUT";
 
 const submit = () => {
-  const url = props.update ? "toppings/" + props.topping.id : "toppings";
+  const url = props.update ? "services/" + props.service.id : "services";
 
   api({
     method: "POST",
@@ -61,11 +62,11 @@ const submit = () => {
     data: pickBy(formData.value),
   })
     .then((response) => {
-      emit("toppingSubmitted", response.data.topping);
-      if (!props.update) bus.emit("toppingCreated", response.data.topping);
+      emit("serviceSubmitted", response.data.service);
+      if (!props.update) bus.emit("serviceCreated", response.data.service);
       formData.value.name = "";
       formData.value.price = "";
-      formData.value.cost = null;
+      formData.value.cost = "";
       notify({
         message: "Success",
         type: "positive",
