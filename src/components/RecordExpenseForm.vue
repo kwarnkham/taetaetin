@@ -11,19 +11,7 @@
       autofocus
     />
     <q-input v-model="formData.note" label="Note" required type="text" />
-    <q-file
-      v-model="formData.picture"
-      label="Picture"
-      accept=".jpg, image/*"
-      capture="environment"
-      @rejected="onRejected"
-      clearable
-      use-chips
-    >
-      <template v-slot:prepend>
-        <q-icon name="image" />
-      </template>
-    </q-file>
+    <FileInput v-model="formData.picture" />
     <div class="text-right">
       <q-btn label="Submit" no-caps type="submit" />
     </div>
@@ -34,6 +22,7 @@
 import { ref } from "vue";
 import useUtil from "src/composables/util";
 import { useQuasar } from "quasar";
+import FileInput from "./FileInput.vue";
 
 const { pickBy, api, buildForm } = useUtil();
 const { notify } = useQuasar();
@@ -75,12 +64,5 @@ const submit = () => {
     .catch((e) => {
       console.warn(e);
     });
-};
-
-const onRejected = () => {
-  notify({
-    message: "Please select image file type",
-    type: "warning",
-  });
 };
 </script>

@@ -17,20 +17,7 @@
     <template v-if="formData.payment_type_id != 1">
       <q-input v-model="formData.number" label="Number" required type="tel" />
       <q-input v-model="formData.account_name" label="Account Name" required />
-      <q-file
-        v-model="formData.qr"
-        label="Payment QR"
-        accept=".jpg, image/*"
-        capture="environment"
-        @rejected="onRejected"
-        clearable
-        use-chips
-        required
-      >
-        <template v-slot:prepend>
-          <q-icon name="qr_code" />
-        </template>
-      </q-file>
+      <FileInput icon="qr_code" label="Payment QR" v-model="formData.qr" />
     </template>
 
     <div class="text-right">
@@ -43,6 +30,7 @@
 import { ref, inject } from "vue";
 import useUtil from "src/composables/util";
 import { useQuasar } from "quasar";
+import FileInput from "./FileInput.vue";
 
 const { pickBy, api, buildForm } = useUtil();
 const { notify, localStorage } = useQuasar();
@@ -75,13 +63,6 @@ const formData = ref({
 });
 
 if (props.update) formData.value._method = "PUT";
-
-const onRejected = () => {
-  notify({
-    message: "Please select image file type",
-    type: "warning",
-  });
-};
 
 const submit = () => {
   const url = props.update ? "payments/" + props.payment.id : "payments";

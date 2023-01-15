@@ -2,7 +2,7 @@
   <q-file
     :modelValue="modelValue"
     @update:model-value="updateValue"
-    label="Picture"
+    :label="label"
     accept=".jpg, image/*"
     capture="environment"
     @rejected="onRejected"
@@ -16,7 +16,20 @@
 </template>
 
 <script setup>
-const props = defineProps(["modelValue", "icon"]);
+// const props = defineProps(["modelValue", "icon", "label"]);
+const props = defineProps({
+  modelValue: {
+    required: true,
+  },
+  icon: {
+    type: String,
+    default: "image",
+  },
+  label: {
+    type: String,
+    default: "Picture",
+  },
+});
 const emit = defineEmits(["update:modelValue"]);
 const onRejected = () => {
   notify({

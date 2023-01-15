@@ -35,7 +35,11 @@
       v-if="!update"
     />
     <q-input v-model="formData.note" label="Note" dense />
-    <FileInput v-model="formData.picture" icon="image" />
+    <FileInput
+      v-model="formData.picture"
+      icon="image"
+      label="Picture to support product purchase"
+    />
 
     <div class="text-right">
       <q-btn label="Submit" no-caps type="submit" />
