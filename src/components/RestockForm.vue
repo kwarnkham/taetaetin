@@ -24,6 +24,7 @@
       title="Expire Date"
       subtitle="Optional"
     />
+    <FileInput v-model="formData.picture" label="Receipt of the purchase" />
 
     <div class="text-right">
       <q-btn label="Submit" no-caps type="submit" />
@@ -35,8 +36,9 @@
 import { ref } from "vue";
 import useUtil from "src/composables/util";
 import { useQuasar } from "quasar";
+import FileInput from "./FileInput.vue";
 
-const { pickBy, api } = useUtil();
+const { pickBy, api, buildForm } = useUtil();
 const { notify } = useQuasar();
 const props = defineProps({
   product: {
@@ -51,13 +53,17 @@ const formData = ref({
   price: props.product.latest_batch.purchase.price,
   quantity: "",
   expired_on: null,
+  picture: null,
 });
 
 const submit = () => {
   api({
     method: "POST",
     url: `features/${props.product.id}/restock`,
-    data: pickBy(formData.value),
+    data: buildForm(pickBy(formData.value)),
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   })
     .then((response) => {
       emit("restocked", response.data.feature);
