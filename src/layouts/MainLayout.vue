@@ -27,10 +27,8 @@
           >
             <q-badge color="info" floating transparent rounded>
               {{
-                cartStore.getCart.products.reduce(
-                  (carry, product) => carry + product.quantity,
-                  0
-                )
+                getTotal(cartStore.getCart.products, "quantity") +
+                getTotal(cartStore.getCart.services, "quantity")
               }}
             </q-badge>
           </q-btn>
@@ -47,11 +45,13 @@
 <script setup>
 import { useQuasar } from "quasar";
 import LeftDrawer from "src/components/LeftDrawer.vue";
+import useUtil from "src/composables/util";
 import { useCartStore } from "src/stores/cart-store";
 import { ref } from "vue";
 
 const { screen } = useQuasar();
 const leftDrawerOpen = ref(screen.gt.sm);
+const { getTotal } = useUtil();
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 };

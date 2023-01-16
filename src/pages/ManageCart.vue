@@ -149,6 +149,19 @@
         </tr>
       </tbody>
     </q-markup-table>
+    <div class="text-right">
+      <q-btn
+        label="Checkout"
+        no-caps
+        flat
+        color="positive"
+        @click="
+          $router.push({
+            name: 'checkout-cart',
+          })
+        "
+      />
+    </div>
     <q-separator spaced />
     <q-toggle v-model="serviceShowed" label="Service" />
     <ManageServiceForCart

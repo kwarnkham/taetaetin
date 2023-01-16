@@ -48,6 +48,14 @@ const routes = [
         meta: {
           requireAuth: true
         }
+      },
+      {
+        path: 'checkout-cart',
+        component: () => import('src/pages/CheckoutCart.vue'),
+        name: 'checkout-cart',
+        meta: {
+          requireAuth: true
+        }
       }
     ]
   },
