@@ -115,7 +115,7 @@ const showAddProductToCart = (product) => {
       return;
     }
 
-    cartStore.addProductToCart({ product, quantity });
+    cartStore.addProduct({ product, quantity });
     notify({
       message: "Added to cart",
       type: "positive",

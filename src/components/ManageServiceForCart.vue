@@ -14,16 +14,21 @@
         :label="service.name"
         v-for="service in pagination?.data"
         :key="service.id"
+        @click="addService(service)"
       />
     </div>
   </div>
 </template>
 
 <script setup>
+import { useQuasar } from "quasar";
 import usePagination from "src/composables/pagination";
 import useUtil from "src/composables/util";
 
+const emit = defineEmits(["serviceAdded"]);
 const { api } = useUtil();
+const { dialog } = useQuasar();
+
 const featchServices = (params) => {
   return new Promise((resolve, reject) => {
     api({
@@ -39,5 +44,24 @@ const featchServices = (params) => {
       });
   });
 };
+
 const { pagination, search } = usePagination(featchServices);
+
+const addService = (service) => {
+  dialog({
+    prompt: {
+      model: "1",
+      type: "tel",
+      isValid: (val) => val !== "" && val >= 1,
+    },
+    persistent: true,
+    cancel: true,
+    title: "Quantity",
+  }).onOk((quantity) => {
+    emit("serviceAdded", {
+      service,
+      quantity,
+    });
+  });
+};
 </script>

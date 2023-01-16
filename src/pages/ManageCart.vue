@@ -33,6 +33,37 @@
             />
           </td>
         </tr>
+        <tr
+          v-for="(service, key) in cartStore.getCart.services"
+          :key="service.id"
+        >
+          <td class="text-left">{{ key + 1 }}</td>
+          <td class="text-left">{{ service.name }}</td>
+          <td class="text-right">{{ service.price.toLocaleString() }}</td>
+          <td class="text-right">{{ service.quantity }}</td>
+          <td class="text-right">
+            {{ (service.price * service.quantity).toLocaleString() }}
+          </td>
+          <td class="text-center q-gutter-x-sm">
+            <q-btn
+              round
+              icon="add"
+              @click="cartStore.addService({ service, quantity: 1 })"
+            />
+            <q-btn
+              round
+              icon="remove"
+              @click="cartStore.reduceService({ service, quantity: 1 })"
+            />
+            <q-btn
+              round
+              icon="delete_forever"
+              @click="
+                cartStore.reduceService({ service, quantity: service.quantity })
+              "
+            />
+          </td>
+        </tr>
         <tr>
           <td colspan="3" class="text-right">Total</td>
           <td class="text-right">
@@ -44,10 +75,13 @@
 
           <td class="text-right">
             {{
-              getTotalAmount(
-                cartStore.getCart.products,
-                "price",
-                "quantity"
+              (
+                getTotalAmount(
+                  cartStore.getCart.products,
+                  "price",
+                  "quantity"
+                ) +
+                getTotalAmount(cartStore.getCart.services, "price", "quantity")
               ).toLocaleString()
             }}
           </td>
@@ -73,7 +107,12 @@
         <tr
           :class="{
             'text-negative':
-              getTotalAmount(cartStore.getCart.products, 'quantity', 'price') -
+              getTotalAmount(cartStore.getCart.products, 'quantity', 'price') +
+                getTotalAmount(
+                  cartStore.getCart.services,
+                  'quantity',
+                  'price'
+                ) -
                 cartStore.getCart.discount <
               0,
           }"
@@ -88,7 +127,13 @@
                   cartStore.getCart.products,
                   "quantity",
                   "price"
-                ) - cartStore.getCart.discount
+                ) +
+                getTotalAmount(
+                  cartStore.getCart.services,
+                  "quantity",
+                  "price"
+                ) -
+                cartStore.getCart.discount
               ).toLocaleString()
             }}
           </td>
@@ -98,7 +143,10 @@
     </q-markup-table>
     <q-separator spaced />
     <q-toggle v-model="serviceShowed" label="Service" />
-    <ManageServiceForCart v-if="serviceShowed" />
+    <ManageServiceForCart
+      v-if="serviceShowed"
+      @service-added="addServiceToCart"
+    />
   </q-page>
 </template>
 
@@ -113,9 +161,10 @@ const cartStore = useCartStore();
 const { notify, dialog } = useQuasar();
 const { getTotalAmount, getTotal } = useUtil();
 const serviceShowed = ref(false);
+
 const increaseCartQuantity = (product) => {
   if (product.stock > product.quantity)
-    cartStore.addProductToCart({ product, quantity: 1 });
+    cartStore.addProduct({ product, quantity: 1 });
   else
     notify({
       message: "No enough stock",
@@ -129,7 +178,7 @@ const removeFromCart = (product) => {
     cancel: true,
     title: "Remove the product from cart?",
   }).onOk(() => {
-    cartStore.removeProductFromCart({ product, quantity: product.quantity });
+    cartStore.reduceProduct({ product, quantity: product.quantity });
   });
 };
 
@@ -139,7 +188,7 @@ const addDiscount = () => {
     persistent: true,
     cancel: true,
     prompt: {
-      model: "",
+      model: cartStore.getCart.discount,
       type: "tel",
       isValid: (val) => val >= 0,
     },
@@ -155,9 +204,13 @@ const decreaseCartQuantity = (product) => {
       cancel: true,
       title: "Remove the product from cart?",
     }).onOk(() => {
-      cartStore.removeProductFromCart({ product, quantity: 1 });
+      cartStore.reduceProduct({ product, quantity: 1 });
     });
-  else cartStore.removeProductFromCart({ product, quantity: 1 });
+  else cartStore.reduceProduct({ product, quantity: 1 });
+};
+
+const addServiceToCart = (payload) => {
+  cartStore.addService(payload);
 };
 </script>
 
