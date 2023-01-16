@@ -56,5 +56,13 @@ export const useCartStore = defineStore('cart', {
       }
       LocalStorage.set('services', this.cart.services)
     },
+    clear () {
+      this.cart.products = []
+      this.cart.discount = 0
+      this.cart.services = []
+      LocalStorage.set('products', this.cart.products)
+      LocalStorage.set('services', this.cart.services)
+      LocalStorage.set('discount', this.cart.discount)
+    },
   },
 });

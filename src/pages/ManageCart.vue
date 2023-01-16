@@ -137,7 +137,15 @@
               ).toLocaleString()
             }}
           </td>
-          <td class="text-center">Action</td>
+          <td class="text-center">
+            <q-btn
+              label="Clear"
+              flat
+              no-caps
+              color="accent"
+              @click="clearCart"
+            />
+          </td>
         </tr>
       </tbody>
     </q-markup-table>
@@ -179,6 +187,17 @@ const removeFromCart = (product) => {
     title: "Remove the product from cart?",
   }).onOk(() => {
     cartStore.reduceProduct({ product, quantity: product.quantity });
+  });
+};
+
+const clearCart = () => {
+  dialog({
+    title: "Confirm",
+    message: "Do you want to clear cart?",
+    cancel: true,
+    persistent: true,
+  }).onOk(() => {
+    cartStore.clear();
   });
 };
 
