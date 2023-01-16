@@ -14,7 +14,17 @@
         <q-toolbar-title> Quasar App </q-toolbar-title>
 
         <div>
-          <q-btn dense color="positive" round icon="shopping_cart">
+          <q-btn
+            dense
+            color="positive"
+            round
+            icon="shopping_cart"
+            @click="
+              $router.push({
+                name: 'manage-cart',
+              })
+            "
+          >
             <q-badge color="info" floating transparent rounded>
               {{
                 cartStore.getCart.products.reduce(

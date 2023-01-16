@@ -40,6 +40,14 @@ const routes = [
         meta: {
           requireAuth: true
         }
+      },
+      {
+        path: 'manage-cart',
+        component: () => import('src/pages/ManageCart.vue'),
+        name: 'manage-cart',
+        meta: {
+          requireAuth: true
+        }
       }
     ]
   },

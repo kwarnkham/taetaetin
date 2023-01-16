@@ -48,6 +48,12 @@ export default function useUtil () {
           loading.hide()
         })
       })
+    },
+    getTotal (array, key) {
+      return array.reduce((carry, el) => el[key] + carry, 0)
+    },
+    getTotalAmount (array, key, key2) {
+      return array.reduce((carry, el) => el[key] * el[key2] + carry, 0)
     }
   }
 }
