@@ -7,7 +7,7 @@ export const useCartStore = defineStore('cart', {
   state: () => ({
     cart: {
       products: LocalStorage.getItem('products') ?? [],
-      discount: 0,
+      discount: LocalStorage.getItem('discount') ?? 0,
       services: LocalStorage.getItem('services') ?? [],
     }
   }),
@@ -36,6 +36,7 @@ export const useCartStore = defineStore('cart', {
     },
     applyDiscount (value) {
       this.cart.discount = Number(value)
+      LocalStorage.set('discount', this.cart.discount)
     },
     addService (payload) {
       const service = JSON.parse(JSON.stringify(payload.service))

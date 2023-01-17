@@ -220,7 +220,7 @@ const addDiscount = () => {
     persistent: true,
     cancel: true,
     prompt: {
-      model: cartStore.getCart.discount,
+      model: cartStore.getCart.discount || "",
       type: "tel",
       isValid: (val) => val >= 0,
     },

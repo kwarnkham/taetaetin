@@ -56,6 +56,14 @@ const routes = [
         meta: {
           requireAuth: true
         }
+      },
+      {
+        path: 'order-menu',
+        component: () => import('src/pages/OrderMenu.vue'),
+        name: 'order-menu',
+        meta: {
+          requireAuth: true
+        }
       }
     ]
   },

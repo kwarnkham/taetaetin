@@ -9,7 +9,11 @@ export default function useUtil () {
       const temp = {}
       for (const property in data) {
         if (data[property] !== undefined && data[property] !== '') {
-          temp[property] = data[property]
+          if (Array.isArray(data[property])) {
+            if (data[property].length > 0)
+              temp[property] = data[property]
+          } else
+            temp[property] = data[property]
         }
       }
       return temp
