@@ -9,26 +9,31 @@
       align="justify"
       narrow-indicator
     >
-      <q-tab name="purchase-list" label="Purchase List" no-caps />
+      <q-tab name="purchase" label="Purchase" no-caps />
+      <q-tab name="order" label="Order" no-caps />
     </q-tabs>
 
     <q-separator />
 
     <q-tab-panels v-model="tab" animated class="col">
-      <q-tab-panel name="purchase-list" id="purchase-list">
+      <q-tab-panel name="purchase" id="purchase">
         <PurchaseList />
+      </q-tab-panel>
+      <q-tab-panel name="order" id="order">
+        <!-- <OrderList :status="5" /> -->
       </q-tab-panel>
     </q-tab-panels>
   </q-page>
 </template>
 
 <script setup>
+import OrderList from "src/components/OrderList.vue";
 import PurchaseList from "src/components/PurchaseList.vue";
 import { ref, watch, onUpdated, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
-const tab = ref(route.query.tab ?? "purchase-list");
+const tab = ref(route.query.tab ?? "purchase");
 const router = useRouter();
 
 watch(tab, () => {
@@ -40,9 +45,8 @@ watch(tab, () => {
   });
 });
 const updatePurchaseListHeight = () => {
-  if (tab.value == "purchase-list")
-    document.getElementById("purchase-list").style.height =
-      document.querySelector(".q-tab-panels").clientHeight + "px";
+  document.getElementById(tab.value).style.height =
+    document.querySelector(".q-tab-panels").clientHeight + "px";
 };
 onUpdated(updatePurchaseListHeight);
 onMounted(updatePurchaseListHeight);

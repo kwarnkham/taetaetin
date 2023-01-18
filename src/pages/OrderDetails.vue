@@ -32,8 +32,8 @@
           {{ formatDate(payment.pivot.created_at, "hh:mm:ss A DD/MM/YYYY") }}
         </div>
         <div v-else>
-          {{ payment.pivot.amount }} is paid to {{ payment.number }},
-          {{ payment.account_name }} on
+          {{ payment.pivot.amount }} is paid to {{ payment.pivot.number }},
+          {{ payment.pivot.account_name }} on
           {{ formatDate(payment.pivot.created_at, "hh:mm:ss A DD/MM/YYYY") }}
           <q-btn
             icon="screenshot"

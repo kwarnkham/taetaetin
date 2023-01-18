@@ -17,6 +17,7 @@ export default function usePagination (fetcher, hasDateFilter = false) {
   const total = ref(0)
   const current = ref(Number(route.query.page ?? 1) ?? 1);
   const onlyStocked = ref(route.query.stocked ? true : false);
+  const status = ref(route.query.status)
 
   const from = ref(
     route.query.from ??
@@ -27,6 +28,7 @@ export default function usePagination (fetcher, hasDateFilter = false) {
   const fetchMore = () => {
     fetcher(route.query).then((response) => {
       pagination.value = response.data.data;
+      total.value = response.data.total ?? 0
     });
   };
 
@@ -40,21 +42,24 @@ export default function usePagination (fetcher, hasDateFilter = false) {
         fetcher(route.query).then((response) => {
           pagination.value = response.data.data;
           current.value = response.data.data.current_page;
+          total.value = response.data.total
         });;
       });
   };
 
   onMounted(() => {
-    if (hasDateFilter) router.replace({
-      name: route.name,
-      query: { ...route.query, from: from.value, to: to.value }
-    }).then(() => {
-      fetcher(route.query).then((response) => {
-        pagination.value = response.data.data;
-        current.value = response.data.data.current_page;
-        total.value = response.data.total
-      });
-    })
+    if (hasDateFilter) setTimeout(() => {
+      router.replace({
+        name: route.name,
+        query: { ...route.query, from: from.value, to: to.value }
+      }).then(() => {
+        fetcher(route.query).then((response) => {
+          pagination.value = response.data.data;
+          current.value = response.data.data.current_page;
+          total.value = response.data.total
+        });
+      })
+    }, 100)
 
     else fetcher(route.query).then((response) => {
       pagination.value = response.data.data;
@@ -73,7 +78,7 @@ export default function usePagination (fetcher, hasDateFilter = false) {
   });
 
   watch(
-    [search, onlyStocked],
+    [search, onlyStocked, status],
     debounce(() => {
       router
         .replace({
@@ -82,7 +87,8 @@ export default function usePagination (fetcher, hasDateFilter = false) {
             ...route.query,
             search: search.value,
             page: undefined,
-            stocked: onlyStocked.value ? 1 : 0
+            stocked: onlyStocked.value ? 1 : 0,
+            status: status.value
           }),
         })
         .then(() => {
@@ -103,6 +109,6 @@ export default function usePagination (fetcher, hasDateFilter = false) {
     onlyStocked,
     findByDates,
     from,
-    to, total
+    to, total, status
   }
 }

@@ -61,6 +61,11 @@ import useUtil from "src/composables/util";
 import usePagination from "src/composables/pagination";
 import { useQuasar, date } from "quasar";
 
+const props = defineProps({
+  status: {
+    type: Number,
+  },
+});
 const { formatDate } = date;
 const { localStorage } = useQuasar();
 const { api } = useUtil();
@@ -81,6 +86,5 @@ const fetchOrders = (params) => {
   });
 };
 
-const { pagination, max, search, current, onlyStocked } =
-  usePagination(fetchOrders);
+const { pagination, max, current, status } = usePagination(fetchOrders);
 </script>
