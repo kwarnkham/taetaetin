@@ -20,7 +20,7 @@
         <PurchaseList />
       </q-tab-panel>
       <q-tab-panel name="order" id="order">
-        <!-- <OrderList :status="5" /> -->
+        <OrderList hasDateFilter />
       </q-tab-panel>
     </q-tab-panels>
   </q-page>
@@ -41,6 +41,7 @@ watch(tab, () => {
     name: route.name,
     query: {
       tab: tab.value,
+      status: tab.value == "order" ? 5 : undefined,
     },
   });
 });

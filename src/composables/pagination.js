@@ -88,7 +88,7 @@ export default function usePagination (fetcher, hasDateFilter = false) {
             search: search.value,
             page: undefined,
             stocked: onlyStocked.value ? 1 : 0,
-            status: status.value
+            status: status
           }),
         })
         .then(() => {

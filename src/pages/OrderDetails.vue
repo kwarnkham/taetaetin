@@ -9,7 +9,7 @@
         <q-icon name="phone" class="q-mr-sm" size="sm" />{{ order.phone }}
       </div>
     </div>
-    <div>Address:{{ order.address }}</div>
+    <div v-if="order.address">Address:{{ order.address }}</div>
     <div class="row justify-between">
       <div class="row items-center">
         <q-icon name="calendar_month" size="sm" class="q-mr-sm" />
