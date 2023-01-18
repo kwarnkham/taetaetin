@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <q-form @submit.prevent="submit">
-      <q-input v-model="formData.cusomter" label="Customer" />
+      <q-input v-model="formData.customer" label="Customer" />
       <q-input v-model="formData.phone" label="Phone" type="tel" />
       <q-input v-model="formData.address" label="Address" />
       <q-input v-model="formData.note" label="Note" />
@@ -48,10 +48,13 @@ const submit = () => {
     method: "POST",
     url: "orders",
     data: pickBy(formData.value),
-  }).then(() => {
+  }).then((response) => {
     cartStore.clear();
     router.replace({
-      name: "order-menu",
+      name: "order-details",
+      params: {
+        order: response.data.order.id,
+      },
     });
   });
 };

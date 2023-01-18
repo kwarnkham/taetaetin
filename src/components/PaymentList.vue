@@ -21,6 +21,12 @@
               @click="showEditPayment(payment)"
               :disabled="payment.payment_type.id == 1"
             />
+            <q-btn
+              round
+              :icon="payment.status == 1 ? 'visibility_off' : 'visibility'"
+              dense
+              @click="togglePayment(payment)"
+            />
           </div>
         </q-item-section>
       </q-item>
@@ -46,7 +52,7 @@ import EditPaymentDialog from "src/components/dialogs/EditPaymentDialog.vue";
 import { inject, onBeforeUnmount } from "vue";
 
 const { api } = useUtil();
-const { dialog } = useQuasar();
+const { dialog, notify } = useQuasar();
 const bus = inject("bus");
 
 const updatePaymentList = (payment) => {
@@ -84,6 +90,32 @@ const showEditPayment = (payment) => {
   }).onOk((updatedPayment) => {
     const index = pagination.value.data.findIndex((e) => e.id == payment.id);
     if (index >= 0) pagination.value.data.splice(index, 1, updatedPayment);
+  });
+};
+
+const togglePayment = (payment) => {
+  dialog({
+    title: "Confirm",
+    message: `Do you want to ${
+      payment.status == 1 ? "disable" : "enable"
+    } the payment`,
+    cancel: true,
+    persistent: true,
+  }).onOk(() => {
+    api({
+      method: "POST",
+      url: `payments/${payment.id}/toggle`,
+    }).then((response) => {
+      const index = pagination.value.data.findIndex(
+        (e) => e.id == response.data.payment.id
+      );
+      if (index >= 0)
+        pagination.value.data.splice(index, 1, response.data.payment);
+      notify({
+        message: "Updated",
+        type: "positive",
+      });
+    });
   });
 };
 </script>

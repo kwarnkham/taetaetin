@@ -1,15 +1,27 @@
 <template>
   <q-page padding v-if="order">
     <div class="text-h6 text-center">#{{ order.id }}</div>
+    <div class="row wrap" v-if="order.customer">
+      <div class="col-6 text-left">
+        <q-icon name="person" class="q-mr-sm" size="sm" />{{ order.customer }}
+      </div>
+      <div class="col-6 text-right">
+        <q-icon name="phone" class="q-mr-sm" size="sm" />{{ order.phone }}
+      </div>
+    </div>
+    <div>Address:{{ order.address }}</div>
     <div class="row justify-between">
       <div class="row items-center">
-        <q-icon name="calendar_month" size="sm" />
+        <q-icon name="calendar_month" size="sm" class="q-mr-sm" />
         <div>
           {{ formatDate(order.updated_at, "hh:mm:ss A DD/MM/YYYY") }}
         </div>
       </div>
-      <div class="text-weight-bold">Status:{{ orderStatus[order.status] }}</div>
+      <div class="text-weight-bold">
+        Status : {{ orderStatus[order.status] }}
+      </div>
     </div>
+    <q-separator spaced />
     <div v-if="order.payments.length">
       <div class="text-center text-subtitle1 text-weight-bold">
         Payment Information
