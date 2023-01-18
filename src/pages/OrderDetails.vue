@@ -10,6 +10,30 @@
       </div>
       <div class="text-weight-bold">Status:{{ orderStatus[order.status] }}</div>
     </div>
+    <div v-if="order.payments.length">
+      <div class="text-center text-subtitle1 text-weight-bold">
+        Payment Information
+      </div>
+      <div v-for="payment in order.payments" :key="payment.pivot.id">
+        <div v-if="payment.payment_type_id == 1">
+          {{ payment.pivot.amount.toLocaleString() }} is paid by cash on
+          {{ formatDate(payment.pivot.created_at, "hh:mm:ss A DD/MM/YYYY") }}
+        </div>
+        <div v-else>
+          {{ payment.pivot.amount }} is paid to {{ payment.number }},
+          {{ payment.account_name }} on
+          {{ formatDate(payment.pivot.created_at, "hh:mm:ss A DD/MM/YYYY") }}
+          <q-btn
+            icon="screenshot"
+            rounded
+            flat
+            @click="showScreenshot(payment)"
+            v-if="payment.pivot.picture"
+          />
+        </div>
+        <q-separator spaced />
+      </div>
+    </div>
     <q-markup-table separator="cell" flat bordered wrap-cells>
       <thead>
         <tr>
@@ -108,8 +132,22 @@
         </tr>
       </tbody>
     </q-markup-table>
-    <div class="q-mt-sm">
+    <div class="q-mt-sm row justify-around">
       <q-btn label="Pay" no-caps color="primary" @click="makePayment" />
+      <q-btn
+        label="Complete"
+        no-caps
+        color="positive"
+        @click="completeOrder"
+        :disabled="order.status != 3"
+      />
+      <q-btn
+        label="Cancel"
+        no-caps
+        color="warning"
+        @click="cancelOrder"
+        :disabled="![1, 2, 3].includes(order.status)"
+      />
     </div>
   </q-page>
 </template>
@@ -140,6 +178,54 @@ const makePayment = () => {
     notify({
       message: "Success",
       type: "positive",
+    });
+  });
+};
+
+const showScreenshot = (payment) => {
+  dialog({
+    title: "Payment screenshot",
+    html: true,
+    message: `<img src='${payment.pivot.picture}'>`,
+  });
+};
+
+const cancelOrder = () => {
+  dialog({
+    title: "Confirmation",
+    message: "Do you want to cancel the order?",
+    persistent: true,
+    cancel: true,
+  }).onOk(() => {
+    api({
+      method: "POST",
+      url: `orders/${order.value.id}/cancel`,
+    }).then((response) => {
+      order.value = response.data.order;
+      notify({
+        message: "Order is completed",
+        type: "positive",
+      });
+    });
+  });
+};
+
+const completeOrder = () => {
+  dialog({
+    title: "Confirmation",
+    message: "Do you want to complete the order?",
+    persistent: true,
+    cancel: true,
+  }).onOk(() => {
+    api({
+      method: "POST",
+      url: `orders/${order.value.id}/complete`,
+    }).then((response) => {
+      order.value = response.data.order;
+      notify({
+        message: "Order is completed",
+        type: "positive",
+      });
     });
   });
 };

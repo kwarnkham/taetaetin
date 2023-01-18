@@ -38,7 +38,7 @@
       <q-input v-model="formData.note" label="Note" type="text" />
       <FileInput v-model="formData.picture" icon="image" label="Screenshot" />
       <div class="text-right">
-        <q-btn type="submit" label="Pay" flat />
+        <q-btn type="submit" label="Pay" flat no-caps />
       </div>
     </q-form>
   </div>
