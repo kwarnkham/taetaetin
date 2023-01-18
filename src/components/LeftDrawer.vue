@@ -44,6 +44,12 @@ const links = [
     route: "products",
   },
   {
+    title: "Order",
+    caption: "Manage Order",
+    icon: "storefront",
+    route: "order-menu",
+  },
+  {
     title: "Login",
     caption: undefined,
     icon: "login",

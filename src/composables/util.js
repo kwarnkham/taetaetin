@@ -58,6 +58,6 @@ export default function useUtil () {
     },
     getTotalAmount (array, key, key2) {
       return array.reduce((carry, el) => el[key] * el[key2] + carry, 0)
-    }
+    },
   }
 }

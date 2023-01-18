@@ -64,6 +64,14 @@ const routes = [
         meta: {
           requireAuth: true
         }
+      },
+      {
+        path: 'order/:order',
+        component: () => import('src/pages/OrderDetails.vue'),
+        name: 'order-details',
+        meta: {
+          requireAuth: true
+        }
       }
     ]
   },
