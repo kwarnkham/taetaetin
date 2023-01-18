@@ -1,7 +1,11 @@
 <template>
   <div class="full-height column">
     <div>
-      <q-input v-model="search" label="Search" />
+      <q-input v-model="search" label="Search">
+        <template v-slot:append>
+          <q-icon name="search" />
+        </template>
+      </q-input>
     </div>
 
     <q-list bordered separator class="overflow-auto col">
@@ -9,18 +13,42 @@
         <q-item-section>
           <q-item-label>{{ item.name }}</q-item-label>
           <div class="row justify-start q-gutter-x-sm q-mt-sm">
+            <template v-if="userStore.getUser">
+              <q-btn
+                round
+                icon="add"
+                dense
+                @click="showCreateProductDialog(item)"
+              />
+              <q-btn
+                round
+                icon="edit"
+                dense
+                @click="showEditItemDialog(item)"
+              />
+              <q-btn
+                round
+                icon="open_in_new"
+                dense
+                @click="showItemDetailsDialog(item)"
+              />
+            </template>
+
             <q-btn
-              round
-              icon="add"
-              dense
-              @click="showCreateProductDialog(item)"
-            />
-            <q-btn round icon="edit" dense @click="showEditItemDialog(item)" />
-            <q-btn
-              round
-              icon="open_in_new"
-              dense
-              @click="showItemDetailsDialog(item)"
+              rounded
+              label="More"
+              no-caps
+              @click="
+                $router.push({
+                  name: 'item-details',
+                  params: {
+                    item: item.id,
+                  },
+                  query: {
+                    item: item.id,
+                  },
+                })
+              "
             />
           </div>
         </q-item-section>
@@ -46,9 +74,11 @@ import EditItemDialog from "./dialogs/EditItemDialog.vue";
 import ItemDetailDialog from "./dialogs/ItemDetailDialog.vue";
 import CreateProductDialog from "./dialogs/CreateProductDialog.vue";
 import usePagination from "src/composables/pagination";
+import { useUserStore } from "src/stores/user-store";
 
 const { api } = useUtil();
 const { dialog } = useQuasar();
+const userStore = useUserStore();
 
 const fetchItems = (params) => {
   return new Promise((resolve, reject) => {

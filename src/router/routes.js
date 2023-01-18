@@ -13,17 +13,11 @@ const routes = [
         path: 'items',
         component: () => import('pages/ItemMenu.vue'),
         name: 'items',
-        meta: {
-          requireAuth: true
-        }
       },
       {
         path: 'products',
         component: () => import('pages/ProductMenu.vue'),
         name: 'products',
-        meta: {
-          requireAuth: true
-        }
       },
       {
         path: 'financial-records',
@@ -72,6 +66,11 @@ const routes = [
         meta: {
           requireAuth: true
         }
+      },
+      {
+        path: 'item/:item',
+        component: () => import('src/pages/ItemDetails.vue'),
+        name: 'item-details',
       }
     ]
   },

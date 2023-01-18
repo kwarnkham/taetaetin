@@ -1,22 +1,24 @@
 <template>
   <div class="full-height column">
-    <div v-if="total">Total: {{ total.toLocaleString() }} MMK</div>
-    <div class="row justify-between items-center">
-      <q-input v-model="from" type="date" :class="{ 'col-6': screen.lt.sm }">
-        <template v-slot:prepend>
-          <span class="text-caption text-weight-bold">From</span>
-        </template>
-      </q-input>
-      <q-separator vertical v-if="screen.lt.sm" />
-      <q-input v-model="to" type="date" :class="{ 'col-5': screen.lt.sm }">
-        <template v-slot:prepend>
-          <span class="text-caption text-weight-bold">To</span>
-        </template>
-      </q-input>
-      <div class="q-my-sm" :class="{ 'text-right col-12': screen.lt.sm }">
-        <q-btn icon="search" @click="findByDates" />
+    <template v-if="hasDateFilter">
+      <div v-if="total">Total: {{ total.toLocaleString() }} MMK</div>
+      <div class="row justify-between items-center">
+        <q-input v-model="from" type="date" :class="{ 'col-6': screen.lt.sm }">
+          <template v-slot:prepend>
+            <span class="text-caption text-weight-bold">From</span>
+          </template>
+        </q-input>
+        <q-separator vertical v-if="screen.lt.sm" />
+        <q-input v-model="to" type="date" :class="{ 'col-5': screen.lt.sm }">
+          <template v-slot:prepend>
+            <span class="text-caption text-weight-bold">To</span>
+          </template>
+        </q-input>
+        <div class="q-my-sm" :class="{ 'text-right col-12': screen.lt.sm }">
+          <q-btn icon="search" @click="findByDates" />
+        </div>
       </div>
-    </div>
+    </template>
     <q-list bordered separator class="overflow-auto col">
       <q-item v-for="order in pagination?.data" :key="order.id">
         <q-item-section>
@@ -82,9 +84,9 @@ import useUtil from "src/composables/util";
 import usePagination from "src/composables/pagination";
 import { useQuasar, date } from "quasar";
 
-const props = {
+const props = defineProps({
   hasDateFilter: { type: Boolean, default: false },
-};
+});
 const { formatDate } = date;
 const { localStorage, screen } = useQuasar();
 const { api } = useUtil();

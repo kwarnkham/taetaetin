@@ -3,7 +3,7 @@ import { useRoute, useRouter } from "vue-router";
 import useUtil from "src/composables/util";
 import { debounce } from "quasar";
 import { date } from "quasar";
-const { subtractFromDate, formatDate } = date;
+const { formatDate } = date;
 
 export default function usePagination (fetcher, hasDateFilter = false) {
   const { pickBy } = useUtil();
@@ -11,18 +11,20 @@ export default function usePagination (fetcher, hasDateFilter = false) {
   const router = useRouter();
   const pagination = ref(null);
   const search = ref(route.query.search ?? "");
+  const item = ref(route.query.item ?? "");
   const max = computed(
     () => Math.ceil(pagination.value?.total / pagination.value?.per_page) || 1
   );
   const total = ref(0)
   const current = ref(Number(route.query.page ?? 1) ?? 1);
-  const onlyStocked = ref(route.query.stocked ? true : false);
-  const status = ref(route.query.status)
+  const onlyStocked = ref(route.query.stocked == undefined ? true : !!route.query.stocked);
+  const status = ref(route.query.status ?? undefined)
 
-  const from = ref(
-    route.query.from ??
-    formatDate(subtractFromDate(new Date(), { months: 1 }), "YYYY-MM-DD")
-  );
+  // const from = ref(
+  //   route.query.from ??
+  //   formatDate(subtractFromDate(new Date(), { months: 1 }), "YYYY-MM-DD")
+  // );
+  const from = ref(route.query.from ?? formatDate(new Date(), "YYYY-MM-DD"))
   const to = ref(route.query.to ?? formatDate(new Date(), "YYYY-MM-DD"));
 
   const fetchMore = () => {
@@ -48,10 +50,12 @@ export default function usePagination (fetcher, hasDateFilter = false) {
   };
 
   onMounted(() => {
-    if (hasDateFilter) setTimeout(() => {
+    let query = { ...route.query, stocked: onlyStocked.value ? 1 : 0, }
+    if (hasDateFilter) query = { ...query, from: from.value, to: to.value }
+    setTimeout(() => {
       router.replace({
         name: route.name,
-        query: { ...route.query, from: from.value, to: to.value }
+        query
       }).then(() => {
         fetcher(route.query).then((response) => {
           pagination.value = response.data.data;
@@ -60,12 +64,6 @@ export default function usePagination (fetcher, hasDateFilter = false) {
         });
       })
     }, 100)
-
-    else fetcher(route.query).then((response) => {
-      pagination.value = response.data.data;
-      current.value = response.data.data.current_page;
-      total.value = response.data.total
-    });
   })
 
   watch(current, () => {
@@ -80,6 +78,7 @@ export default function usePagination (fetcher, hasDateFilter = false) {
   watch(
     [search, onlyStocked, status],
     debounce(() => {
+
       router
         .replace({
           name: route.name,
@@ -88,7 +87,7 @@ export default function usePagination (fetcher, hasDateFilter = false) {
             search: search.value,
             page: undefined,
             stocked: onlyStocked.value ? 1 : 0,
-            status: status
+            status: status.value
           }),
         })
         .then(() => {
@@ -109,6 +108,6 @@ export default function usePagination (fetcher, hasDateFilter = false) {
     onlyStocked,
     findByDates,
     from,
-    to, total, status
+    to, total, status, item
   }
 }

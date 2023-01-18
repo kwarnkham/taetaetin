@@ -11,7 +11,7 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
+        <q-toolbar-title> သေးသေးတင် </q-toolbar-title>
 
         <div>
           <q-btn
@@ -24,6 +24,7 @@
                 name: 'manage-cart',
               })
             "
+            v-if="userStore.getUser"
           >
             <q-badge color="info" floating transparent rounded>
               {{
@@ -47,9 +48,11 @@ import { useQuasar } from "quasar";
 import LeftDrawer from "src/components/LeftDrawer.vue";
 import useUtil from "src/composables/util";
 import { useCartStore } from "src/stores/cart-store";
+import { useUserStore } from "src/stores/user-store";
 import { ref } from "vue";
 
 const { screen } = useQuasar();
+const userStore = useUserStore();
 const leftDrawerOpen = ref(screen.gt.sm);
 const { getTotal } = useUtil();
 const toggleLeftDrawer = () => {

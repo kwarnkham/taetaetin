@@ -10,13 +10,7 @@
         <q-item-section>
           <q-item-label>
             Name : {{ product.name }}
-            <q-badge align="top">{{ product.stock }}</q-badge>
-            <q-badge align="top" color="info" class="q-ml-sm">
-              {{
-                cartStore.getCart.products.find((e) => e.id == product.id)
-                  ?.quantity ?? 0
-              }}
-            </q-badge>
+            <q-badge align="top"> stock : {{ product.stock }}</q-badge>
           </q-item-label>
           <q-item-label caption>From : {{ product.item.name }}</q-item-label>
           <q-item-label>Price : {{ product.price }} MMK</q-item-label>
@@ -24,7 +18,10 @@
             Description : {{ product.item.description }}
           </q-item-label>
 
-          <div class="row justify-start q-gutter-x-sm q-mt-sm">
+          <div
+            class="row justify-start q-gutter-x-sm q-mt-sm"
+            v-if="userStore.getUser"
+          >
             <q-btn round icon="add" dense @click="showRestockDialog(product)" />
             <q-btn
               round
@@ -32,7 +29,14 @@
               color="positive"
               dense
               @click="showAddProductToCart(product)"
-            />
+            >
+              <q-badge color="primary" floating>
+                {{
+                  cartStore.getCart.products.find((e) => e.id == product.id)
+                    ?.quantity ?? 0
+                }}
+              </q-badge>
+            </q-btn>
           </div>
         </q-item-section>
       </q-item>
@@ -56,7 +60,14 @@ import { useQuasar } from "quasar";
 import RestockDialog from "src/components/dialogs/RestockDialog.vue";
 import usePagination from "src/composables/pagination";
 import { useCartStore } from "src/stores/cart-store";
+import { useUserStore } from "src/stores/user-store";
 
+const props = defineProps({
+  item_id: {
+    type: Number,
+  },
+});
+const userStore = useUserStore();
 const { api } = useUtil();
 const { dialog, notify } = useQuasar();
 const cartStore = useCartStore();

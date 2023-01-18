@@ -5,7 +5,7 @@
       <template v-for="link in links" :key="link.title">
         <LeftDrawerLink
           v-bind="link"
-          :class="{ hidden: getUser && link.title == 'Login' }"
+          :class="{ hidden: !getUser && link.requiresAuth }"
         />
       </template>
 
@@ -48,6 +48,7 @@ const links = [
     caption: "Manage Order",
     icon: "storefront",
     route: "order-menu",
+    requiresAuth: true,
   },
   {
     title: "Login",
@@ -60,12 +61,14 @@ const links = [
     caption: "All income and outcome",
     icon: "price_change",
     route: "financial-records",
+    requiresAuth: true,
   },
   {
     title: "Set Up",
     caption: "Payments, expense, etc...",
     icon: "topic",
     route: "set-up",
+    requiresAuth: true,
   },
 ];
 

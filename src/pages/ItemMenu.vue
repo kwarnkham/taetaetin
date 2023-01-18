@@ -9,8 +9,13 @@
       align="justify"
       narrow-indicator
     >
-      <q-tab name="create-item" label="Create Item" no-caps />
       <q-tab name="item-list" label="Item List" no-caps />
+      <q-tab
+        name="create-item"
+        label="Create Item"
+        no-caps
+        v-if="userStore.getUser"
+      />
     </q-tabs>
 
     <q-separator />
@@ -30,13 +35,14 @@
 <script setup>
 import CreateItem from "src/components/CreateItem.vue";
 import ItemList from "src/components/ItemList.vue";
+import { useUserStore } from "src/stores/user-store";
 import { ref, watch, onUpdated, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
+const userStore = useUserStore();
 const route = useRoute();
-const tab = ref(route.query.tab ?? "create-item");
+const tab = ref(route.query.tab ?? "item-list");
 const router = useRouter();
-
 watch(tab, () => {
   router.replace({
     name: route.name,
