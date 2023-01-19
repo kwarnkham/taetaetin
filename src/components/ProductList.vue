@@ -14,6 +14,10 @@
           </q-item-label>
           <q-item-label caption>From : {{ product.item.name }}</q-item-label>
           <q-item-label>Price : {{ product.price }} MMK</q-item-label>
+          <q-item-label caption v-if="userStore.getUser">
+            Purchase Price :
+            {{ product.latest_batch.purchase.price }} MMK</q-item-label
+          >
           <q-item-label>
             Description : {{ product.item.description }}
           </q-item-label>
