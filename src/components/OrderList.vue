@@ -86,6 +86,7 @@ import { useQuasar, date } from "quasar";
 
 const props = defineProps({
   hasDateFilter: { type: Boolean, default: false },
+  status: { required: false },
 });
 const { formatDate } = date;
 const { localStorage, screen } = useQuasar();
@@ -108,5 +109,8 @@ const fetchOrders = (params) => {
 };
 
 const { pagination, max, current, total, from, to, findByDates } =
-  usePagination(fetchOrders, props.hasDateFilter);
+  usePagination(fetchOrders, {
+    hasDateFilter: props.hasDateFilter,
+    status: props.status,
+  });
 </script>

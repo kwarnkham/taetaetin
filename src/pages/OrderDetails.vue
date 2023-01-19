@@ -10,6 +10,7 @@
       </div>
     </div>
     <div v-if="order.address">Address:{{ order.address }}</div>
+    <div v-if="order.note">Note:{{ order.note }}</div>
     <div class="row justify-between">
       <div class="row items-center">
         <q-icon name="calendar_month" size="sm" class="q-mr-sm" />
@@ -60,11 +61,20 @@
         <tr v-for="(product, key) in order.features" :key="product.id">
           <td class="text-left">{{ key + 1 }}</td>
           <td class="text-left">{{ product.name }}</td>
-          <td class="text-right">{{ product.pivot.price.toLocaleString() }}</td>
+          <td class="text-right">
+            {{
+              (
+                product.pivot.price - (product.pivot.discount ?? 0)
+              ).toLocaleString()
+            }}
+          </td>
           <td class="text-right">{{ product.pivot.quantity }}</td>
           <td class="text-right">
             {{
-              (product.pivot.price * product.pivot.quantity).toLocaleString()
+              (
+                (product.pivot.price - (product.pivot.discount ?? 0)) *
+                product.pivot.quantity
+              ).toLocaleString()
             }}
           </td>
         </tr>
@@ -72,12 +82,19 @@
           <td class="text-left">{{ key + 1 + order.features.length }}</td>
           <td class="text-left">{{ service.name }}</td>
           <td class="text-right">
-            {{ service.pivot.price.toLocaleString() }}
+            {{
+              (
+                service.pivot.price - (service.pivot.discount ?? 0)
+              ).toLocaleString()
+            }}
           </td>
           <td class="text-right">{{ service.pivot.quantity }}</td>
           <td class="text-right">
             {{
-              (service.pivot.price * service.pivot.quantity).toLocaleString()
+              (
+                (service.pivot.price - (service.pivot.discount ?? 0)) *
+                service.pivot.quantity
+              ).toLocaleString()
             }}
           </td>
         </tr>
@@ -145,7 +162,13 @@
       </tbody>
     </q-markup-table>
     <div class="q-mt-sm row justify-around">
-      <q-btn label="Pay" no-caps color="primary" @click="makePayment" />
+      <q-btn
+        label="Pay"
+        no-caps
+        color="primary"
+        @click="makePayment"
+        :disabled="[3, 4, 5].includes(order.status)"
+      />
       <q-btn
         label="Complete"
         no-caps
@@ -158,7 +181,7 @@
         no-caps
         color="warning"
         @click="cancelOrder"
-        :disabled="![1, 2, 3].includes(order.status)"
+        :disabled="[4, 5].includes(order.status)"
       />
     </div>
   </q-page>

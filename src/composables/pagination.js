@@ -5,7 +5,11 @@ import { debounce } from "quasar";
 import { date } from "quasar";
 const { formatDate } = date;
 
-export default function usePagination (fetcher, hasDateFilter = false) {
+export default function usePagination (fetcher, options = {
+  onlyStocked: false,
+  hasDateFilter: false,
+  status: false
+}) {
   const { pickBy } = useUtil();
   const route = useRoute();
   const router = useRouter();
@@ -17,8 +21,8 @@ export default function usePagination (fetcher, hasDateFilter = false) {
   );
   const total = ref(0)
   const current = ref(Number(route.query.page ?? 1) ?? 1);
-  const onlyStocked = ref(route.query.stocked == undefined ? true : !!route.query.stocked);
-  const status = ref(route.query.status ?? undefined)
+  const onlyStocked = ref(options.onlyStocked);
+  const status = ref(options.status)
 
   // const from = ref(
   //   route.query.from ??
@@ -50,9 +54,11 @@ export default function usePagination (fetcher, hasDateFilter = false) {
   };
 
   onMounted(() => {
-    let query = { ...route.query, stocked: onlyStocked.value ? 1 : 0, }
-    if (hasDateFilter) query = { ...query, from: from.value, to: to.value }
     setTimeout(() => {
+      let query = route.query
+      if (options?.hasDateFilter) query = { ...query, from: from.value, to: to.value }
+      if (options.status) query = { ...query, status: status.value }
+      if (options.onlyStocked) query = { ...query, stocked: onlyStocked.value ? 1 : undefined }
       router.replace({
         name: route.name,
         query
@@ -64,6 +70,7 @@ export default function usePagination (fetcher, hasDateFilter = false) {
         });
       })
     }, 100)
+
   })
 
   watch(current, () => {
@@ -86,7 +93,7 @@ export default function usePagination (fetcher, hasDateFilter = false) {
             ...route.query,
             search: search.value,
             page: undefined,
-            stocked: onlyStocked.value ? 1 : 0,
+            stocked: onlyStocked.value ? 1 : undefined,
             status: status.value
           }),
         })

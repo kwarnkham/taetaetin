@@ -6,13 +6,18 @@ const routes = [
     children: [
       {
         path: '',
-        component: () => import('pages/ItemMenu.vue'),
-        name: 'items'
+        component: () => import('pages/IndexPage.vue'),
+        name: 'index'
       },
       {
         path: 'login',
-        component: () => import('pages/IndexPage.vue'),
+        component: () => import('pages/LoginPage.vue'),
         name: 'login',
+      },
+      {
+        path: 'items',
+        component: () => import('pages/ItemMenu.vue'),
+        name: 'items',
       },
       {
         path: 'products',

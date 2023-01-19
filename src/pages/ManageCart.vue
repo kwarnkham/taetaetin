@@ -18,10 +18,26 @@
         >
           <td class="text-left">{{ key + 1 }}</td>
           <td class="text-left">{{ product.name }}</td>
-          <td class="text-right">{{ product.price.toLocaleString() }}</td>
+          <td class="text-right">
+            <span
+              @click="applyProductDiscount(product)"
+              :class="{
+                'text-white bg-black rounded-borders':
+                  product.discount && product.discount > 0,
+              }"
+              >{{
+                (product.price - (product.discount ?? 0)).toLocaleString()
+              }}</span
+            >
+          </td>
           <td class="text-right">{{ product.quantity }}</td>
           <td class="text-right">
-            {{ (product.price * product.quantity).toLocaleString() }}
+            {{
+              (
+                (product.price - (product.discount ?? 0)) *
+                product.quantity
+              ).toLocaleString()
+            }}
           </td>
           <td class="text-center q-gutter-x-sm">
             <q-btn round icon="add" @click="increaseCartQuantity(product)" />
@@ -37,12 +53,29 @@
           v-for="(service, key) in cartStore.getCart.services"
           :key="service.id"
         >
-          <td class="text-left">{{ key + 1 }}</td>
+          <td class="text-left">
+            {{ key + 1 + cartStore.getCart.products.length }}
+          </td>
           <td class="text-left">{{ service.name }}</td>
-          <td class="text-right">{{ service.price.toLocaleString() }}</td>
+          <td class="text-right">
+            <span
+              :class="{
+                'text-white bg-black rounded-borders':
+                  service.discount && service.discount > 0,
+              }"
+              @click="applyServiceDiscount(service)"
+            >
+              {{ (service.price - (service.discount ?? 0)).toLocaleString() }}
+            </span>
+          </td>
           <td class="text-right">{{ service.quantity }}</td>
           <td class="text-right">
-            {{ (service.price * service.quantity).toLocaleString() }}
+            {{
+              (
+                (service.price - (service.discount ?? 0)) *
+                service.quantity
+              ).toLocaleString()
+            }}
           </td>
           <td class="text-center q-gutter-x-sm">
             <q-btn
@@ -107,11 +140,11 @@
         <tr
           :class="{
             'text-negative':
-              getTotalAmount(cartStore.getCart.products, 'quantity', 'price') +
+              getTotalAmount(cartStore.getCart.products, 'price', 'quantity') +
                 getTotalAmount(
                   cartStore.getCart.services,
-                  'quantity',
-                  'price'
+                  'price',
+                  'quantity'
                 ) -
                 cartStore.getCart.discount <
               0,
@@ -125,13 +158,13 @@
               (
                 getTotalAmount(
                   cartStore.getCart.products,
-                  "quantity",
-                  "price"
+                  "price",
+                  "quantity"
                 ) +
                 getTotalAmount(
                   cartStore.getCart.services,
-                  "quantity",
-                  "price"
+                  "price",
+                  "quantity"
                 ) -
                 cartStore.getCart.discount
               ).toLocaleString()
@@ -156,7 +189,7 @@
         flat
         color="positive"
         @click="
-          $router.push({
+          $router.replace({
             name: 'checkout-cart',
           })
         "
@@ -203,6 +236,38 @@ const removeFromCart = (product) => {
   });
 };
 
+const applyProductDiscount = (product) => {
+  dialog({
+    prompt: {
+      model: product.discount > 0 ? product.discount : "",
+      type: "tel",
+      isValid: (val) => val <= product.price,
+    },
+    persistent: true,
+    cancel: true,
+    title: "Apply discount for " + product.name,
+  }).onOk((value) => {
+    product.discount = value;
+    cartStore.updateProduct(product);
+  });
+};
+
+const applyServiceDiscount = (service) => {
+  dialog({
+    prompt: {
+      model: service.discount > 0 ? service.discount : "",
+      type: "tel",
+      isValid: (val) => val <= service.price,
+    },
+    persistent: true,
+    cancel: true,
+    title: "Apply discount for " + service.name,
+  }).onOk((value) => {
+    service.discount = value;
+    cartStore.updateService(service);
+  });
+};
+
 const clearCart = () => {
   dialog({
     title: "Confirm",
@@ -220,7 +285,7 @@ const addDiscount = () => {
     persistent: true,
     cancel: true,
     prompt: {
-      model: cartStore.getCart.discount || "",
+      model: cartStore.getCart.discount > 0 ? cartStore.getCart.discount : "",
       type: "tel",
       isValid: (val) => val >= 0,
     },

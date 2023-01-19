@@ -17,10 +17,10 @@
 
     <q-tab-panels v-model="tab" animated class="col">
       <q-tab-panel name="purchase" id="purchase">
-        <PurchaseList />
+        <PurchaseList :status="1" has-date-filter />
       </q-tab-panel>
       <q-tab-panel name="order" id="order">
-        <OrderList hasDateFilter />
+        <OrderList has-date-filter :status="5" />
       </q-tab-panel>
     </q-tab-panels>
   </q-page>
@@ -41,7 +41,6 @@ watch(tab, () => {
     name: route.name,
     query: {
       tab: tab.value,
-      status: tab.value == "order" ? 5 : undefined,
     },
   });
 });

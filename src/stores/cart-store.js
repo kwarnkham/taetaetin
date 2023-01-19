@@ -57,6 +57,18 @@ export const useCartStore = defineStore('cart', {
       }
       LocalStorage.set('services', this.cart.services)
     },
+    updateProduct (product) {
+      product = JSON.parse(JSON.stringify(product))
+      const index = this.cart.products.findIndex(e => e.id == product.id);
+      this.cart.products[index] = product
+      LocalStorage.set('products', this.cart.products)
+    },
+    updateService (service) {
+      service = JSON.parse(JSON.stringify(service))
+      const index = this.cart.services.findIndex(e => e.id == service.id);
+      this.cart.services[index] = service
+      LocalStorage.set('services', this.cart.services)
+    },
     clear () {
       this.cart.products = []
       this.cart.discount = 0

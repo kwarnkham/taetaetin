@@ -16,7 +16,7 @@
 
     <q-tab-panels v-model="tab" animated class="col">
       <q-tab-panel name="product-list" id="product-list">
-        <ProductList />
+        <ProductList only-stocked />
       </q-tab-panel>
     </q-tab-panels>
   </q-page>

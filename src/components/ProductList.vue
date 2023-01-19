@@ -65,10 +65,16 @@ import RestockDialog from "src/components/dialogs/RestockDialog.vue";
 import usePagination from "src/composables/pagination";
 import { useCartStore } from "src/stores/cart-store";
 import { useUserStore } from "src/stores/user-store";
+import { onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 const props = defineProps({
   item_id: {
     type: Number,
+  },
+  onlyStocked: {
+    type: Boolean,
+    default: false,
   },
 });
 const userStore = useUserStore();
@@ -91,8 +97,10 @@ const fetchProducts = (params) => {
   });
 };
 
-const { pagination, max, search, current, onlyStocked } =
-  usePagination(fetchProducts);
+const { pagination, max, search, current, onlyStocked } = usePagination(
+  fetchProducts,
+  { onlyStocked: props.onlyStocked }
+);
 
 const showRestockDialog = (product) => {
   dialog({
@@ -137,4 +145,7 @@ const showAddProductToCart = (product) => {
     });
   });
 };
+
+const router = useRouter();
+const route = useRoute();
 </script>

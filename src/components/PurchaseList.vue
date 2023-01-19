@@ -72,6 +72,16 @@ import useUtil from "src/composables/util";
 import { useQuasar } from "quasar";
 import usePagination from "src/composables/pagination";
 
+const props = defineProps({
+  status: {
+    required: false,
+  },
+  hasDateFilter: {
+    type: Boolean,
+    default: false,
+  },
+});
+
 const { api } = useUtil();
 const { dialog, notify, screen } = useQuasar();
 const purchaseType = {
@@ -95,7 +105,10 @@ const fetchPurchases = (params = {}) => {
 };
 
 const { pagination, max, search, current, findByDates, from, to, total } =
-  usePagination(fetchPurchases, true);
+  usePagination(fetchPurchases, {
+    hasDateFilter: props.hasDateFilter,
+    status: props.status,
+  });
 
 const cancelPurchase = (purchase) => {
   dialog({

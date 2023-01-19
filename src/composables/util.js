@@ -56,8 +56,8 @@ export default function useUtil () {
     getTotal (array, key) {
       return array.reduce((carry, el) => el[key] + carry, 0)
     },
-    getTotalAmount (array, key, key2) {
-      return array.reduce((carry, el) => el[key] * el[key2] + carry, 0)
+    getTotalAmount (array, price, quantity) {
+      return array.reduce((carry, el) => (el[price] - (el.discount ?? 0)) * el[quantity] + carry, 0)
     },
   }
 }
