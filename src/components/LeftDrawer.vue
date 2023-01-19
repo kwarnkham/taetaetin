@@ -51,12 +51,6 @@ const links = [
     requiresAuth: true,
   },
   {
-    title: "Login",
-    caption: undefined,
-    icon: "login",
-    route: "index",
-  },
-  {
     title: "Financial Records",
     caption: "All income and outcome",
     icon: "price_change",

@@ -10,7 +10,16 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
-
+        <q-separator vertical spaced />
+        <q-btn
+          flat
+          dense
+          round
+          icon="keyboard_arrow_left"
+          aria-label="Back"
+          @click="$router.go(-1)"
+          v-if="$route.name != 'items'"
+        />
         <q-toolbar-title> သေးသေးတင် </q-toolbar-title>
 
         <div>

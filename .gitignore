@@ -8,6 +8,9 @@ node_modules
 .env
 .env.*
 
+#added
+*.zip
+
 # Cordova related directories and files
 /src-cordova/node_modules
 /src-cordova/platforms

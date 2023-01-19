@@ -1,14 +1,19 @@
 {
   "name": "taetaetin",
   "version": "0.0.1",
-  "description": "A Quasar Project",
-  "productName": "Quasar App",
+  "description": "လက်မှု နှင့် လက်ဆောင်",
+  "productName": "သေးသေးတင်",
   "author": "KWARN KHAM <kwarnkham.moon@gmail.com>",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue ./",
     "format": "prettier --write \"**/*.{js,vue,scss,html,md,json}\" --ignore-path .gitignore",
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo \"No test specified\" && exit 0",
+    "build": "npm run prepare-build && quasar build &&cp .env.local .env && npm run export",
+    "zip-macos": "ditto -c -k --sequesterRsrc --keepParent dist/spa spa.zip",
+    "zip-windows": "cd dist && zip -r ../spa.zip ./spa && cd ../",
+    "prepare-build": "quasar clean && cp .env.prod .env",
+    "export": "rm -f spa.zip && if [[ $OSTYPE == msys ]]; then npm run zip-windows; else npm run zip-macos; fi"
   },
   "dependencies": {
     "@quasar/cli": "^1.4.0",
