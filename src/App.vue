@@ -21,6 +21,26 @@ onMounted(() => {
     })
       .then((response) => {
         setUser(response.data.user);
+        api({
+          method: "GET",
+          url: "payment-types",
+        }).then((response) => {
+          localStorage.set("paymentTypes", response.data.payment_types);
+        });
+
+        api({
+          method: "GET",
+          url: "orders/status",
+        }).then((response) => {
+          localStorage.set("orderStatus", response.data.status);
+        });
+
+        api({
+          method: "GET",
+          url: "payments",
+        }).then((response) => {
+          localStorage.set("payments", response.data.data.data);
+        });
       })
       .catch((error) => {
         if (error.response.status == 401) {
@@ -28,27 +48,6 @@ onMounted(() => {
           router.replace({ name: "index" });
         }
       });
-
-    api({
-      method: "GET",
-      url: "payment-types",
-    }).then((response) => {
-      localStorage.set("paymentTypes", response.data.payment_types);
-    });
-
-    api({
-      method: "GET",
-      url: "orders/status",
-    }).then((response) => {
-      localStorage.set("orderStatus", response.data.status);
-    });
-
-    api({
-      method: "GET",
-      url: "payments",
-    }).then((response) => {
-      localStorage.set("payments", response.data.data.data);
-    });
   }
 });
 </script>

@@ -1,6 +1,12 @@
 <template>
   <q-page padding>
-    <q-markup-table separator="cell" flat bordered wrap-cells>
+    <q-markup-table
+      separator="cell"
+      flat
+      bordered
+      wrap-cells
+      :dense="screen.lt.sm"
+    >
       <thead>
         <tr>
           <th class="text-left">#</th>
@@ -8,7 +14,7 @@
           <th class="text-right">Price</th>
           <th class="text-right">Qty</th>
           <th class="text-right">Amount</th>
-          <th>Action</th>
+          <th v-if="screen.gt.xs">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -30,7 +36,11 @@
               }}</span
             >
           </td>
-          <td class="text-right">{{ product.quantity }}</td>
+          <td class="text-right">
+            <span @click="editProductQuantity(product)">{{
+              product.quantity
+            }}</span>
+          </td>
           <td class="text-right">
             {{
               (
@@ -39,7 +49,7 @@
               ).toLocaleString()
             }}
           </td>
-          <td class="text-center q-gutter-x-sm">
+          <td class="text-center q-gutter-x-sm" v-if="screen.gt.xs">
             <q-btn round icon="add" @click="increaseCartQuantity(product)" />
             <q-btn round icon="remove" @click="decreaseCartQuantity(product)" />
             <q-btn
@@ -68,7 +78,11 @@
               {{ (service.price - (service.discount ?? 0)).toLocaleString() }}
             </span>
           </td>
-          <td class="text-right">{{ service.quantity }}</td>
+          <td class="text-right">
+            <span @click="editServiceQuantity(service)">
+              {{ service.quantity }}
+            </span>
+          </td>
           <td class="text-right">
             {{
               (
@@ -77,7 +91,7 @@
               ).toLocaleString()
             }}
           </td>
-          <td class="text-center q-gutter-x-sm">
+          <td class="text-center q-gutter-x-sm" v-if="screen.gt.xs">
             <q-btn
               round
               icon="add"
@@ -118,15 +132,17 @@
               ).toLocaleString()
             }}
           </td>
-          <td class="text-center">Action</td>
+          <td class="text-center" v-if="screen.gt.xs">Action</td>
         </tr>
         <tr>
           <td colspan="3"></td>
-          <td class="text-right">Discount</td>
+          <td class="text-right" :class="{ 'font-05': true }">Discount</td>
           <td class="text-right">
-            {{ cartStore.getCart.discount.toLocaleString() }}
+            <span @click="addDiscount">{{
+              cartStore.getCart.discount.toLocaleString()
+            }}</span>
           </td>
-          <td class="text-center">
+          <td class="text-center" v-if="screen.gt.xs">
             <q-btn
               label="Add Discount"
               dense
@@ -150,8 +166,19 @@
               0,
           }"
         >
-          <td colspan="3"></td>
-          <td class="text-right">Amount</td>
+          <td :colspan="screen.lt.sm ? 2 : 3"></td>
+          <td class="text-center" v-if="screen.lt.sm">
+            <q-btn
+              label="Clear"
+              flat
+              no-caps
+              color="accent"
+              @click="clearCart"
+            />
+          </td>
+          <td class="text-right" :class="{ 'font-05': screen.lt.sm }">
+            Amount
+          </td>
 
           <td class="text-right">
             {{
@@ -170,7 +197,7 @@
               ).toLocaleString()
             }}
           </td>
-          <td class="text-center">
+          <td v-if="screen.gt.xs" class="text-center">
             <q-btn
               label="Clear"
               flat
@@ -212,7 +239,7 @@ import ManageServiceForCart from "components/ManageServiceForCart.vue";
 import { ref } from "vue";
 
 const cartStore = useCartStore();
-const { notify, dialog } = useQuasar();
+const { notify, dialog, screen } = useQuasar();
 const { getTotalAmount, getTotal } = useUtil();
 const serviceShowed = ref(false);
 
@@ -309,10 +336,43 @@ const decreaseCartQuantity = (product) => {
 const addServiceToCart = (payload) => {
   cartStore.addService(payload);
 };
-</script>
 
-<style lang="scss" scoped>
-tr:first-child {
-  width: 2em;
-}
-</style>
+const editProductQuantity = (product) => {
+  dialog({
+    title: `Edit ${product.name} quantity`,
+    message: `Remaining stock ${product.stock}`,
+    persistent: true,
+    cancel: true,
+    prompt: {
+      model: product.quantity,
+      type: "tel",
+      isValid: (val) => val <= product.stock,
+    },
+  }).onOk((val) => {
+    if (val <= 0) removeFromCart(product);
+    else {
+      product.quantity = Number(val);
+      cartStore.updateProduct(product);
+    }
+  });
+};
+
+const editServiceQuantity = (service) => {
+  dialog({
+    title: `Edit ${service.name} quantity`,
+    persistent: true,
+    cancel: true,
+    prompt: {
+      model: service.quantity,
+      type: "tel",
+    },
+  }).onOk((val) => {
+    if (val <= 0)
+      cartStore.reduceService({ service, quantity: service.quantity });
+    else {
+      service.quantity = Number(val);
+      cartStore.updateService(service);
+    }
+  });
+};
+</script>
