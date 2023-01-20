@@ -136,7 +136,7 @@
         </tr>
         <tr>
           <td colspan="3"></td>
-          <td class="text-right" :class="{ 'font-05': true }">Discount</td>
+          <td class="text-right" :class="{ 'font-05': screen.lt.sm }">Discount</td>
           <td class="text-right">
             <span @click="addDiscount">{{
               cartStore.getCart.discount.toLocaleString()
