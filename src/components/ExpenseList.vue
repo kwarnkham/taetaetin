@@ -47,10 +47,13 @@ onBeforeUnmount(() => {
 });
 const fetchExpenses = () => {
   return new Promise((resolve, reject) => {
-    api({
-      method: "GET",
-      url: "expenses",
-    })
+    api(
+      {
+        method: "GET",
+        url: "expenses",
+      },
+      false
+    )
       .then((response) => {
         resolve(response);
       })

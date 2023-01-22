@@ -94,11 +94,14 @@ const { api } = useUtil();
 const orderStatus = localStorage.getItem("orderStatus");
 const fetchOrders = (params) => {
   return new Promise((resolve, reject) => {
-    api({
-      method: "GET",
-      url: "orders",
-      params: params,
-    })
+    api(
+      {
+        method: "GET",
+        url: "orders",
+        params: params,
+      },
+      false
+    )
       .then((response) => {
         resolve(response);
       })

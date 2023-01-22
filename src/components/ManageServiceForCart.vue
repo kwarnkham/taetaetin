@@ -31,11 +31,14 @@ const { dialog } = useQuasar();
 
 const featchServices = (params) => {
   return new Promise((resolve, reject) => {
-    api({
-      method: "GET",
-      url: "services",
-      params,
-    })
+    api(
+      {
+        method: "GET",
+        url: "services",
+        params,
+      },
+      false
+    )
       .then((response) => {
         resolve(response);
       })

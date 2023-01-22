@@ -32,8 +32,9 @@ export default function useUtil () {
       });
       return formData;
     },
-    api (options) {
-      loading.show()
+    api (options, showLoading = true) {
+      if (showLoading)
+        loading.show()
       return new Promise((resolve, reject) => {
         axios(options).then(response => {
           resolve(response)
@@ -49,7 +50,8 @@ export default function useUtil () {
 
           reject(error)
         }).finally(() => {
-          loading.hide()
+          if (showLoading)
+            loading.hide()
         })
       })
     },

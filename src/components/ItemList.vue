@@ -82,11 +82,14 @@ const userStore = useUserStore();
 
 const fetchItems = (params) => {
   return new Promise((resolve, reject) => {
-    api({
-      method: "GET",
-      url: "items",
-      params: params,
-    })
+    api(
+      {
+        method: "GET",
+        url: "items",
+        params: params,
+      },
+      false
+    )
       .then((response) => {
         resolve(response);
       })

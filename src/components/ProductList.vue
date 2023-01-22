@@ -83,11 +83,14 @@ const { dialog, notify } = useQuasar();
 const cartStore = useCartStore();
 const fetchProducts = (params) => {
   return new Promise((resolve, reject) => {
-    api({
-      method: "GET",
-      url: "features",
-      params: params,
-    })
+    api(
+      {
+        method: "GET",
+        url: "features",
+        params: params,
+      },
+      false
+    )
       .then((response) => {
         resolve(response);
       })
