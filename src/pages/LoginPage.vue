@@ -61,6 +61,27 @@ const submit = () => {
         "Bearer " + response.data.token;
       setUser(response.data.user);
       formData.value.password = "";
+
+      api({
+        method: "GET",
+        url: "payment-types",
+      }).then((response) => {
+        localStorage.set("paymentTypes", response.data.payment_types);
+      });
+
+      api({
+        method: "GET",
+        url: "orders/status",
+      }).then((response) => {
+        localStorage.set("orderStatus", response.data.status);
+      });
+
+      api({
+        method: "GET",
+        url: "payments",
+      }).then((response) => {
+        localStorage.set("payments", response.data.data.data);
+      });
     })
     .catch((e) => {
       console.log(e);

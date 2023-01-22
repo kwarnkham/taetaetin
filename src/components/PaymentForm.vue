@@ -56,7 +56,7 @@ const paymentTypes = localStorage.getItem("paymentTypes");
 const formData = ref({
   number: props.payment.number,
   payment_type_id: props.update
-    ? props.payment.payment_type.id
+    ? props.payment.payment_type?.id
     : paymentTypes[0]?.id,
   account_name: props.payment.account_name,
   qr: null,
