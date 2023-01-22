@@ -2,7 +2,7 @@
   <div class="full-height column">
     <div v-if="total">Total: {{ total.toLocaleString() }} MMK</div>
     <div>
-      <q-input v-model="search" label="Search" />
+      <q-input v-model.trim="search" label="Search" />
     </div>
     <div class="row justify-between items-center">
       <q-input v-model="from" type="date" :class="{ 'col-6': screen.lt.sm }">

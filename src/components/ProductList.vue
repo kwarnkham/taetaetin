@@ -1,7 +1,7 @@
 <template>
   <div class="full-height column">
     <div class="row justify-between">
-      <q-input v-model="search" label="Search" class="col" />
+      <q-input v-model.trim="search" label="Search" class="col" />
       <q-checkbox left-label v-model="onlyStocked" label="Only stocked" />
     </div>
 

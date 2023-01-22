@@ -5,7 +5,7 @@
       label="Service"
       dense
       outlined
-      v-model="search"
+      v-model.trim="search"
     />
     <div class="row wrap justify-around q-mt-sm">
       <q-btn

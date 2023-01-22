@@ -1,7 +1,7 @@
 <template>
   <div class="full-height column">
     <div>
-      <q-input v-model="search" label="Search">
+      <q-input v-model.trim="search" label="Search">
         <template v-slot:append>
           <q-icon name="search" />
         </template>
