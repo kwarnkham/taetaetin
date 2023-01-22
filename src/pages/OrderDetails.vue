@@ -238,7 +238,7 @@ const cancelOrder = () => {
     }).then((response) => {
       order.value = response.data.order;
       notify({
-        message: "Order is completed",
+        message: "Order is canceled",
         type: "positive",
       });
     });
