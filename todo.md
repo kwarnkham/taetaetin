@@ -6,7 +6,7 @@ receipt printing
 last purchase price and sale price of feature in feature form
 
 if zero show foc in order detail
-edit sale price
+
 batct quantity detail
 sale latest purchse non cancel
 regisration first

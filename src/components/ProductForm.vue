@@ -36,6 +36,7 @@
     />
     <q-input v-model="formData.note" label="Note" dense />
     <FileInput
+      v-if="!update"
       v-model="formData.picture"
       icon="image"
       label="Picture to support product purchase"
@@ -78,7 +79,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["productUpdated"]);
+const emit = defineEmits(["productSubmitted"]);
 
 const formData = ref({
   name: props.product.name,
@@ -93,16 +94,17 @@ const formData = ref({
 
 const submit = () => {
   const url = props.update ? "features/" + props.product.id : "features";
+  if (props.update) formData.value._method = "PUT";
   api({
-    method: props.update ? "PUT" : "POST",
+    method: "POST",
     url,
-    data: buildForm(pickBy(formData.value)),
+    data: buildForm(props.update ? formData.value : pickBy(formData.value)),
     headers: {
       "Content-Type": "multipart/form-data",
     },
   })
     .then((response) => {
-      emit("productUpdated", response.data.feature);
+      emit("productSubmitted", response.data.feature);
       notify({
         message: "Success",
         type: "positive",

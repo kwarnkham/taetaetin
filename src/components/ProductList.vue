@@ -29,6 +29,12 @@
             <q-btn round icon="add" dense @click="showRestockDialog(product)" />
             <q-btn
               round
+              icon="edit"
+              dense
+              @click="showEditProductForm(product)"
+            />
+            <q-btn
+              round
               icon="shopping_cart"
               color="positive"
               dense
@@ -65,8 +71,8 @@ import RestockDialog from "src/components/dialogs/RestockDialog.vue";
 import usePagination from "src/composables/pagination";
 import { useCartStore } from "src/stores/cart-store";
 import { useUserStore } from "src/stores/user-store";
-import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import ProductFormDialog from "./dialogs/ProductFormDialog.vue";
 
 const props = defineProps({
   item_id: {
@@ -111,10 +117,32 @@ const showRestockDialog = (product) => {
     componentProps: {
       product,
     },
-  }).onOk((feature) => {
-    const index = pagination.value.data.findIndex((e) => e.id == feature.id);
-    if (index >= 0) pagination.value.data.splice(index, 1, feature);
+  }).onOk((updatedProduct) => {
+    updateProductList(updatedProduct);
   });
+};
+
+const showEditProductForm = (product) => {
+  dialog({
+    title: "Edit product " + product.name,
+    component: ProductFormDialog,
+    componentProps: {
+      update: true,
+      item_id: product.item_id,
+      product,
+    },
+    cancel: true,
+    persistent: true,
+  }).onOk((updatedProduct) => {
+    updateProductList(updatedProduct);
+  });
+};
+
+const updateProductList = (updatedProduct) => {
+  const index = pagination.value.data.findIndex(
+    (e) => e.id == updatedProduct.id
+  );
+  if (index >= 0) pagination.value.data.splice(index, 1, updatedProduct);
 };
 
 const showAddProductToCart = (product) => {

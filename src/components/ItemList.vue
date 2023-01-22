@@ -70,9 +70,9 @@
 <script setup>
 import useUtil from "src/composables/util";
 import { useQuasar } from "quasar";
-import EditItemDialog from "./dialogs/EditItemDialog.vue";
-import ItemDetailDialog from "./dialogs/ItemDetailDialog.vue";
-import CreateProductDialog from "./dialogs/CreateProductDialog.vue";
+import EditItemDialog from "src/components/dialogs/EditItemDialog.vue";
+import ItemDetailDialog from "src/components/dialogs/ItemDetailDialog.vue";
+import ProductFormDialog from "src/components/dialogs/ProductFormDialog.vue";
 import usePagination from "src/composables/pagination";
 import { useUserStore } from "src/stores/user-store";
 
@@ -103,9 +103,9 @@ const { pagination, max, search, current } = usePagination(fetchItems);
 
 const showCreateProductDialog = (item) => {
   dialog({
-    component: CreateProductDialog,
+    component: ProductFormDialog,
     componentProps: {
-      item: item,
+      item_id: item.id,
     },
   });
 };
