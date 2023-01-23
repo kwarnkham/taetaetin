@@ -104,7 +104,7 @@ export default function usePagination (fetcher, options = {
             fetchMore();
           }
         });
-    }, 500)
+    }, 1000)
   );
 
   return {

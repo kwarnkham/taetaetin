@@ -1,5 +1,23 @@
 <template>
   <q-page padding>
+    <div class="q-mb-xs">
+      <q-input label="Search..." outlined v-model.trim="search" />
+      <div class="row justify-around no-wrap items-center">
+        <q-card
+          class="cursor-pointer"
+          v-ripple
+          v-for="product in products"
+          :key="product.id"
+          @click="cartStore.addProduct({ product, quantity: 1 })"
+        >
+          <q-card-section>
+            <div>{{ product.name }}</div>
+            <div>{{ product.item.name }}</div>
+            <div>{{ product.price }}</div>
+          </q-card-section>
+        </q-card>
+      </div>
+    </div>
     <q-markup-table
       separator="cell"
       flat
@@ -136,7 +154,9 @@
         </tr>
         <tr>
           <td colspan="3"></td>
-          <td class="text-right" :class="{ 'font-05': screen.lt.sm }">Discount</td>
+          <td class="text-right" :class="{ 'font-05': screen.lt.sm }">
+            Discount
+          </td>
           <td class="text-right">
             <span @click="addDiscount">{{
               cartStore.getCart.discount.toLocaleString()
@@ -232,16 +252,39 @@
 </template>
 
 <script setup>
-import { useQuasar } from "quasar";
+import { debounce, useQuasar } from "quasar";
 import { useCartStore } from "src/stores/cart-store";
 import useUtil from "src/composables/util";
 import ManageServiceForCart from "components/ManageServiceForCart.vue";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 const cartStore = useCartStore();
 const { notify, dialog, screen } = useQuasar();
-const { getTotalAmount, getTotal } = useUtil();
+const { getTotalAmount, getTotal, api } = useUtil();
 const serviceShowed = ref(false);
+const search = ref("");
+const products = ref([]);
+
+watch(
+  search,
+  debounce(() => {
+    if (!search.value) {
+      products.value = [];
+      return;
+    }
+    api({
+      url: "features",
+      method: "GET",
+      params: {
+        search: search.value,
+        limit: 5,
+        stocked: 1,
+      },
+    }).then((response) => {
+      products.value = response.data.data;
+    });
+  }, 1000)
+);
 
 const increaseCartQuantity = (product) => {
   if (product.stock > product.quantity)
