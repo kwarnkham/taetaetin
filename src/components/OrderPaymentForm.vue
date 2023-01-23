@@ -60,7 +60,9 @@ const emit = defineEmits(["submitted"]);
 const { api, buildForm, pickBy } = useUtil();
 const { localStorage } = useQuasar();
 const payments = localStorage.getItem("payments") ?? [];
-const selectedPayment = ref(payments[0]);
+const selectedPayment = ref(
+  payments.find((e) => e.payment_type.id == 1) ?? payments[0]
+);
 const remaining = computed(
   () =>
     props.order.amount -
