@@ -13,4 +13,3 @@ order payment type cash first
 edit customer info on order
 
 color the order status
-use latest_purchase

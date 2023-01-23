@@ -5,7 +5,7 @@
     <div>Description: {{ product.item.description }}</div>
     <div>Price : {{ product.price }}</div>
     <div v-if="userStore.getUser">
-      Purchase price: {{ product.latest_batch.purchase.price }}
+      Purchase price: {{ product.latest_purchase.price }}
     </div>
     <div class="row items-center">
       <div>Stock : {{ product.stock }}</div>
