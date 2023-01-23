@@ -9,13 +9,25 @@
       </div>
       <div>
         <div class="text-center">
-          Total {{ batches.reduce((carry, e) => e.stock + carry, 0) }}
+          Total {{ product.batches.reduce((carry, e) => e.stock + carry, 0) }}
         </div>
-        <q-card v-for="batch in batches" :key="batch.id">
+        <q-card v-for="batch in product.batches" :key="batch.id">
           <q-card-section>
-            <div>Stock:{{ batch.stock }}</div>
+            <div>
+              Added on : {{ new Date(batch.created_at).toLocaleString() }}
+            </div>
+            <div>Stock : {{ batch.stock }}</div>
             <div v-if="batch.expired_on">
               Expire date:{{ batch.expired_on }}
+            </div>
+            <div class="text-right">
+              <q-btn
+                icon="remove"
+                flat
+                @click="editStock(batch, 1)"
+                :disabled="batch.stock < 1"
+              />
+              <q-btn icon="add" flat @click="editStock(batch, 2)" />
             </div>
           </q-card-section>
         </q-card>
@@ -25,17 +37,50 @@
 </template>
 
 <script setup>
-import { useDialogPluginComponent } from "quasar";
+import { useDialogPluginComponent, useQuasar } from "quasar";
+import useUtil from "src/composables/util";
 
+const { dialog } = useQuasar();
 const props = defineProps({
-  batches: {
-    type: Array,
+  product: {
+    type: Object,
     required: true,
   },
 });
+
+const { api } = useUtil();
 
 defineEmits([...useDialogPluginComponent.emits]);
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
+
+const editStock = (batch, type) => {
+  dialog({
+    title: `${type == 1 ? "Remove" : "Add"} the stock of product ${
+      props.product.name
+    }`,
+    prompt: {
+      model: "",
+      type: "tel",
+      isValid: (val) => {
+        if (type == 1) return val <= props.product.stock && val != "";
+        else return true;
+      },
+    },
+    persistent: true,
+    cancel: true,
+  }).onOk((value) => {
+    api({
+      method: "POST",
+      url: `batches/${batch.id}/correct`,
+      data: {
+        stock: value,
+        type: type, //1 reduce , 2 addd,
+      },
+    }).then((response) => {
+      onDialogOK(response.data.feature);
+    });
+  });
+};
 </script>

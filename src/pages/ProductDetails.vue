@@ -37,8 +37,11 @@ const showStockDetails = () => {
   dialog({
     component: StockDetailsDialog,
     componentProps: {
-      batches: product.value.batches,
+      product: product.value,
     },
+  }).onOk((updatedProduct) => {
+    product.value = updatedProduct;
+    showStockDetails();
   });
 };
 onMounted(() => {
