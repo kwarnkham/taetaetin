@@ -22,31 +22,48 @@
             Description : {{ product.item.description }}
           </q-item-label>
 
-          <div
-            class="row justify-start q-gutter-x-sm q-mt-sm"
-            v-if="userStore.getUser"
-          >
-            <q-btn round icon="add" dense @click="showRestockDialog(product)" />
+          <div class="row justify-start q-gutter-x-sm q-mt-sm">
+            <template v-if="userStore.getUser">
+              <q-btn
+                round
+                icon="add"
+                dense
+                @click="showRestockDialog(product)"
+              />
+              <q-btn
+                round
+                icon="edit"
+                dense
+                @click="showEditProductForm(product)"
+              />
+              <q-btn
+                round
+                icon="shopping_cart"
+                color="positive"
+                dense
+                @click="showAddProductToCart(product)"
+              >
+                <q-badge color="primary" floating>
+                  {{
+                    cartStore.getCart.products.find((e) => e.id == product.id)
+                      ?.quantity ?? 0
+                  }}
+                </q-badge>
+              </q-btn>
+            </template>
             <q-btn
               round
-              icon="edit"
+              icon="open_in_new"
               dense
-              @click="showEditProductForm(product)"
+              @click="
+                $router.push({
+                  name: 'productDetails',
+                  params: {
+                    product: product.id,
+                  },
+                })
+              "
             />
-            <q-btn
-              round
-              icon="shopping_cart"
-              color="positive"
-              dense
-              @click="showAddProductToCart(product)"
-            >
-              <q-badge color="primary" floating>
-                {{
-                  cartStore.getCart.products.find((e) => e.id == product.id)
-                    ?.quantity ?? 0
-                }}
-              </q-badge>
-            </q-btn>
           </div>
         </q-item-section>
       </q-item>
