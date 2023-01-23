@@ -225,7 +225,7 @@ const showScreenshot = (payment) => {
   dialog({
     title: "Payment screenshot",
     html: true,
-    message: `<img src='${payment.pivot.picture}'>`,
+    message: `<img src='${payment.pivot.picture}' style='width:100%'>`,
   });
 };
 
