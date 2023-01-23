@@ -11,5 +11,3 @@ on new payment added status is wrong
 order payment screenshot too big
 order payment type cash first
 edit customer info on order
-
-color the order status

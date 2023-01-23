@@ -39,9 +39,19 @@
             {{ (order.amount - order.discount).toLocaleString() }}
             MMK
           </q-item-label>
-          <q-item-label>
+          <q-item-label class="bg-grey-4 rounded-borders">
             Order is
-            <span class="text-overline">{{ orderStatus[order.status] }}</span>
+            <span
+              class="text-overline"
+              :class="{
+                'text-white': order.status == 1,
+                'text-deep-orange': order.status == 2,
+                'text-primary': order.status == 3,
+                'text-negative': order.status == 4,
+                'text-positive': order.status == 5,
+              }"
+              >{{ orderStatus[order.status] }}</span
+            >
             at
             <span class="text-weight-bold">
               {{ formatDate(order.updated_at, "hh:mm:ss A DD/MM/YYYY") }}
