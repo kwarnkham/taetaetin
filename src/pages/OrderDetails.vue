@@ -64,7 +64,7 @@
           <td class="text-right">
             {{
               (
-                product.pivot.price - (product.pivot.discount ?? 0)
+                product.pivot.price - (product.pivot.discount ?? 0) || "FOC"
               ).toLocaleString()
             }}
           </td>
@@ -73,7 +73,7 @@
             {{
               (
                 (product.pivot.price - (product.pivot.discount ?? 0)) *
-                product.pivot.quantity
+                  product.pivot.quantity || "FOC"
               ).toLocaleString()
             }}
           </td>
@@ -110,13 +110,17 @@
             {{
               (
                 order.features.reduce(
-                  (carry, e) => carry + e.pivot.price * e.pivot.quantity,
+                  (carry, e) =>
+                    carry + e.pivot.price - e.pivot.discount * e.pivot.quantity,
                   0
                 ) +
-                order.services.reduce(
-                  (carry, e) => carry + e.pivot.price * e.pivot.quantity,
-                  0
-                )
+                  order.services.reduce(
+                    (carry, e) =>
+                      carry +
+                      e.pivot.price -
+                      e.pivot.discount * e.pivot.quantity,
+                    0
+                  ) || "FOC"
               ).toLocaleString()
             }}
           </td>
@@ -132,7 +136,7 @@
           <td colspan="3"></td>
           <td class="text-right">Amount</td>
           <td class="text-right">
-            {{ (order.amount - order.discount).toLocaleString() }}
+            {{ (order.amount - order.discount || "FOC").toLocaleString() }}
           </td>
         </tr>
         <tr>
