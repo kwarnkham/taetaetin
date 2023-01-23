@@ -5,6 +5,5 @@ receipt printing
 
 last purchase price and sale price of feature in feature form
 
-on new payment added status is wrong
 order payment type cash first
 edit customer info on order
