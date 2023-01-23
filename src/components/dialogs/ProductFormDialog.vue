@@ -15,7 +15,12 @@
         :item_id="item_id"
         @product-submitted="onDialogOK"
       />
-      <ProductForm v-else :item_id="item_id" @product-submitted="onDialogOK" />
+      <ProductForm
+        v-else
+        :item_id="item_id"
+        @product-submitted="onDialogOK"
+        :product="product"
+      />
     </q-card>
   </q-dialog>
 </template>

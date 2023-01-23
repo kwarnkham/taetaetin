@@ -106,6 +106,10 @@ const showCreateProductDialog = (item) => {
     component: ProductFormDialog,
     componentProps: {
       item_id: item.id,
+      product: {
+        price: item.latest_feature.price,
+        purchase_price: item.latest_feature.latest_purchase.price,
+      },
     },
   });
 };
