@@ -111,14 +111,14 @@
               (
                 order.features.reduce(
                   (carry, e) =>
-                    carry + e.pivot.price - e.pivot.discount * e.pivot.quantity,
+                    carry +
+                    (e.pivot.price - e.pivot.discount) * e.pivot.quantity,
                   0
                 ) +
                   order.services.reduce(
                     (carry, e) =>
                       carry +
-                      e.pivot.price -
-                      e.pivot.discount * e.pivot.quantity,
+                      (e.pivot.price - e.pivot.discount) * e.pivot.quantity,
                     0
                   ) || "FOC"
               ).toLocaleString()
