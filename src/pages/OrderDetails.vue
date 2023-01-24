@@ -22,6 +22,15 @@
         Status : {{ orderStatus[order.status] }}
       </div>
     </div>
+    <div class="text-center">
+      <q-btn
+        label="Update customer info"
+        no-caps
+        flat
+        icon="edit"
+        @click="showEditCustomerDialog"
+      />
+    </div>
     <q-separator spaced />
     <div v-if="order.payments.length">
       <div class="text-center text-subtitle1 text-weight-bold">
@@ -224,6 +233,7 @@ import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { date, useQuasar } from "quasar";
 import OrderPaymentDialog from "src/components/OrderPaymentDialog.vue";
+import EditCustomerDialog from "src/components/dialogs/EditCustomerDialog.vue";
 
 const { formatDate } = date;
 const { localStorage, dialog, notify } = useQuasar();
@@ -245,6 +255,20 @@ const makePayment = () => {
       message: "Success",
       type: "positive",
     });
+  });
+};
+
+const showEditCustomerDialog = () => {
+  dialog({
+    component: EditCustomerDialog,
+    componentProps: {
+      order: order.value,
+    },
+  }).onOk((updatedOrder) => {
+    order.value.customer = updatedOrder.customer;
+    order.value.phone = updatedOrder.phone;
+    order.value.address = updatedOrder.address;
+    order.value.note = updatedOrder.note;
   });
 };
 
