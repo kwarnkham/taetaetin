@@ -2,18 +2,24 @@
   <q-page padding>
     <div class="q-mb-xs">
       <q-input label="Search..." outlined v-model.trim="search" />
+      <q-toggle
+        :model-value="isPreorder"
+        label="Pre-order"
+        left-label
+        @click="changeOrder"
+      />
       <div class="row justify-around no-wrap items-center">
         <q-card
           class="cursor-pointer"
           v-ripple
           v-for="product in products"
           :key="product.id"
-          @click="cartStore.addProduct({ product, quantity: 1 })"
+          @click="addProdcutToCart(product)"
         >
           <q-card-section>
             <div>{{ product.name }}</div>
-            <div>{{ product.item.name }}</div>
-            <div>{{ product.price }}</div>
+            <div>{{ product.item?.name }}</div>
+            <div>{{ product?.price }}</div>
           </q-card-section>
         </q-card>
       </div>
@@ -158,7 +164,7 @@
             Discount
           </td>
           <td class="text-right">
-            <span @click="addDiscount">{{
+            <span @click="addOrderDiscount">{{
               cartStore.getCart.discount.toLocaleString()
             }}</span>
           </td>
@@ -168,7 +174,7 @@
               dense
               no-caps
               flat
-              @click="addDiscount"
+              @click="addOrderDiscount"
               color="info"
             />
           </td>
@@ -259,11 +265,33 @@ import ManageServiceForCart from "components/ManageServiceForCart.vue";
 import { ref, watch } from "vue";
 
 const cartStore = useCartStore();
-const { notify, dialog, screen } = useQuasar();
+const { notify, dialog, screen, localStorage } = useQuasar();
 const { getTotalAmount, getTotal, api } = useUtil();
 const serviceShowed = ref(false);
 const search = ref("");
 const products = ref([]);
+const isPreorder = ref(localStorage.getItem("isPreorder") ?? false);
+
+const changeOrder = () => {
+  const cart = cartStore.getCart;
+  if (cart.products.length > 0 || cart.services.length > 0 || cart.discount > 0)
+    dialog({
+      titel: "Confirm",
+      message: "The cart will be cleared",
+      persistent: true,
+      cancel: true,
+    }).onOk(() => {
+      cartStore.clear();
+      isPreorder.value = !isPreorder.value;
+      localStorage.set("isPreorder", isPreorder.value);
+      search.value = "";
+    });
+  else {
+    isPreorder.value = !isPreorder.value;
+    localStorage.set("isPreorder", isPreorder.value);
+    search.value = "";
+  }
+};
 
 watch(
   search,
@@ -272,19 +300,46 @@ watch(
       products.value = [];
       return;
     }
-    api({
-      url: "features",
+    const options = {
       method: "GET",
-      params: {
+    };
+    if (isPreorder.value) {
+      options.url = "items";
+      options.params = {
+        search: search.value,
+        limit: 5,
+      };
+    } else {
+      options.url = "features";
+      options.params = {
         search: search.value,
         limit: 5,
         stocked: 1,
-      },
-    }).then((response) => {
+      };
+    }
+    api(options).then((response) => {
       products.value = response.data.data;
     });
   }, 1000)
 );
+
+const addProdcutToCart = (product) => {
+  if (isPreorder.value) {
+    dialog({
+      title: "Price for " + product.name,
+      prompt: {
+        model: "",
+        type: "tel",
+        isValid: (val) => val >= 0 && val != "",
+      },
+      persistent: true,
+      cancel: true,
+    }).onOk((value) => {
+      product.price = Number(value);
+      cartStore.addProduct({ product, quantity: 1 });
+    });
+  } else cartStore.addProduct({ product, quantity: 1 });
+};
 
 const increaseCartQuantity = (product) => {
   if (product.stock > product.quantity)
@@ -307,6 +362,7 @@ const removeFromCart = (product) => {
 };
 
 const applyProductDiscount = (product) => {
+  if (isPreorder.value) return;
   dialog({
     prompt: {
       model: product.discount > 0 ? product.discount : "",
@@ -349,7 +405,7 @@ const clearCart = () => {
   });
 };
 
-const addDiscount = () => {
+const addOrderDiscount = () => {
   dialog({
     title: "Add discount for this order",
     persistent: true,
@@ -357,7 +413,11 @@ const addDiscount = () => {
     prompt: {
       model: cartStore.getCart.discount > 0 ? cartStore.getCart.discount : "",
       type: "tel",
-      isValid: (val) => val >= 0,
+      isValid: (val) =>
+        val >= 0 &&
+        val <=
+          getTotalAmount(cartStore.getCart.products, "price", "quantity") +
+            getTotalAmount(cartStore.getCart.services, "price", "quantity"),
     },
   }).onOk((value) => {
     cartStore.applyDiscount(value);
@@ -383,13 +443,19 @@ const addServiceToCart = (payload) => {
 const editProductQuantity = (product) => {
   dialog({
     title: `Edit ${product.name} quantity`,
-    message: `Remaining stock ${product.stock}`,
+    message: isPreorder.value ? undefined : `Remaining stock ${product.stock}`,
     persistent: true,
     cancel: true,
     prompt: {
       model: product.quantity,
       type: "tel",
-      isValid: (val) => val <= product.stock,
+      isValid: (val) => {
+        if (isPreorder.value) {
+          return val != "" && val >= 0;
+        } else {
+          return val <= product && val != "";
+        }
+      },
     },
   }).onOk((val) => {
     if (val <= 0) removeFromCart(product);

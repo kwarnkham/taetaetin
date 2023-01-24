@@ -78,8 +78,30 @@
             }}
           </td>
         </tr>
+        <tr v-for="(product, key) in order.items" :key="product.id">
+          <td class="text-left">{{ key + 1 }}</td>
+          <td class="text-left">{{ product.name }}</td>
+          <td class="text-right">
+            {{
+              (
+                product.pivot.price - (product.pivot.discount ?? 0) || "FOC"
+              ).toLocaleString()
+            }}
+          </td>
+          <td class="text-right">{{ product.pivot.quantity }}</td>
+          <td class="text-right">
+            {{
+              (
+                (product.pivot.price - (product.pivot.discount ?? 0)) *
+                  product.pivot.quantity || "FOC"
+              ).toLocaleString()
+            }}
+          </td>
+        </tr>
         <tr v-for="(service, key) in order.services" :key="service.id">
-          <td class="text-left">{{ key + 1 + order.features.length }}</td>
+          <td class="text-left">
+            {{ key + 1 + order.features.length + order.items.length }}
+          </td>
           <td class="text-left">{{ service.name }}</td>
           <td class="text-right">
             {{
@@ -103,7 +125,8 @@
           <td class="text-right">
             {{
               order.features.reduce((carry, e) => carry + e.pivot.quantity, 0) +
-              order.services.reduce((carry, e) => carry + e.pivot.quantity, 0)
+              order.services.reduce((carry, e) => carry + e.pivot.quantity, 0) +
+              order.items.reduce((carry, e) => carry + e.pivot.quantity, 0)
             }}
           </td>
           <td class="text-right">
@@ -119,6 +142,10 @@
                     (carry, e) =>
                       carry +
                       (e.pivot.price - e.pivot.discount) * e.pivot.quantity,
+                    0
+                  ) +
+                  order.items.reduce(
+                    (carry, e) => carry + e.pivot.price * e.pivot.quantity,
                     0
                   ) || "FOC"
               ).toLocaleString()
