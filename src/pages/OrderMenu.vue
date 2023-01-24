@@ -9,14 +9,30 @@
       align="justify"
       narrow-indicator
     >
-      <q-tab name="order-list" label="Order List" no-caps />
+      <q-tab name="pending" icon="timer" no-caps />
+      <q-tab name="partially-paid" icon="attach_money" no-caps />
+      <q-tab name="paid" icon="paid" no-caps />
+      <q-tab name="completed" icon="done" no-caps />
+      <q-tab name="canceled" icon="cancel" no-caps />
     </q-tabs>
 
     <q-separator />
 
     <q-tab-panels v-model="tab" animated class="col">
-      <q-tab-panel name="order-list" id="order-list">
-        <OrderList />
+      <q-tab-panel name="pending" id="pending">
+        <OrderList status="1" />
+      </q-tab-panel>
+      <q-tab-panel name="partially-paid" id="partially-paid">
+        <OrderList status="2" />
+      </q-tab-panel>
+      <q-tab-panel name="paid" id="paid">
+        <OrderList status="3" />
+      </q-tab-panel>
+      <q-tab-panel name="completed" id="completed">
+        <OrderList status="4" />
+      </q-tab-panel>
+      <q-tab-panel name="canceled" id="canceled">
+        <OrderList status="5" />
       </q-tab-panel>
     </q-tab-panels>
   </q-page>
@@ -28,7 +44,7 @@ import { ref, watch, onUpdated, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
-const tab = ref(route.query.tab ?? "order-list");
+const tab = ref(route.query.tab ?? "pending");
 const router = useRouter();
 
 watch(tab, () => {
