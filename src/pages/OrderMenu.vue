@@ -29,10 +29,10 @@
         <OrderList status="3" />
       </q-tab-panel>
       <q-tab-panel name="completed" id="completed">
-        <OrderList status="4" />
+        <OrderList status="5" />
       </q-tab-panel>
       <q-tab-panel name="canceled" id="canceled">
-        <OrderList status="5" />
+        <OrderList status="4" />
       </q-tab-panel>
     </q-tab-panels>
   </q-page>
