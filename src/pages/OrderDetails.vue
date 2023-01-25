@@ -168,7 +168,7 @@
         </tr>
       </tbody>
     </q-markup-table>
-    <div class="q-mt-sm row justify-around">
+    <div class="q-mt-sm row justify-around q-gutter-y-xs">
       <q-btn
         label="Pay"
         no-caps
@@ -196,6 +196,12 @@
         color="primary"
         @click="showPrintOrderDialog"
       />
+      <q-btn
+        label="Print Address"
+        no-caps
+        color="primary"
+        @click="showPrintAddressDialog"
+      />
     </div>
   </q-page>
 </template>
@@ -208,6 +214,7 @@ import { date, useQuasar } from "quasar";
 import OrderPaymentDialog from "src/components/OrderPaymentDialog.vue";
 import EditCustomerDialog from "src/components/dialogs/EditCustomerDialog.vue";
 import PrintOrderDialog from "src/components/dialogs/PrintOrderDialog.vue";
+import PrintAddressDialog from "src/components/dialogs/PrintAddressDialog.vue";
 
 const { formatDate } = date;
 const { localStorage, dialog, notify } = useQuasar();
@@ -307,6 +314,14 @@ const showPrintOrderDialog = () => {
   });
 };
 
+const showPrintAddressDialog = () => {
+  dialog({
+    component: PrintAddressDialog,
+    componentProps: {
+      order: order.value,
+    },
+  });
+};
 const cancelOrder = () => {
   dialog({
     title: "Confirmation",

@@ -173,7 +173,7 @@
 
 <script setup>
 import { useDialogPluginComponent, date, useQuasar } from "quasar";
-import { computed, onMounted, ref } from "vue";
+import { computed } from "vue";
 import usePrinter from "src/composables/printer";
 
 const { formatDate } = date;
@@ -229,14 +229,8 @@ const paid = computed(() =>
   )
 );
 
-const printSize = ref(Number(localStorage.getItem("printSize")) || 1);
-const printBit = ref(Number(localStorage.getItem("printBit")) || 4);
-
-const printing = ref(false);
-
-const { sendPrinterData, sendTextData } = usePrinter();
-
-const printTime = ref(formatDate(new Date(), "DD-MM-YYYY HH:mm:ss"));
+const { sendPrinterData, printBit, printSize, printTime, printing } =
+  usePrinter();
 
 const print = () => {
   printing.value = true;
@@ -246,7 +240,7 @@ const print = () => {
     printBit.value
   )
     .then(() => {
-      sendTextData("\u000A\u000D");
+      // sendTextData("\u000A\u000D");
     })
     .catch((error) => {
       if (error) notify(error);
@@ -258,20 +252,12 @@ const print = () => {
       localStorage.set("printSize", printSize.value);
       localStorage.set("printBit", printBit.value);
     });
-
-  // sendPrinterData(document.getElementById("foo"));
 };
 
 defineEmits([...useDialogPluginComponent.emits]);
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
-
-onMounted(() => {
-  setInterval(() => {
-    printTime.value = formatDate(new Date(), "DD-MM-YYYY HH:mm:ss");
-  }, 1000);
-});
 </script>
 
 <style lang="scss" scoped>

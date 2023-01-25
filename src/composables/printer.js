@@ -1,15 +1,26 @@
 import domtoimage from "dom-to-image";
-import { QSpinnerHourglass, useQuasar } from "quasar";
+import { QSpinnerHourglass, useQuasar, date } from "quasar";
 import { usePrinterStore } from "src/stores/print-store";
-import { computed, ref } from "vue";
+import { computed, ref, onMounted } from "vue";
+const { formatDate } = date;
 
 export default function usePrinter () {
+  const { localStorage, loading } = useQuasar()
+  const printSize = ref(Number(localStorage.getItem("printSize")) || 1);
+  const printBit = ref(Number(localStorage.getItem("printBit")) || 4);
+  const printing = ref(false);
   const width = ref(360)
   const height = ref(0)
   const printerStore = usePrinterStore()
   const printer = computed(() => printerStore.getPrinter)
   const printId = 'print-this'
-  const { loading } = useQuasar()
+  const printTime = ref(formatDate(new Date(), "DD-MM-YYYY HH:mm:ss"));
+
+  onMounted(() => {
+    setInterval(() => {
+      printTime.value = formatDate(new Date(), "DD-MM-YYYY HH:mm:ss");
+    }, 1000);
+  });
 
   const sendTextData = (input) => {
     return new Promise((resolve, reject) => {
@@ -99,7 +110,7 @@ export default function usePrinter () {
     }
     return printData;
   }
-  const sendImageData = async (node, printBit) => {
+  const sendImageData = async (node) => {
     const imageData = await generateImageData(node)
     let index = 0;
     let imagePrintData = getImagePrintData(imageData);
@@ -111,7 +122,7 @@ export default function usePrinter () {
         4: 8,
         5: 16
       }
-      const max = 512 / bits[printBit];
+      const max = 512 / bits[printBit.value];
       if (index + max < imagePrintData.length) {
         try {
           if (!printer.value) reject('no printer conneted')
@@ -152,8 +163,8 @@ export default function usePrinter () {
     });
 
   }
-  const sendPrinterData = (node, printSize = 1, printBit = 4) => {
-    width.value += (printSize * 40) - 40;
+  const sendPrinterData = (node) => {
+    width.value += (printSize.value * 40) - 40;
     return new Promise((resolve, reject) => {
       if (!printer.value) {
         navigator.bluetooth
@@ -180,7 +191,7 @@ export default function usePrinter () {
           .then((characteristic) => {
             // Cache the characteristic
             printerStore.setPrinter(characteristic)
-            sendImageData(node, printBit).then(() => {
+            sendImageData(node).then(() => {
               resolve()
             }).catch(e => {
               reject(e)
@@ -191,7 +202,7 @@ export default function usePrinter () {
             reject()
           })
       } else {
-        sendImageData(node, printBit).then(() => {
+        sendImageData(node).then(() => {
           resolve()
         }).catch(e => {
           reject(e)
@@ -206,7 +217,11 @@ export default function usePrinter () {
     getImagePrintData,
     sendImageData,
     sendPrinterData,
-    sendTextData
+    sendTextData,
+    printSize,
+    printBit,
+    printing,
+    printTime
   }
 }
 
