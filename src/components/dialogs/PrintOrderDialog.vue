@@ -151,6 +151,10 @@
             <q-badge color="primary"> Size: {{ printSize }} (1 to 10) </q-badge>
             <q-slider v-model="printSize" markers :min="1" :max="10" />
           </div>
+          <div class="full-width q-px-lg">
+            <q-badge color="primary"> Format: {{ printBit }} </q-badge>
+            <q-slider v-model="printBit" markers :min="1" :max="5" />
+          </div>
         </div>
         <q-btn icon="close" @click="onDialogHide"></q-btn>
         <q-btn
@@ -226,6 +230,7 @@ const paid = computed(() =>
 );
 
 const printSize = ref(Number(localStorage.getItem("printSize")) || 1);
+const printBit = ref(Number(localStorage.getItem("printBit")) || 4);
 
 const printing = ref(false);
 
@@ -235,7 +240,11 @@ const printTime = ref(formatDate(new Date(), "DD-MM-YYYY HH:mm:ss"));
 
 const print = () => {
   printing.value = true;
-  sendPrinterData(document.getElementById("print-target"), printSize.value)
+  sendPrinterData(
+    document.getElementById("print-target"),
+    printSize.value,
+    printBit.value
+  )
     .then(() => {
       sendTextData("\u000A\u000D");
     })
@@ -247,6 +256,7 @@ const print = () => {
       printing.value = false;
       loading.hide();
       localStorage.set("printSize", printSize.value);
+      localStorage.set("printBit", printBit.value);
     });
 
   // sendPrinterData(document.getElementById("foo"));

@@ -99,12 +99,19 @@ export default function usePrinter () {
     }
     return printData;
   }
-  const sendImageData = async (node) => {
+  const sendImageData = async (node, printBit) => {
     const imageData = await generateImageData(node)
     let index = 0;
     let imagePrintData = getImagePrintData(imageData);
     const sendNextImageDataBatch = async (resolve, reject) => {
-      const max = 512 / 8;
+      const bits = {
+        1: 1,
+        2: 2,
+        3: 4,
+        4: 8,
+        5: 16
+      }
+      const max = 512 / bits[printBit];
       if (index + max < imagePrintData.length) {
         try {
           if (!printer.value) reject('no printer conneted')
@@ -145,7 +152,7 @@ export default function usePrinter () {
     });
 
   }
-  const sendPrinterData = (node, printSize = 1) => {
+  const sendPrinterData = (node, printSize = 1, printBit = 4) => {
     width.value += (printSize * 40) - 40;
     return new Promise((resolve, reject) => {
       if (!printer.value) {
@@ -173,7 +180,7 @@ export default function usePrinter () {
           .then((characteristic) => {
             // Cache the characteristic
             printerStore.setPrinter(characteristic)
-            sendImageData(node).then(() => {
+            sendImageData(node, printBit).then(() => {
               resolve()
             }).catch(e => {
               reject(e)
@@ -184,7 +191,7 @@ export default function usePrinter () {
             reject()
           })
       } else {
-        sendImageData(node).then(() => {
+        sendImageData(node, printBit).then(() => {
           resolve()
         }).catch(e => {
           reject(e)
