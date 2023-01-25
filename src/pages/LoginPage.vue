@@ -38,6 +38,7 @@ import { ref } from "vue";
 import { api as axios } from "boot/axios";
 import { useUserStore } from "stores/user-store";
 import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
 const formData = ref({
   name: "",
   password: "",
@@ -45,10 +46,11 @@ const formData = ref({
 
 const isPwd = ref(true);
 const { localStorage } = useQuasar();
-const { api } = useUtil();
+const { api, init } = useUtil();
 const { setUser } = useUserStore();
 const { getUser } = storeToRefs(useUserStore());
 
+const router = useRouter();
 const submit = () => {
   api({
     method: "POST",
@@ -61,26 +63,10 @@ const submit = () => {
         "Bearer " + response.data.token;
       setUser(response.data.user);
       formData.value.password = "";
-
-      api({
-        method: "GET",
-        url: "payment-types",
-      }).then((response) => {
-        localStorage.set("paymentTypes", response.data.payment_types);
-      });
-
-      api({
-        method: "GET",
-        url: "orders/status",
-      }).then((response) => {
-        localStorage.set("orderStatus", response.data.status);
-      });
-
-      api({
-        method: "GET",
-        url: "payments",
-      }).then((response) => {
-        localStorage.set("payments", response.data.data.data);
+      init().finally(() => {
+        router.replace({
+          name: "index",
+        });
       });
     })
     .catch((e) => {

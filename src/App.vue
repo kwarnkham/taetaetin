@@ -34,6 +34,8 @@ onMounted(() => {
         }
       })
       .finally(() => {});
+  } else {
+    isReady.value = true;
   }
 });
 </script>
