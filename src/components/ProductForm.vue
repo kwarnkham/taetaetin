@@ -25,7 +25,7 @@
       required
       dense
       type="tel"
-      :disabled="update"
+      v-if="!update"
     />
     <q-date
       :landscape="$q.screen.gt.xs"
