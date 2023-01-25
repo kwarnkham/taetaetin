@@ -223,6 +223,12 @@
         @click="cancelOrder"
         :disabled="[4, 5].includes(order.status)"
       />
+      <q-btn
+        label="Print"
+        no-caps
+        color="primary"
+        @click="showPrintOrderDialog"
+      />
     </div>
   </q-page>
 </template>
@@ -234,6 +240,7 @@ import { useRoute } from "vue-router";
 import { date, useQuasar } from "quasar";
 import OrderPaymentDialog from "src/components/OrderPaymentDialog.vue";
 import EditCustomerDialog from "src/components/dialogs/EditCustomerDialog.vue";
+import PrintOrderDialog from "src/components/dialogs/PrintOrderDialog.vue";
 
 const { formatDate } = date;
 const { localStorage, dialog, notify } = useQuasar();
@@ -280,6 +287,15 @@ const showScreenshot = (payment) => {
   });
 };
 
+const showPrintOrderDialog = () => {
+  dialog({
+    component: PrintOrderDialog,
+    componentProps: {
+      order: order.value,
+    },
+  });
+};
+
 const cancelOrder = () => {
   dialog({
     title: "Confirmation",
@@ -319,6 +335,7 @@ const completeOrder = () => {
     });
   });
 };
+
 onMounted(() => {
   api({
     method: "GET",

@@ -1,0 +1,223 @@
+<template>
+  <q-dialog ref="dialogRef" @hide="onDialogHide" persistent maximized>
+    <q-card class="column items-center no-wrap">
+      <div class="receipt text-grey-10 column justify-start" id="print-target">
+        <img :src="settings.assets.print_logo" alt="print_logo" width="360" />
+
+        <div class="row justify-between full-width no-wrap">
+          <div class="col" v-if="order.customer">
+            <q-icon name="person" class="q-mr-xs" />{{ order.customer }}
+          </div>
+          <div class="text-right" v-if="order.phone">
+            <q-icon name="phone_iphone" class="q-mr-xs" />{{ order.phone }}
+          </div>
+        </div>
+        <div class="row justify-between full-width no-wrap">
+          <div class="col">
+            <span class="text-xs">#{{ order.id }}</span>
+          </div>
+          <div class="text-right">
+            <q-icon name="calendar_month" class="q-mr-xs" />{{
+              formatDate(order.updated_at, "DD-MM-YYYY")
+            }}
+          </div>
+        </div>
+        <div v-if="order.address">
+          <q-icon name="location_on" class="q-mr-xs" />
+          {{ order.address }}
+        </div>
+
+        <q-markup-table
+          wrap-cells
+          flat
+          dense
+          separator="none"
+          class="bg-transparent text-grey-10 full-width"
+        >
+          <thead>
+            <tr>
+              <th class="text-left">Name</th>
+              <th class="text-right">Qty</th>
+              <th class="text-right">Price</th>
+              <th class="text-right">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="product in order.features" :key="product.id">
+              <td class="text-left">
+                {{ product.name }}
+              </td>
+
+              <td class="text-right">
+                {{ product.pivot.quantity }}
+              </td>
+              <td class="text-right">
+                {{ product.pivot.price }}
+              </td>
+              <td class="text-right">
+                {{ product.pivot.price * product.pivot.quantity }}
+              </td>
+            </tr>
+            <tr class="summery">
+              <td colspan="3" class="text-right">Total</td>
+              <td class="text-right">
+                {{ total }}
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3" class="text-right">Paid</td>
+              <td class="text-right">
+                {{ paid }}
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3" class="text-right">Discount</td>
+              <td class="text-right">
+                {{ order.discount }}
+              </td>
+            </tr>
+            <tr class="grand-total">
+              <td colspan="3" class="text-right text-weight-bolder">
+                Grand Total
+              </td>
+              <td class="text-right text-weight-bolder">
+                {{ grandTotal }}
+              </td>
+            </tr>
+          </tbody>
+        </q-markup-table>
+        <div v-if="order.note">Note: {{ order.note }}</div>
+        <div class="text-caption">{{ printTime }}</div>
+        <div class="text-overline flex row line-text q-mt-sm">Thank you</div>
+      </div>
+
+      <div class="row justify-around receipt">
+        <div class="col-12" v-if="!platform.is.iphone && !platform.is.ipad">
+          <div class="full-width q-px-lg">
+            <q-badge color="primary"> Size: {{ printSize }} (1 to 10) </q-badge>
+            <q-slider v-model="printSize" markers :min="1" :max="10" />
+          </div>
+        </div>
+        <q-btn icon="close" @click="onDialogHide"></q-btn>
+        <q-btn
+          v-if="!platform.is.iphone && !platform.is.ipad"
+          :icon="'print'"
+          @click="print"
+          :disabled="printing"
+          color="primary"
+        ></q-btn>
+      </div>
+
+      <div class="col"></div>
+    </q-card>
+  </q-dialog>
+</template>
+
+<script setup>
+import { useDialogPluginComponent, date, useQuasar } from "quasar";
+import { computed, onMounted, ref } from "vue";
+import usePrinter from "src/composables/printer";
+
+const { formatDate } = date;
+const props = defineProps({
+  order: {
+    type: Object,
+    required: true,
+  },
+});
+const { loading, notify, platform, localStorage } = useQuasar();
+const settings = localStorage.getItem("settings");
+const total = computed(() =>
+  props.order.features.reduce(
+    (carry, product) => carry + product.pivot.price * product.pivot.quantity,
+    0
+  )
+);
+
+const paid = computed(() =>
+  props.order.payments.reduce(
+    (carry, payment) => carry + payment.pivot.amount,
+    0
+  )
+);
+
+const printSize = ref(Number(localStorage.getItem("printSize")) || 1);
+
+const printing = ref(false);
+
+const grandTotal = computed(() => total.value - paid.value);
+const { sendPrinterData, sendTextData } = usePrinter();
+
+const printTime = ref(formatDate(new Date(), "DD-MM-YYYY HH:mm:ss"));
+
+const print = () => {
+  printing.value = true;
+  sendPrinterData(document.getElementById("print-target"), printSize.value)
+    .then(() => {
+      sendTextData("\u000A\u000D");
+    })
+    .catch((error) => {
+      if (error) notify(error);
+      else notify("Printer has disconnected");
+    })
+    .finally(() => {
+      printing.value = false;
+      loading.hide();
+      localStorage.set("printSize", printSize.value);
+    });
+
+  // sendPrinterData(document.getElementById("foo"));
+};
+
+defineEmits([...useDialogPluginComponent.emits]);
+
+const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
+  useDialogPluginComponent();
+
+onMounted(() => {
+  setInterval(() => {
+    printTime.value = formatDate(new Date(), "DD-MM-YYYY HH:mm:ss");
+  }, 1000);
+});
+</script>
+
+<style lang="scss" scoped>
+.line-text:before,
+.line-text:after {
+  content: "";
+  flex: 1 1;
+  border-bottom: 1px dashed;
+  margin: auto;
+}
+.line-text:before {
+  margin-right: 1em;
+}
+.line-text:after {
+  margin-left: 1em;
+}
+.receipt {
+  width: 360px;
+}
+.q-table tbody td,
+th {
+  font-size: 18px;
+}
+
+th,
+.summery > td {
+  border-top: 1px dashed $grey-10;
+  font-weight: normal;
+}
+
+th {
+  border-bottom: 1px dashed $grey-10;
+}
+
+.grand-total > td {
+  border-top: 1px dashed $grey-10;
+}
+
+.border-top {
+  border-top: 1px dashed $grey-10;
+}
+</style>

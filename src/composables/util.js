@@ -2,7 +2,7 @@ import { api as axios } from "boot/axios";
 import { useQuasar } from "quasar";
 
 export default function useUtil () {
-  const { loading, notify } = useQuasar();
+  const { loading, notify, localStorage } = useQuasar();
 
   return {
     pickBy (data) {
@@ -61,5 +61,35 @@ export default function useUtil () {
     getTotalAmount (array, price, quantity) {
       return array.reduce((carry, el) => (el[price] - (el.discount ?? 0)) * el[quantity] + carry, 0)
     },
+    async init () {
+      try {
+        const values = await Promise.all([
+          axios({
+            method: "GET",
+            url: "payment-types",
+          }),
+          axios({
+            method: "GET",
+            url: "orders/status",
+          }),
+          axios({
+            method: "GET",
+            url: "payments",
+          }),
+          axios({
+            method: "GET",
+            url: "settings",
+          })
+        ]);
+        localStorage.set("paymentTypes", values[0].data.payment_types);
+        localStorage.set("orderStatus", values[1].data.status);
+        localStorage.set("payments", values[2].data.data.data);
+        localStorage.set("settings", values[3].data);
+        return true;
+      } catch (error) {
+        console.error(error)
+        return false;
+      }
+    }
   }
 }

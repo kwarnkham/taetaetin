@@ -1,18 +1,20 @@
 <template>
-  <router-view />
+  <router-view v-if="isReady" />
 </template>
 
 <script setup>
 import { useQuasar } from "quasar";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import useUtil from "./composables/util";
 import { useUserStore } from "./stores/user-store";
+
 const { localStorage } = useQuasar();
-const { api } = useUtil();
+const { api, init } = useUtil();
 const token = localStorage.getItem("token");
 const { setUser } = useUserStore();
 const router = useRouter();
+const isReady = ref(false);
 onMounted(() => {
   if (token) {
     api({
@@ -21,25 +23,8 @@ onMounted(() => {
     })
       .then((response) => {
         setUser(response.data.user);
-        api({
-          method: "GET",
-          url: "payment-types",
-        }).then((response) => {
-          localStorage.set("paymentTypes", response.data.payment_types);
-        });
-
-        api({
-          method: "GET",
-          url: "orders/status",
-        }).then((response) => {
-          localStorage.set("orderStatus", response.data.status);
-        });
-
-        api({
-          method: "GET",
-          url: "payments",
-        }).then((response) => {
-          localStorage.set("payments", response.data.data.data);
+        init().finally(() => {
+          isReady.value = true;
         });
       })
       .catch((error) => {
@@ -47,7 +32,8 @@ onMounted(() => {
           localStorage.remove("token");
           router.replace({ name: "index" });
         }
-      });
+      })
+      .finally(() => {});
   }
 });
 </script>
