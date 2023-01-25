@@ -132,33 +132,10 @@
         <tr>
           <td colspan="3" class="text-right">Total</td>
           <td class="text-right">
-            {{
-              order.features.reduce((carry, e) => carry + e.pivot.quantity, 0) +
-              order.services.reduce((carry, e) => carry + e.pivot.quantity, 0) +
-              order.items.reduce((carry, e) => carry + e.pivot.quantity, 0)
-            }}
+            {{ totalQty }}
           </td>
           <td class="text-right">
-            {{
-              (
-                order.features.reduce(
-                  (carry, e) =>
-                    carry +
-                    (e.pivot.price - e.pivot.discount) * e.pivot.quantity,
-                  0
-                ) +
-                  order.services.reduce(
-                    (carry, e) =>
-                      carry +
-                      (e.pivot.price - e.pivot.discount) * e.pivot.quantity,
-                    0
-                  ) +
-                  order.items.reduce(
-                    (carry, e) => carry + e.pivot.price * e.pivot.quantity,
-                    0
-                  ) || "FOC"
-              ).toLocaleString()
-            }}
+            {{ total.toLocaleString() }}
           </td>
         </tr>
         <tr>
@@ -179,24 +156,14 @@
           <td colspan="3"></td>
           <td class="text-right">Paid</td>
           <td class="text-right">
-            {{
-              order.payments
-                .reduce((carry, e) => carry + e.pivot.amount, 0)
-                .toLocaleString()
-            }}
+            {{ paid.toLocaleString() }}
           </td>
         </tr>
         <tr>
           <td colspan="3"></td>
           <td class="text-right">Remaining</td>
           <td class="text-right">
-            {{
-              (
-                order.amount -
-                order.discount -
-                order.payments.reduce((carry, e) => carry + e.pivot.amount, 0)
-              ).toLocaleString()
-            }}
+            {{ order.amount - order.discount - paid }}
           </td>
         </tr>
       </tbody>
@@ -235,7 +202,7 @@
 
 <script setup>
 import useUtil from "src/composables/util";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { date, useQuasar } from "quasar";
 import OrderPaymentDialog from "src/components/OrderPaymentDialog.vue";
@@ -248,6 +215,50 @@ const { api } = useUtil();
 const order = ref(null);
 const route = useRoute();
 const orderStatus = localStorage.getItem("orderStatus");
+
+const totalQty = computed(
+  () =>
+    order.value.services.reduce(
+      (carry, service) => carry + service.pivot.quantity,
+      0
+    ) +
+    order.value.features.reduce(
+      (carry, product) => carry + product.pivot.quantity,
+      0
+    ) +
+    order.value.items.reduce(
+      (carry, product) => carry + product.pivot.quantity,
+      0
+    )
+);
+
+const total = computed(
+  () =>
+    order.value.services.reduce(
+      (carry, service) =>
+        carry +
+        (service.pivot.price - service.pivot.discount) * service.pivot.quantity,
+      0
+    ) +
+    order.value.features.reduce(
+      (carry, product) =>
+        carry +
+        (product.pivot.price - product.pivot.discount) * product.pivot.quantity,
+      0
+    ) +
+    order.value.items.reduce(
+      (carry, product) => carry + product.pivot.price * product.pivot.quantity,
+      0
+    )
+);
+
+const paid = computed(() =>
+  order.value.payments.reduce(
+    (carry, payment) => carry + payment.pivot.amount,
+    0
+  )
+);
+
 const makePayment = () => {
   dialog({
     component: OrderPaymentDialog,

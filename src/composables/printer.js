@@ -1,13 +1,13 @@
 import domtoimage from "dom-to-image";
 import { QSpinnerHourglass, useQuasar } from "quasar";
 import { usePrinterStore } from "src/stores/print-store";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 export default function usePrinter () {
   const width = ref(360)
   const height = ref(0)
   const printerStore = usePrinterStore()
-  const printCharacteristic = printerStore.getPrinter
+  const printer = computed(() => printerStore.getPrinter)
   const printId = 'print-this'
   const { loading } = useQuasar()
 
@@ -17,10 +17,10 @@ export default function usePrinter () {
       const encoder = new TextEncoder("utf-8");
       // Add line feed + carriage return chars to text
       const text = encoder.encode(input + '\u000A\u000D');
-      if (!printCharacteristic.value) {
+      if (!printer.value) {
         reject('no printer connected')
       }
-      printCharacteristic.value.writeValue(text).then(() => {
+      printer.value.writeValue(text).then(() => {
         resolve()
       }).catch(() => {
         printerStore.setPrinter(null)
@@ -107,8 +107,8 @@ export default function usePrinter () {
       const max = 512 / 8;
       if (index + max < imagePrintData.length) {
         try {
-          if (!printCharacteristic.value) reject('no printer conneted')
-          await printCharacteristic.value.writeValue(imagePrintData.slice(index, index + max))
+          if (!printer.value) reject('no printer conneted')
+          await printer.value.writeValue(imagePrintData.slice(index, index + max))
         } catch (error) {
           console.log(error)
           printerStore.setPrinter(null)
@@ -120,8 +120,8 @@ export default function usePrinter () {
         // Send the last bytes
         if (index < imagePrintData.length) {
           try {
-            if (!printCharacteristic.value) reject('no printer conneted')
-            await printCharacteristic.value
+            if (!printer.value) reject('no printer conneted')
+            await printer.value
               .writeValue(imagePrintData.slice(index, imagePrintData.length))
           } catch (error) {
             console.log(error)
@@ -148,7 +148,7 @@ export default function usePrinter () {
   const sendPrinterData = (node, printSize = 1) => {
     width.value += (printSize * 40) - 40;
     return new Promise((resolve, reject) => {
-      if (!printCharacteristic.value) {
+      if (!printer.value) {
         navigator.bluetooth
           .requestDevice({
             filters: [

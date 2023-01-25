@@ -13,7 +13,7 @@ export const usePrinterStore = defineStore('printer', {
 
   actions: {
     setPrinter (characteristic) {
-      this.state.printCharacteristic = characteristic;
+      this.printCharacteristic = characteristic;
     }
   }
 })

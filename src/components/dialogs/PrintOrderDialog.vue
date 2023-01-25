@@ -2,7 +2,18 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide" persistent maximized>
     <q-card class="column items-center no-wrap">
       <div class="receipt text-grey-10 column justify-start" id="print-target">
-        <img :src="settings.assets.print_logo" alt="print_logo" width="360" />
+        <img
+          src="~assets/print-logo.png"
+          alt="print_logo"
+          width="360"
+          v-if="isLocal"
+        />
+        <img
+          :src="settings.assets.print_logo"
+          alt="print_logo"
+          width="360"
+          v-else
+        />
 
         <div class="row justify-between full-width no-wrap">
           <div class="col" v-if="order.customer">
@@ -37,8 +48,8 @@
           <thead>
             <tr>
               <th class="text-left">Name</th>
-              <th class="text-right">Qty</th>
               <th class="text-right">Price</th>
+              <th class="text-right">Qty</th>
               <th class="text-right">Amount</th>
             </tr>
           </thead>
@@ -52,28 +63,71 @@
                 {{ product.pivot.quantity }}
               </td>
               <td class="text-right">
-                {{ product.pivot.price }}
+                {{ product.pivot.price.toLocaleString() }}
               </td>
               <td class="text-right">
-                {{ product.pivot.price * product.pivot.quantity }}
+                {{
+                  (
+                    product.pivot.price * product.pivot.quantity
+                  ).toLocaleString()
+                }}
+              </td>
+            </tr>
+            <tr v-for="product in order.items" :key="product.id">
+              <td class="text-left">
+                {{ product.name }}
+              </td>
+              <td class="text-right">
+                {{ product.pivot.price.toLocaleString() }}
+              </td>
+              <td class="text-right">
+                {{ product.pivot.quantity }}
+              </td>
+              <td class="text-right">
+                {{
+                  (
+                    product.pivot.price * product.pivot.quantity
+                  ).toLocaleString()
+                }}
+              </td>
+            </tr>
+            <tr v-for="service in order.services" :key="service.id">
+              <td class="text-left">
+                {{ service.name }}
+              </td>
+              <td class="text-right">
+                {{ service.pivot.price.toLocaleString() }}
+              </td>
+              <td class="text-right">
+                {{ service.pivot.quantity }}
+              </td>
+              <td class="text-right">
+                {{
+                  (
+                    service.pivot.price * service.pivot.quantity
+                  ).toLocaleString()
+                }}
               </td>
             </tr>
             <tr class="summery">
-              <td colspan="3" class="text-right">Total</td>
+              <td colspan="2" class="text-right">Total</td>
               <td class="text-right">
-                {{ total }}
+                {{ totalQty }}
+              </td>
+              <td class="text-right">
+                {{ total.toLocaleString() }}
               </td>
             </tr>
             <tr>
               <td colspan="3" class="text-right">Paid</td>
               <td class="text-right">
-                {{ paid }}
+                {{ paid.toLocaleString() }}
               </td>
             </tr>
             <tr>
               <td colspan="3" class="text-right">Discount</td>
               <td class="text-right">
-                {{ order.discount }}
+                {{ order.discount.toLocaleString() }}
               </td>
             </tr>
             <tr class="grand-total">
@@ -81,7 +135,7 @@
                 Grand Total
               </td>
               <td class="text-right text-weight-bolder">
-                {{ grandTotal }}
+                {{ (order.amount - order.discount - paid).toLocaleString() }}
               </td>
             </tr>
           </tbody>
@@ -127,11 +181,41 @@ const props = defineProps({
 });
 const { loading, notify, platform, localStorage } = useQuasar();
 const settings = localStorage.getItem("settings");
-const total = computed(() =>
-  props.order.features.reduce(
-    (carry, product) => carry + product.pivot.price * product.pivot.quantity,
-    0
-  )
+const isLocal = process.env.DEV;
+const totalQty = computed(
+  () =>
+    props.order.services.reduce(
+      (carry, service) => carry + service.pivot.quantity,
+      0
+    ) +
+    props.order.features.reduce(
+      (carry, product) => carry + product.pivot.quantity,
+      0
+    ) +
+    props.order.items.reduce(
+      (carry, product) => carry + product.pivot.quantity,
+      0
+    )
+);
+
+const total = computed(
+  () =>
+    props.order.services.reduce(
+      (carry, service) =>
+        carry +
+        (service.pivot.price - service.pivot.discount) * service.pivot.quantity,
+      0
+    ) +
+    props.order.features.reduce(
+      (carry, product) =>
+        carry +
+        (product.pivot.price - product.pivot.discount) * product.pivot.quantity,
+      0
+    ) +
+    props.order.items.reduce(
+      (carry, product) => carry + product.pivot.price * product.pivot.quantity,
+      0
+    )
 );
 
 const paid = computed(() =>
@@ -145,7 +229,6 @@ const printSize = ref(Number(localStorage.getItem("printSize")) || 1);
 
 const printing = ref(false);
 
-const grandTotal = computed(() => total.value - paid.value);
 const { sendPrinterData, sendTextData } = usePrinter();
 
 const printTime = ref(formatDate(new Date(), "DD-MM-YYYY HH:mm:ss"));
@@ -206,6 +289,7 @@ th {
 th,
 .summery > td {
   border-top: 1px dashed $grey-10;
+  border-bottom: 1px dashed $grey-10;
   font-weight: normal;
 }
 
