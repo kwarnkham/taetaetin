@@ -43,7 +43,7 @@ const fetchSummery = () => {
       max_stock: maxStock.value,
     },
   }).then((response) => {
-    summery.value = response.data.data;
+    summery.value = response.data.data.filter((e) => e.product != "unknown");
   });
 };
 onMounted(() => {
