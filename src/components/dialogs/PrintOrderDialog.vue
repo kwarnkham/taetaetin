@@ -6,7 +6,7 @@
           src="~assets/print-logo.png"
           alt="print_logo"
           width="360"
-          v-if="isLocal"
+          v-if="isLocal || !settings"
         />
         <img
           :src="settings.assets.print_logo"

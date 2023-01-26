@@ -22,7 +22,7 @@
             src="~assets/delivery-logo.png"
             alt="print_logo"
             width="300"
-            v-if="isLocal"
+            v-if="isLocal || !settings"
           />
           <img
             :src="settings.assets.delivery_logo"

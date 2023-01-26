@@ -22,7 +22,10 @@
     <q-list bordered separator class="overflow-auto col">
       <q-item v-for="order in pagination?.data" :key="order.id">
         <q-item-section>
-          <q-item-label>
+          <q-item-label class="items-center row" v-if="order.customer">
+            <q-icon name="person" /> {{ order.customer }}
+          </q-item-label>
+          <q-item-label v-if="![3, 4, 5].includes(order.status)">
             Remaining:
             {{
               (
@@ -32,12 +35,12 @@
               ).toLocaleString()
             }}
             MMK
-            <q-badge align="top">#{{ order.id }}</q-badge>
           </q-item-label>
           <q-item-label>
             Amount:
             {{ (order.amount - order.discount).toLocaleString() }}
             MMK
+            <q-badge align="top">#{{ order.id }}</q-badge>
           </q-item-label>
           <q-item-label class="bg-grey-4 rounded-borders">
             Order is
@@ -72,6 +75,13 @@
                 })
               "
             />
+            <q-btn
+              v-if="order.customer"
+              rounded
+              no-caps
+              icon="person"
+              @click="showOrderCustomer(order)"
+            />
           </div>
         </q-item-section>
       </q-item>
@@ -99,7 +109,7 @@ const props = defineProps({
   status: { required: false },
 });
 const { formatDate } = date;
-const { localStorage, screen } = useQuasar();
+const { localStorage, screen, dialog } = useQuasar();
 const { api } = useUtil();
 const orderStatus = localStorage.getItem("orderStatus");
 const fetchOrders = (params) => {
@@ -118,6 +128,16 @@ const fetchOrders = (params) => {
       .catch((error) => {
         reject(error);
       });
+  });
+};
+
+const showOrderCustomer = (order) => {
+  dialog({
+    title: order.customer,
+    message: `<div>Phone : ${order.phone}. </div>
+              <div>Address : ${order.address}.</div>
+              <div>Note :${order.note}</div>`,
+    html: true,
   });
 };
 

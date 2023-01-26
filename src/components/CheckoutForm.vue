@@ -1,5 +1,6 @@
 <template>
   <q-form @submit.prevent="submit">
+    <div class="text-center text-subtitle1">Customer Information</div>
     <q-input
       v-model="formData.customer"
       label="Customer"
@@ -17,8 +18,8 @@
       :required="isPreorder"
     />
     <q-input v-model="formData.note" label="Note" />
-    <div class="text-right">
-      <q-btn label="Make order" no-caps type="submit" />
+    <div class="text-right q-mt-xs">
+      <q-btn :label="update ? 'Update' : 'Make order'" no-caps type="submit" />
     </div>
   </q-form>
 </template>
