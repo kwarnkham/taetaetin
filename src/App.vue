@@ -31,6 +31,7 @@ onMounted(() => {
         if (error.response.status == 401) {
           localStorage.remove("token");
           router.replace({ name: "index" });
+          isReady.value = true;
         }
       })
       .finally(() => {});

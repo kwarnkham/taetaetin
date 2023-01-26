@@ -62,6 +62,7 @@ export default function useUtil () {
       return array.reduce((carry, el) => (el[price] - (el.discount ?? 0)) * el[quantity] + carry, 0)
     },
     async init () {
+      loading.show()
       try {
         const values = await Promise.all([
           axios({
@@ -85,11 +86,14 @@ export default function useUtil () {
         localStorage.set("orderStatus", values[1].data.status);
         localStorage.set("payments", values[2].data.data.data);
         localStorage.set("settings", values[3].data);
+        loading.hide()
         return true;
       } catch (error) {
         console.error(error)
+        loading.hide()
         return false;
       }
+
     }
   }
 }

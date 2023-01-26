@@ -10,6 +10,7 @@
       narrow-indicator
     >
       <q-tab name="product-list" label="Product List" no-caps />
+      <q-tab name="stock-summery" label="Stock summery" no-caps />
     </q-tabs>
 
     <q-separator />
@@ -18,12 +19,16 @@
       <q-tab-panel name="product-list" id="product-list">
         <ProductList only-stocked />
       </q-tab-panel>
+      <q-tab-panel name="stock-summery" id="stock-summery">
+        <ProductStockSummery />
+      </q-tab-panel>
     </q-tab-panels>
   </q-page>
 </template>
 
 <script setup>
 import ProductList from "src/components/ProductList.vue";
+import ProductStockSummery from "src/components/ProductStockSummery.vue";
 import { ref, watch, onUpdated, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
