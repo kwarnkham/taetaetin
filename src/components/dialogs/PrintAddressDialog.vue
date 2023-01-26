@@ -72,6 +72,7 @@ const { loading, notify, platform, localStorage } = useQuasar();
 
 const { sendPrinterData, printSize, printBit, printing } = usePrinter();
 const isLocal = process.env.DEV;
+const settings = localStorage.getItem("settings");
 const print = () => {
   printing.value = true;
   sendPrinterData(document.getElementById("print-target"))
