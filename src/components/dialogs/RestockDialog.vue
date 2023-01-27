@@ -1,5 +1,5 @@
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide">
+  <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <q-card
       class="q-dialog-plugin q-pa-sm"
       style="width: 500px; max-width: 100vw"
