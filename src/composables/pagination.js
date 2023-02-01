@@ -37,7 +37,8 @@ export default function usePagination (fetcher, options = {
   const to = ref(route.query.to ?? formatDate(new Date(), "YYYY-MM-DD"));
 
   const fetchMore = () => {
-    fetcher(route.query).then((response) => {
+    const query = JSON.parse(JSON.stringify(route.query))
+    fetcher(query).then((response) => {
       pagination.value = response.data.data;
       total.value = response.data.total
       profit.value = response.data.profit
@@ -45,13 +46,15 @@ export default function usePagination (fetcher, options = {
   };
 
   const findByDates = () => {
+
     router
       .replace({
         name: route.name,
         query: { ...route.query, from: from.value, to: to.value },
       })
       .then(() => {
-        fetcher(route.query).then((response) => {
+        const query = JSON.parse(JSON.stringify(route.query))
+        fetcher(query).then((response) => {
           pagination.value = response.data.data;
           current.value = response.data.data.current_page;
           total.value = response.data.total
@@ -62,7 +65,7 @@ export default function usePagination (fetcher, options = {
 
   onMounted(() => {
     setTimeout(() => {
-      let query = route.query
+      let query = JSON.parse(JSON.stringify(route.query))
       if (options.hasDateFilter) query = { ...query, from: from.value, to: to.value }
       if (options.status) query = { ...query, status: status.value }
       if (options.type) query = { ...query, type: type.value }
@@ -72,7 +75,7 @@ export default function usePagination (fetcher, options = {
         name: route.name,
         query
       }).then(() => {
-        fetcher(route.query).then((response) => {
+        fetcher(query).then((response) => {
           pagination.value = response.data.data;
           current.value = response.data.data.current_page;
           total.value = response.data.total
