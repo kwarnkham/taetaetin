@@ -66,6 +66,12 @@
               dense
               @click="cancelPurchase(purchase)"
             />
+            <q-btn
+              round
+              :label="purchase.group ?? 'G'"
+              dense
+              @click="assignGroup(purchase)"
+            />
           </div>
         </q-item-section>
         <q-item-section side top>
@@ -111,6 +117,28 @@ const route = useRoute();
 const purchaseType = {
   "App\\Models\\Feature": "Product",
   "App\\Models\\Expense": "Expense",
+};
+const assignGroup = (purchase) => {
+  dialog({
+    title: `Add to group`,
+    prompt: {
+      model: "",
+      type: "tel",
+      isValid: (val) => !isNaN(Number(val)),
+    },
+  }).onOk((val) => {
+    api({
+      method: "POST",
+      url: `purchases/${purchase.id}/group`,
+      data: {
+        group: val,
+      },
+    }).then((response) => {
+      const index = pagination.value.data.findIndex((e) => e.id == purchase.id);
+      if (index >= 0)
+        pagination.value.data[index].group = response.data.purchase.group;
+    });
+  });
 };
 const fetchPurchases = (params = {}) => {
   if (params.canceled != "true") {
