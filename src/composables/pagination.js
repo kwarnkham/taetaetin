@@ -10,7 +10,8 @@ export default function usePagination (fetcher, options = {
   hasDateFilter: false,
   status: false,
   canceled: false,
-  type: null
+  type: null,
+  group: null
 }) {
   const { pickBy } = useUtil();
   const route = useRoute();
@@ -28,6 +29,7 @@ export default function usePagination (fetcher, options = {
   const status = ref(options.status)
   const canceled = ref(options.canceled)
   const type = ref(options.type)
+  const group = ref(options.group)
 
   // const from = ref(
   //   route.query.from ??
@@ -69,6 +71,7 @@ export default function usePagination (fetcher, options = {
       if (options.hasDateFilter) query = { ...query, from: from.value, to: to.value }
       if (options.status) query = { ...query, status: status.value }
       if (options.type) query = { ...query, type: type.value }
+      if (options.group) query = { ...query, group: group.value }
       if (options.onlyStocked) query = { ...query, stocked: onlyStocked.value }
       if (options.canceled) query = { ...query, canceled: canceled.value }
       router.replace({
@@ -96,7 +99,7 @@ export default function usePagination (fetcher, options = {
   });
 
   watch(
-    [search, onlyStocked, status, canceled, type],
+    [search, onlyStocked, status, canceled, type, group],
     debounce(() => {
       const query = pickBy({
         ...route.query,
@@ -105,7 +108,8 @@ export default function usePagination (fetcher, options = {
         stocked: onlyStocked.value ? 'true' : undefined,
         status: status.value,
         canceled: canceled.value ? 'true' : undefined,
-        type: type.value || undefined
+        type: type.value || undefined,
+        group: group.value ?? undefined
       });
       router
         .replace({
@@ -130,6 +134,6 @@ export default function usePagination (fetcher, options = {
     onlyStocked,
     findByDates,
     from,
-    to, total, status, item, profit, canceled, type
+    to, total, status, item, profit, canceled, type, group
   }
 }

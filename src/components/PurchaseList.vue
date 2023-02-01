@@ -16,6 +16,9 @@
         class="col"
       />
     </div>
+    <div>
+      <q-input v-model.trim="group" label="Group" />
+    </div>
     <div class="row justify-between items-center">
       <q-input v-model="from" type="date" :class="{ 'col-6': screen.lt.sm }">
         <template v-slot:prepend>
@@ -178,10 +181,12 @@ const {
   total,
   canceled,
   type,
+  group,
 } = usePagination(fetchPurchases, {
   hasDateFilter: props.hasDateFilter,
   canceled: route.query.canceled == "true" ? true : false,
   type: route.query.type ?? "All",
+  group: route.query.group ?? null,
 });
 
 const cancelPurchase = (purchase) => {
