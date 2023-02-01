@@ -17,7 +17,7 @@
 
     <q-tab-panels v-model="tab" animated class="col">
       <q-tab-panel name="purchase" id="purchase">
-        <PurchaseList :status="1" has-date-filter />
+        <PurchaseList has-date-filter />
       </q-tab-panel>
       <q-tab-panel name="order" id="order">
         <OrderList has-date-filter :status="5" />

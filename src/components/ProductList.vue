@@ -88,16 +88,12 @@ import RestockDialog from "src/components/dialogs/RestockDialog.vue";
 import usePagination from "src/composables/pagination";
 import { useCartStore } from "src/stores/cart-store";
 import { useUserStore } from "src/stores/user-store";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import ProductFormDialog from "./dialogs/ProductFormDialog.vue";
 
 const props = defineProps({
   item_id: {
     type: Number,
-  },
-  onlyStocked: {
-    type: Boolean,
-    default: false,
   },
 });
 const userStore = useUserStore();
@@ -105,6 +101,9 @@ const { api } = useUtil();
 const { dialog, notify } = useQuasar();
 const cartStore = useCartStore();
 const fetchProducts = (params) => {
+  if (params.stocked == "true") {
+    params.stocked = 1;
+  }
   return new Promise((resolve, reject) => {
     api(
       {
@@ -122,10 +121,10 @@ const fetchProducts = (params) => {
       });
   });
 };
-
+const route = useRoute();
 const { pagination, max, search, current, onlyStocked } = usePagination(
   fetchProducts,
-  { onlyStocked: props.onlyStocked }
+  { onlyStocked: route.query.stocked == "true" ? true : false }
 );
 
 const showRestockDialog = (product) => {
@@ -193,7 +192,4 @@ const showAddProductToCart = (product) => {
     });
   });
 };
-
-const router = useRouter();
-const route = useRoute();
 </script>

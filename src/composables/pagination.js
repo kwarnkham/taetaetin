@@ -8,7 +8,9 @@ const { formatDate } = date;
 export default function usePagination (fetcher, options = {
   onlyStocked: false,
   hasDateFilter: false,
-  status: false
+  status: false,
+  canceled: false,
+  type: null
 }) {
   const { pickBy } = useUtil();
   const route = useRoute();
@@ -24,6 +26,8 @@ export default function usePagination (fetcher, options = {
   const current = ref(Number(route.query.page ?? 1) ?? 1);
   const onlyStocked = ref(options.onlyStocked);
   const status = ref(options.status)
+  const canceled = ref(options.canceled)
+  const type = ref(options.type)
 
   // const from = ref(
   //   route.query.from ??
@@ -59,9 +63,11 @@ export default function usePagination (fetcher, options = {
   onMounted(() => {
     setTimeout(() => {
       let query = route.query
-      if (options?.hasDateFilter) query = { ...query, from: from.value, to: to.value }
+      if (options.hasDateFilter) query = { ...query, from: from.value, to: to.value }
       if (options.status) query = { ...query, status: status.value }
-      if (options.onlyStocked) query = { ...query, stocked: onlyStocked.value ? 1 : undefined }
+      if (options.type) query = { ...query, type: type.value }
+      if (options.onlyStocked) query = { ...query, stocked: onlyStocked.value }
+      if (options.canceled) query = { ...query, canceled: canceled.value }
       router.replace({
         name: route.name,
         query
@@ -87,19 +93,21 @@ export default function usePagination (fetcher, options = {
   });
 
   watch(
-    [search, onlyStocked, status],
+    [search, onlyStocked, status, canceled, type],
     debounce(() => {
-
+      const query = pickBy({
+        ...route.query,
+        search: search.value,
+        page: undefined,
+        stocked: onlyStocked.value ? 'true' : undefined,
+        status: status.value,
+        canceled: canceled.value ? 'true' : undefined,
+        type: type.value || undefined
+      });
       router
         .replace({
           name: route.name,
-          query: pickBy({
-            ...route.query,
-            search: search.value,
-            page: undefined,
-            stocked: onlyStocked.value ? 1 : undefined,
-            status: status.value
-          }),
+          query,
         })
         .then(() => {
           if (current.value != 1) {
@@ -119,6 +127,6 @@ export default function usePagination (fetcher, options = {
     onlyStocked,
     findByDates,
     from,
-    to, total, status, item, profit
+    to, total, status, item, profit, canceled, type
   }
 }

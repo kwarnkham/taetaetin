@@ -4,6 +4,9 @@
     <div>
       <q-input v-model.trim="search" label="Search" />
     </div>
+    <div>
+      <q-checkbox left-label v-model="canceled" label="Include Canceled" />
+    </div>
     <div class="row justify-between items-center">
       <q-input v-model="from" type="date" :class="{ 'col-6': screen.lt.sm }">
         <template v-slot:prepend>
@@ -38,12 +41,16 @@
           <q-item-label caption v-if="purchase.purchasable.item">
             {{ purchase.purchasable.item?.name }}
           </q-item-label>
-          <q-item-label>Price: {{ purchase.price }}</q-item-label>
-          <q-item-label>Quantity: {{ purchase.quantity }}</q-item-label>
           <q-item-label>
             Type: {{ purchaseType[purchase.purchasable_type] }}
           </q-item-label>
-          <div class="row justify-start q-gutter-x-sm q-mt-sm">
+          <q-item-label v-if="purchase.note">
+            Note: {{ purchase.note }}
+          </q-item-label>
+          <div
+            class="row justify-start q-gutter-x-sm q-mt-sm"
+            v-if="purchase.status != 2"
+          >
             <q-btn
               round
               icon="cancel"
@@ -51,6 +58,15 @@
               @click="cancelPurchase(purchase)"
             />
           </div>
+        </q-item-section>
+        <q-item-section side top>
+          <q-item-label
+            >Price: {{ purchase.price.toLocaleString() }}</q-item-label
+          >
+          <q-item-label>Quantity: {{ purchase.quantity }}</q-item-label>
+          <q-item-label v-if="purchase.status == 2">
+            Status: Canceled
+          </q-item-label>
         </q-item-section>
       </q-item>
     </q-list>
@@ -71,11 +87,9 @@
 import useUtil from "src/composables/util";
 import { useQuasar } from "quasar";
 import usePagination from "src/composables/pagination";
+import { useRoute } from "vue-router";
 
 const props = defineProps({
-  status: {
-    required: false,
-  },
   hasDateFilter: {
     type: Boolean,
     default: false,
@@ -84,11 +98,15 @@ const props = defineProps({
 
 const { api } = useUtil();
 const { dialog, notify, screen } = useQuasar();
+const route = useRoute();
 const purchaseType = {
   "App\\Models\\Feature": "Product",
   "App\\Models\\Expense": "Expense",
 };
 const fetchPurchases = (params = {}) => {
+  if (params.canceled != "true") {
+    params.status = 1;
+  }
   return new Promise((resolve, reject) => {
     api({
       method: "GET",
@@ -104,11 +122,20 @@ const fetchPurchases = (params = {}) => {
   });
 };
 
-const { pagination, max, search, current, findByDates, from, to, total } =
-  usePagination(fetchPurchases, {
-    hasDateFilter: props.hasDateFilter,
-    status: props.status,
-  });
+const {
+  pagination,
+  max,
+  search,
+  current,
+  findByDates,
+  from,
+  to,
+  total,
+  canceled,
+} = usePagination(fetchPurchases, {
+  hasDateFilter: props.hasDateFilter,
+  canceled: route.query.canceled == "true" ? true : false,
+});
 
 const cancelPurchase = (purchase) => {
   dialog({
@@ -122,7 +149,14 @@ const cancelPurchase = (purchase) => {
       url: `purchases/${purchase.id}/cancel`,
     }).then((response) => {
       const index = pagination.value.data.findIndex((e) => e.id == purchase.id);
-      if (index >= 0) pagination.value.data.splice(index, 1);
+      if (index >= 0) {
+        if (!canceled.value) {
+          pagination.value.data.splice(index, 1);
+        } else {
+          pagination.value.data[index].status = 2;
+        }
+      }
+
       notify({
         message: response.data.message,
         type: "positive",
