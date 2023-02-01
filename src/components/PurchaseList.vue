@@ -4,8 +4,17 @@
     <div>
       <q-input v-model.trim="search" label="Search" />
     </div>
-    <div>
-      <q-checkbox left-label v-model="canceled" label="Include Canceled" />
+    <div class="row">
+      <div class="col">
+        <q-checkbox left-label v-model="canceled" label="Include Canceled" />
+      </div>
+
+      <q-select
+        :options="purchaseTypes"
+        label="Type"
+        v-model="type"
+        class="col"
+      />
     </div>
     <div class="row justify-between items-center">
       <q-input v-model="from" type="date" :class="{ 'col-6': screen.lt.sm }">
@@ -95,7 +104,7 @@ const props = defineProps({
     default: false,
   },
 });
-
+const purchaseTypes = ["All", "Feature", "Expense"];
 const { api } = useUtil();
 const { dialog, notify, screen } = useQuasar();
 const route = useRoute();
@@ -107,6 +116,14 @@ const fetchPurchases = (params = {}) => {
   if (params.canceled != "true") {
     params.status = 1;
   }
+  const types = {
+    All: undefined,
+    Feature: "App\\Models\\Feature",
+    Expense: "App\\Models\\Expense",
+  };
+
+  params.type = types[params.type];
+
   return new Promise((resolve, reject) => {
     api({
       method: "GET",
@@ -132,9 +149,11 @@ const {
   to,
   total,
   canceled,
+  type,
 } = usePagination(fetchPurchases, {
   hasDateFilter: props.hasDateFilter,
   canceled: route.query.canceled == "true" ? true : false,
+  type: route.query.type ?? "All",
 });
 
 const cancelPurchase = (purchase) => {
