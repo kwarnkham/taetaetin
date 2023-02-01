@@ -18,6 +18,24 @@
           <q-item-label>Logout</q-item-label>
         </q-item-section>
       </q-item>
+      <q-item
+        clickable
+        tag="div"
+        @click="
+          $router.push({
+            name: 'login',
+          })
+        "
+        v-if="!getUser"
+      >
+        <q-item-section avatar>
+          <q-icon :name="'login'" />
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-label>Login</q-item-label>
+        </q-item-section>
+      </q-item>
     </q-list>
   </q-drawer>
 </template>

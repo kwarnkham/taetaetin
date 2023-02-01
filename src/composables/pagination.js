@@ -20,6 +20,7 @@ export default function usePagination (fetcher, options = {
     () => Math.ceil(pagination.value?.total / pagination.value?.per_page) || 1
   );
   const total = ref(0)
+  const profit = ref(0)
   const current = ref(Number(route.query.page ?? 1) ?? 1);
   const onlyStocked = ref(options.onlyStocked);
   const status = ref(options.status)
@@ -34,7 +35,8 @@ export default function usePagination (fetcher, options = {
   const fetchMore = () => {
     fetcher(route.query).then((response) => {
       pagination.value = response.data.data;
-      total.value = response.data.total ?? 0
+      total.value = response.data.total
+      profit.value = response.data.profit
     });
   };
 
@@ -49,6 +51,7 @@ export default function usePagination (fetcher, options = {
           pagination.value = response.data.data;
           current.value = response.data.data.current_page;
           total.value = response.data.total
+          profit.value = response.data.profit
         });;
       });
   };
@@ -67,6 +70,7 @@ export default function usePagination (fetcher, options = {
           pagination.value = response.data.data;
           current.value = response.data.data.current_page;
           total.value = response.data.total
+          profit.value = response.data.profit
         });
       })
     }, 100)
@@ -115,6 +119,6 @@ export default function usePagination (fetcher, options = {
     onlyStocked,
     findByDates,
     from,
-    to, total, status, item
+    to, total, status, item, profit
   }
 }

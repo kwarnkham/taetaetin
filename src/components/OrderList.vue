@@ -2,6 +2,7 @@
   <div class="full-height column">
     <template v-if="hasDateFilter">
       <div v-if="total">Total: {{ total.toLocaleString() }} MMK</div>
+      <div v-if="profit">Profit: {{ profit.toLocaleString() }} MMK</div>
       <div class="row justify-between items-center">
         <q-input v-model="from" type="date" :class="{ 'col-6': screen.lt.sm }">
           <template v-slot:prepend>
@@ -141,7 +142,7 @@ const showOrderCustomer = (order) => {
   });
 };
 
-const { pagination, max, current, total, from, to, findByDates } =
+const { pagination, max, current, total, profit, from, to, findByDates } =
   usePagination(fetchOrders, {
     hasDateFilter: props.hasDateFilter,
     status: props.status,
