@@ -9,9 +9,9 @@
       align="justify"
       narrow-indicator
     >
-      <q-tab name="expense" label="Expense" no-caps />
+      <q-tab name="expense" label="Expense" no-caps v-if="userStore.getUser" />
       <q-tab name="payment" label="Payment" no-caps />
-      <q-tab name="service" label="Service" no-caps />
+      <q-tab name="service" label="Service" no-caps v-if="userStore.getUser" />
     </q-tabs>
 
     <q-separator />
@@ -22,7 +22,7 @@
         <ExpenseList class="col q-mt-sm" />
       </q-tab-panel>
       <q-tab-panel name="payment" id="payment" class="column no-wrap">
-        <PaymentForm />
+        <PaymentForm v-if="userStore.getUser" />
         <PaymentList />
       </q-tab-panel>
       <q-tab-panel name="service" id="service" class="column no-wrap">
@@ -40,13 +40,14 @@ import PaymentForm from "src/components/PaymentForm.vue";
 import PaymentList from "src/components/PaymentList.vue";
 import ServiceForm from "src/components/ServiceForm.vue";
 import ServiceList from "src/components/ServiceList.vue";
+import { useUserStore } from "src/stores/user-store";
 import { ref, watch, onUpdated, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
-const tab = ref(route.query.tab ?? "expense");
+const tab = ref(route.query.tab ?? "payment");
 const router = useRouter();
-
+const userStore = useUserStore();
 watch(tab, () => {
   router.replace({
     name: route.name,

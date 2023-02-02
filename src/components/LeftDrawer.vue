@@ -63,7 +63,7 @@ const links = [
     caption: "Payments, expense, etc...",
     icon: "topic",
     route: "set-up",
-    requiresAuth: true,
+    requiresAuth: false,
   },
 ];
 

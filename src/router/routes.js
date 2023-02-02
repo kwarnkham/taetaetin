@@ -41,9 +41,6 @@ const routes = [
         path: 'set-up',
         component: () => import('src/pages/SetUp.vue'),
         name: 'set-up',
-        meta: {
-          requireAuth: true
-        }
       },
       {
         path: 'manage-cart',

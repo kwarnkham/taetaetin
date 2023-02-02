@@ -2,7 +2,11 @@
   <div class="column">
     <div class="text-subtitle1 text-weight-bold text-center">Payment List</div>
     <q-list bordered separator class="overflow-auto col">
-      <q-item v-for="payment in pagination?.data" :key="payment.id">
+      <q-item
+        v-for="payment in pagination?.data"
+        :key="payment.id"
+        :class="{ hidden: !userStore.getUser && payment.status == 2 }"
+      >
         <q-item-section>
           <q-item-label>
             {{ payment.number }}
@@ -20,12 +24,21 @@
               dense
               @click="showEditPayment(payment)"
               :disabled="payment.payment_type.id == 1"
+              v-if="userStore.getUser"
             />
             <q-btn
               round
               :icon="payment.status == 1 ? 'visibility_off' : 'visibility'"
               dense
               @click="togglePayment(payment)"
+              v-if="userStore.getUser"
+            />
+            <q-btn
+              round
+              :icon="'qr_code'"
+              dense
+              @click="showQR(payment)"
+              v-if="payment.qr"
             />
           </div>
         </q-item-section>
@@ -50,11 +63,20 @@ import { useQuasar } from "quasar";
 import usePagination from "src/composables/pagination";
 import EditPaymentDialog from "src/components/dialogs/EditPaymentDialog.vue";
 import { inject, onBeforeUnmount } from "vue";
+import { useUserStore } from "src/stores/user-store";
 
 const { api } = useUtil();
 const { dialog, notify } = useQuasar();
 const bus = inject("bus");
+const userStore = useUserStore();
 
+const showQR = (payment) => {
+  dialog({
+    title: `QR code for ${payment.payment_type.name} ${payment.number}`,
+    message: `<img src='${payment.qr}' width='300'>`,
+    html: true,
+  });
+};
 const updatePaymentList = (payment) => {
   pagination.value.data.unshift(payment);
 };
