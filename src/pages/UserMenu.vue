@@ -1,11 +1,11 @@
 <template>
   <q-page padding>
-    <!-- content -->
+    <UserForm />
+    <UserList />
   </q-page>
 </template>
 
-<script>
-export default {
-  // name: 'PageName',
-}
+<script setup>
+import UserForm from "src/components/UserForm.vue";
+import UserList from "src/components/UserList.vue";
 </script>

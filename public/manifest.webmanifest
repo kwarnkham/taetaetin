@@ -3,7 +3,6 @@
   "short_name": "သေးသေးတင်",
   "description": "လက်မှုနှင့်လက်ဆောင်",
   "display": "fullscreen",
-  "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#027be3",
   "icons": [

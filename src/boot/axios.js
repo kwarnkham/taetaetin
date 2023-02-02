@@ -12,8 +12,8 @@ import { useUserStore } from 'src/stores/user-store'
 const api = axios.create({ baseURL: process.env.API_URL })
 
 
-export default boot(async ({ app }) => {
-  const userStore = useUserStore()
+export default boot(async ({ app, store }) => {
+  const userStore = useUserStore(store)
   const token = LocalStorage.getItem("token");
   if (token) {
     api.defaults.headers.common['Authorization'] = "Bearer " + token;
