@@ -60,15 +60,20 @@
               </td>
 
               <td class="text-right">
-                {{ product.pivot.quantity }}
+                {{
+                  (
+                    product.pivot.price - product.pivot.discount
+                  ).toLocaleString()
+                }}
               </td>
               <td class="text-right">
-                {{ product.pivot.price.toLocaleString() }}
+                {{ product.pivot.quantity }}
               </td>
               <td class="text-right">
                 {{
                   (
-                    product.pivot.price * product.pivot.quantity
+                    (product.pivot.price - product.pivot.discount) *
+                    product.pivot.quantity
                   ).toLocaleString()
                 }}
               </td>
