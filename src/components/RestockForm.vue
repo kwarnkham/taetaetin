@@ -18,13 +18,13 @@
       required
       dense
     />
-    <q-date
+    <!-- <q-date
       :landscape="$q.screen.gt.xs"
       v-model="formData.expired_on"
       title="Expire Date"
       subtitle="Optional"
-    />
-    <FileInput v-model="formData.picture" label="Receipt of the purchase" />
+    /> -->
+    <!-- <FileInput v-model="formData.picture" label="Receipt of the purchase" /> -->
 
     <div class="text-right">
       <q-btn label="Submit" no-caps type="submit" />

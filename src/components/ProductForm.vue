@@ -27,20 +27,20 @@
       type="tel"
       v-if="!update"
     />
-    <q-date
+    <!-- <q-date
       :landscape="$q.screen.gt.xs"
       v-model="formData.expired_on"
       title="Expire Date"
       subtitle="Optional"
       v-if="!update"
-    />
+    /> -->
     <q-input v-model="formData.note" label="Note" dense />
-    <FileInput
+    <!-- <FileInput
       v-if="!update"
       v-model="formData.picture"
       icon="image"
       label="Picture to support product purchase"
-    />
+    /> -->
 
     <div class="text-right">
       <q-btn label="Submit" no-caps type="submit" />
