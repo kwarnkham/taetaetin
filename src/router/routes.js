@@ -7,7 +7,7 @@ const routes = [
       {
         path: '',
         component: () => import('pages/IndexPage.vue'),
-        name: 'index'
+        name: 'index',
       },
       {
         path: 'login',
@@ -34,7 +34,8 @@ const routes = [
         component: () => import('src/pages/FinancialRecords.vue'),
         name: 'financial-records',
         meta: {
-          requireAuth: true
+          requireAuth: true,
+          role: 'admin'
         }
       },
       {
@@ -47,7 +48,8 @@ const routes = [
         component: () => import('src/pages/ManageCart.vue'),
         name: 'manage-cart',
         meta: {
-          requireAuth: true
+          requireAuth: true,
+          role: 'sale'
         }
       },
       {
@@ -55,7 +57,8 @@ const routes = [
         component: () => import('src/pages/CheckoutCart.vue'),
         name: 'checkout-cart',
         meta: {
-          requireAuth: true
+          requireAuth: true,
+          role: 'sale'
         }
       },
       {
@@ -63,7 +66,8 @@ const routes = [
         component: () => import('src/pages/OrderMenu.vue'),
         name: 'order-menu',
         meta: {
-          requireAuth: true
+          requireAuth: true,
+          role: 'sale'
         }
       },
       {
@@ -71,7 +75,17 @@ const routes = [
         component: () => import('src/pages/OrderDetails.vue'),
         name: 'order-details',
         meta: {
-          requireAuth: true
+          requireAuth: true,
+          role: 'sale'
+        }
+      },
+      {
+        path: 'users',
+        component: () => import('src/pages/UserMenu.vue'),
+        name: 'users',
+        meta: {
+          requireAuth: true,
+          role: 'admin'
         }
       },
       {

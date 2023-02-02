@@ -47,7 +47,7 @@ const links = [
   {
     title: "Order",
     caption: "Manage Order",
-    icon: "storefront",
+    icon: "shopping_basket",
     route: "order-menu",
     requiresAuth: true,
   },
@@ -64,6 +64,13 @@ const links = [
     icon: "topic",
     route: "set-up",
     requiresAuth: false,
+  },
+  {
+    title: "Users",
+    caption: "Manage users, roels",
+    icon: "group",
+    route: "users",
+    requiresAuth: true,
   },
 ];
 
