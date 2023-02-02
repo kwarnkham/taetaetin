@@ -38,7 +38,12 @@
         <ExpenseList class="col q-mt-sm" />
       </q-tab-panel>
       <q-tab-panel name="payment" id="payment" class="column no-wrap">
-        <PaymentForm v-if="userStore.getUser" />
+        <PaymentForm
+          v-if="
+            userStore.getUser &&
+            userStore.getUser.roles.map((e) => e.name).includes('admin')
+          "
+        />
         <PaymentList />
       </q-tab-panel>
       <q-tab-panel name="service" id="service" class="column no-wrap">

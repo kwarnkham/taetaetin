@@ -24,14 +24,20 @@
               dense
               @click="showEditPayment(payment)"
               :disabled="payment.payment_type.id == 1"
-              v-if="userStore.getUser"
+              v-if="
+                userStore.getUser &&
+                userStore.getUser.roles.map((e) => e.name).includes('admin')
+              "
             />
             <q-btn
               round
               :icon="payment.status == 1 ? 'visibility_off' : 'visibility'"
               dense
               @click="togglePayment(payment)"
-              v-if="userStore.getUser"
+              v-if="
+                userStore.getUser &&
+                userStore.getUser.roles.map((e) => e.name).includes('admin')
+              "
             />
             <q-btn
               round
