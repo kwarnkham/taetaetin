@@ -14,7 +14,10 @@
         name="create-item"
         label="Create Item"
         no-caps
-        v-if="userStore.getUser"
+        v-if="
+          userStore.getUser &&
+          userStore.getUser.roles.map((e) => e.name).includes('admin')
+        "
       />
     </q-tabs>
 

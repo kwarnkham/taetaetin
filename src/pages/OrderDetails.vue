@@ -181,14 +181,20 @@
         no-caps
         color="positive"
         @click="completeOrder"
-        :disabled="order.status != 3"
+        :disabled="
+          order.status != 3 ||
+          !userStore.getUser.roles.map((e) => e.name).includes('admin')
+        "
       />
       <q-btn
         label="Cancel"
         no-caps
         color="warning"
         @click="cancelOrder"
-        :disabled="[4, 5].includes(order.status)"
+        :disabled="
+          [4, 5].includes(order.status) ||
+          !userStore.getUser.roles.map((e) => e.name).includes('admin')
+        "
       />
       <q-btn
         label="Print"
@@ -215,6 +221,7 @@ import OrderPaymentDialog from "src/components/OrderPaymentDialog.vue";
 import EditCustomerDialog from "src/components/dialogs/EditCustomerDialog.vue";
 import PrintOrderDialog from "src/components/dialogs/PrintOrderDialog.vue";
 import PrintAddressDialog from "src/components/dialogs/PrintAddressDialog.vue";
+import { useUserStore } from "src/stores/user-store";
 
 const { formatDate } = date;
 const { localStorage, dialog, notify } = useQuasar();
@@ -222,7 +229,7 @@ const { api } = useUtil();
 const order = ref(null);
 const route = useRoute();
 const orderStatus = localStorage.getItem("orderStatus");
-
+const userStore = useUserStore();
 const totalQty = computed(
   () =>
     order.value.services.reduce(

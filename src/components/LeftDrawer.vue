@@ -5,7 +5,13 @@
       <template v-for="link in links" :key="link.title">
         <LeftDrawerLink
           v-bind="link"
-          :class="{ hidden: !getUser && link.requiresAuth }"
+          :class="{
+            hidden:
+              (!getUser && link.requiresAuth) ||
+              (getUser &&
+                link.requiresAuth &&
+                !getUser.roles.map((e) => e.name).includes(link.role)),
+          }"
         />
       </template>
 
@@ -50,6 +56,7 @@ const links = [
     icon: "shopping_basket",
     route: "order-menu",
     requiresAuth: true,
+    role: "sale",
   },
   {
     title: "Financial Records",
@@ -57,13 +64,13 @@ const links = [
     icon: "price_change",
     route: "financial-records",
     requiresAuth: true,
+    role: "admin",
   },
   {
     title: "Set Up",
     caption: "Payments, expense, etc...",
     icon: "topic",
     route: "set-up",
-    requiresAuth: false,
   },
   {
     title: "Users",
@@ -71,6 +78,7 @@ const links = [
     icon: "group",
     route: "users",
     requiresAuth: true,
+    role: "admin",
   },
 ];
 

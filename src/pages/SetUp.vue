@@ -9,9 +9,25 @@
       align="justify"
       narrow-indicator
     >
-      <q-tab name="expense" label="Expense" no-caps v-if="userStore.getUser" />
+      <q-tab
+        name="expense"
+        label="Expense"
+        no-caps
+        v-if="
+          userStore.getUser &&
+          userStore.getUser.roles.map((e) => e.name).includes('admin')
+        "
+      />
       <q-tab name="payment" label="Payment" no-caps />
-      <q-tab name="service" label="Service" no-caps v-if="userStore.getUser" />
+      <q-tab
+        name="service"
+        label="Service"
+        no-caps
+        v-if="
+          userStore.getUser &&
+          userStore.getUser.roles.map((e) => e.name).includes('admin')
+        "
+      />
     </q-tabs>
 
     <q-separator />

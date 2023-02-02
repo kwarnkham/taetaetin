@@ -22,7 +22,6 @@ export default boot(async ({ app, store }) => {
         method: "GET",
         url: "user",
       })
-      LocalStorage.set('user', response.data.user)
       userStore.setUser(response.data.user)
     } catch (error) {
       LocalStorage.remove('token')

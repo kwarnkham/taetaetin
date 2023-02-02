@@ -145,7 +145,7 @@
             </tr>
           </tbody>
         </q-markup-table>
-        <div v-if="order.note">Note: {{ order.note }}</div>
+        <div v-if="order.note" class="text-h6">Note: {{ order.note }}</div>
         <div class="text-caption">{{ printTime }}</div>
         <div class="text-overline flex row line-text q-mt-sm">Thank you</div>
       </div>
