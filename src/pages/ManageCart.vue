@@ -158,7 +158,7 @@
           </td>
           <td class="text-center" v-if="screen.gt.xs">Action</td>
         </tr>
-        <tr>
+        <tr v-if="userStore.getUser.roles.map((e) => e.name).includes('admin')">
           <td colspan="3"></td>
           <td class="text-right" :class="{ 'font-05': screen.lt.sm }">
             Discount
@@ -263,8 +263,10 @@ import { useCartStore } from "src/stores/cart-store";
 import useUtil from "src/composables/util";
 import ManageServiceForCart from "components/ManageServiceForCart.vue";
 import { ref, watch } from "vue";
+import { useUserStore } from "src/stores/user-store";
 
 const cartStore = useCartStore();
+const userStore = useUserStore();
 const { notify, dialog, screen, localStorage } = useQuasar();
 const { getTotalAmount, getTotal, api } = useUtil();
 const serviceShowed = ref(false);
@@ -362,6 +364,7 @@ const removeFromCart = (product) => {
 };
 
 const applyProductDiscount = (product) => {
+  if (!userStore.getUser.roles.map((e) => e.name).includes("admin")) return;
   if (isPreorder.value) return;
   dialog({
     prompt: {
@@ -379,6 +382,7 @@ const applyProductDiscount = (product) => {
 };
 
 const applyServiceDiscount = (service) => {
+  if (!userStore.getUser.roles.map((e) => e.name).includes("admin")) return;
   dialog({
     prompt: {
       model: service.discount > 0 ? service.discount : "",
@@ -406,6 +410,7 @@ const clearCart = () => {
 };
 
 const addOrderDiscount = () => {
+  if (!userStore.getUser.roles.map((e) => e.name).includes("admin")) return;
   dialog({
     title: "Add discount for this order",
     persistent: true,

@@ -13,7 +13,12 @@
         <q-item-section>
           <q-item-label>{{ item.name }}</q-item-label>
           <div class="row justify-start q-gutter-x-sm q-mt-sm">
-            <template v-if="userStore.getUser">
+            <template
+              v-if="
+                userStore.getUser &&
+                userStore.getUser.roles.map((e) => e.name).includes('admin')
+              "
+            >
               <q-btn
                 round
                 icon="add"
@@ -25,12 +30,6 @@
                 icon="edit"
                 dense
                 @click="showEditItemDialog(item)"
-              />
-              <q-btn
-                round
-                icon="open_in_new"
-                dense
-                @click="showItemDetailsDialog(item)"
               />
             </template>
 
@@ -71,7 +70,6 @@
 import useUtil from "src/composables/util";
 import { useQuasar } from "quasar";
 import EditItemDialog from "src/components/dialogs/EditItemDialog.vue";
-import ItemDetailDialog from "src/components/dialogs/ItemDetailDialog.vue";
 import ProductFormDialog from "src/components/dialogs/ProductFormDialog.vue";
 import usePagination from "src/composables/pagination";
 import { useUserStore } from "src/stores/user-store";
@@ -86,7 +84,7 @@ const fetchItems = (params) => {
       {
         method: "GET",
         url: "items",
-        params: params,
+        params,
       },
       false
     )
@@ -123,15 +121,6 @@ const showEditItemDialog = (item) => {
   }).onOk((item) => {
     const index = pagination.value.data.findIndex((e) => e.id == item.id);
     if (index >= 0) pagination.value.data.splice(index, 1, item);
-  });
-};
-
-const showItemDetailsDialog = (item) => {
-  dialog({
-    component: ItemDetailDialog,
-    componentProps: {
-      item: item,
-    },
   });
 };
 </script>

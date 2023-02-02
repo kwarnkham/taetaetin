@@ -14,7 +14,13 @@
           </q-item-label>
           <q-item-label caption>From : {{ product.item.name }}</q-item-label>
           <q-item-label>Price : {{ product.price }} MMK</q-item-label>
-          <q-item-label caption v-if="userStore.getUser">
+          <q-item-label
+            caption
+            v-if="
+              userStore.getUser &&
+              userStore.getUser.roles.map((e) => e.name).includes('admin')
+            "
+          >
             Purchase Price :
             {{ product.latest_batch.purchase.price }} MMK</q-item-label
           >
@@ -23,7 +29,12 @@
           </q-item-label>
 
           <div class="row justify-start q-gutter-x-sm q-mt-sm">
-            <template v-if="userStore.getUser">
+            <template
+              v-if="
+                userStore.getUser &&
+                userStore.getUser.roles.map((e) => e.name).includes('admin')
+              "
+            >
               <q-btn
                 round
                 icon="add"
@@ -36,21 +47,22 @@
                 dense
                 @click="showEditProductForm(product)"
               />
-              <q-btn
-                round
-                icon="shopping_cart"
-                color="positive"
-                dense
-                @click="showAddProductToCart(product)"
-              >
-                <q-badge color="primary" floating>
-                  {{
-                    cartStore.getCart.products.find((e) => e.id == product.id)
-                      ?.quantity ?? 0
-                  }}
-                </q-badge>
-              </q-btn>
             </template>
+            <q-btn
+              v-if="userStore.getUser"
+              round
+              icon="shopping_cart"
+              color="positive"
+              dense
+              @click="showAddProductToCart(product)"
+            >
+              <q-badge color="primary" floating>
+                {{
+                  cartStore.getCart.products.find((e) => e.id == product.id)
+                    ?.quantity ?? 0
+                }}
+              </q-badge>
+            </q-btn>
             <q-btn
               round
               icon="open_in_new"
@@ -101,7 +113,7 @@ const { api } = useUtil();
 const { dialog, notify } = useQuasar();
 const cartStore = useCartStore();
 const fetchProducts = (params) => {
-  if (params.stocked == "true") {
+  if (params.stocked == "true" || params.stocked == true) {
     params.stocked = 1;
   }
   return new Promise((resolve, reject) => {
