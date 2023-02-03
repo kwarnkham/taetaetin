@@ -4,7 +4,12 @@
     <div>From : {{ product.item.name }}</div>
     <div>Description: {{ product.item.description }}</div>
     <div>Price : {{ product.price }}</div>
-    <div v-if="userStore.getUser">
+    <div
+      v-if="
+        userStore.getUser &&
+        userStore.getUser.roles.map((role) => role.name).includes('admin')
+      "
+    >
       Purchase price: {{ product.latest_purchase.price }}
     </div>
     <div class="row items-center">
@@ -13,7 +18,31 @@
         icon="info"
         flat
         @click="showStockDetails"
-        v-if="userStore.getUser"
+        v-if="
+          userStore.getUser &&
+          userStore.getUser.roles.map((role) => role.name).includes('admin')
+        "
+      />
+    </div>
+    <q-form
+      @submit="submit"
+      v-if="
+        userStore.getUser &&
+        userStore.getUser.roles.map((role) => role.name).includes('admin')
+      "
+    >
+      <FileInput icon="add_a_photo" v-model="form.pictures" multiple required />
+      <div class="text-right">
+        <q-btn icon="upload" flat type="submit" />
+      </div>
+    </q-form>
+    <div class="row wrap justify-between">
+      <q-img
+        :class="{ 'col-6': $q.screen.gt.xs }"
+        :src="picture.name"
+        v-for="picture in product.pictures"
+        :key="picture.id"
+        @click="showImage(picture.name)"
       />
     </div>
   </q-page>
@@ -26,13 +55,42 @@ import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import StockDetailsDialog from "src/components/dialogs/StockDetailsDialog";
 import { useUserStore } from "src/stores/user-store";
+import FileInput from "src/components/FileInput.vue";
 
 const userStore = useUserStore();
 const product = ref(null);
-const { api } = useUtil();
+const { api, buildForm } = useUtil();
 const route = useRoute();
 const { dialog } = useQuasar();
+const form = ref({
+  type: "feature",
+  type_id: route.params.product,
+  pictures: [],
+});
+const submit = () => {
+  api({
+    method: "POST",
+    url: "pictures",
+    data: buildForm({
+      type: form.value.type,
+      type_id: form.value.type_id,
+      pictures: form.value.pictures,
+    }),
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  }).then((response) => {
+    product.value = response.data.feature;
+  });
+};
 
+const showImage = (src) => {
+  dialog({
+    maximized: true,
+    message: `<img src='${src}' style='width:90vw;'>`,
+    html: true,
+  });
+};
 const showStockDetails = () => {
   dialog({
     component: StockDetailsDialog,

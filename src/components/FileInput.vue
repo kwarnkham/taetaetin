@@ -8,6 +8,8 @@
     @rejected="onRejected"
     clearable
     use-chips
+    :multiple="multiple"
+    :required="required"
   >
     <template v-slot:prepend>
       <q-icon :name="icon" />
@@ -28,6 +30,14 @@ const props = defineProps({
   label: {
     type: String,
     default: "Picture",
+  },
+  multiple: {
+    type: Boolean,
+    default: false,
+  },
+  required: {
+    type: Boolean,
+    default: false,
   },
 });
 const emit = defineEmits(["update:modelValue"]);
