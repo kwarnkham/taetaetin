@@ -43,7 +43,16 @@
         v-for="picture in product.pictures"
         :key="picture.id"
         @click="showImage(picture.name)"
-      />
+      >
+        <div class="absolute-top text-right">
+          <q-btn
+            icon="delete_forever"
+            color="warning"
+            flat
+            @click.stop="deletePicture(picture)"
+          />
+        </div>
+      </q-img>
     </div>
   </q-page>
 </template>
@@ -83,7 +92,23 @@ const submit = () => {
     product.value = response.data.feature;
   });
 };
-
+const deletePicture = (picture) => {
+  dialog({
+    title: "Confirm",
+    message: "Do you want to delete the picture?",
+    persistent: true,
+    cancel: true,
+  }).onOk(() => {
+    api({
+      method: "DELETE",
+      url: "pictures/" + picture.id,
+    }).then(() => {
+      product.value.pictures = product.value.pictures.filter(
+        (e) => e.id != picture.id
+      );
+    });
+  });
+};
 const showImage = (src) => {
   dialog({
     maximized: true,
