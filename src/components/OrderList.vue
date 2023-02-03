@@ -134,6 +134,7 @@ const fetchOrders = (params) => {
 
 const showOrderCustomer = (order) => {
   dialog({
+    persistent: true,
     title: order.customer,
     message: `<div>Phone : ${order.phone}. </div>
               <div>Address : ${order.address}.</div>

@@ -124,6 +124,8 @@ const purchaseType = {
 const assignGroup = (purchase) => {
   dialog({
     title: `Add to group`,
+    persistent: true,
+    cancel: true,
     prompt: {
       model: "",
       type: "tel",

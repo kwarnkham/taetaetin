@@ -111,6 +111,7 @@ const deletePicture = (picture) => {
 };
 const showImage = (src) => {
   dialog({
+    persistent: true,
     maximized: true,
     message: `<img src='${src}' style='width:90vw;'>`,
     html: true,

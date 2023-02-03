@@ -306,6 +306,7 @@ const showEditCustomerDialog = () => {
 
 const showScreenshot = (payment) => {
   dialog({
+    persistent: true,
     title: "Payment screenshot",
     html: true,
     message: `<img src='${payment.pivot.picture}' style='width:100%'>`,

@@ -78,6 +78,7 @@ const userStore = useUserStore();
 
 const showQR = (payment) => {
   dialog({
+    persistent: true,
     title: `QR code for ${payment.payment_type.name} ${payment.number}`,
     message: `<img src='${payment.qr}' width='280'>`,
     html: true,
