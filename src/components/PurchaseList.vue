@@ -127,7 +127,7 @@ const assignGroup = (purchase) => {
     prompt: {
       model: "",
       type: "tel",
-      isValid: (val) => !isNaN(Number(val)),
+      isValid: (val) => !isNaN(Number(val)) && val != "",
     },
   }).onOk((val) => {
     api({
