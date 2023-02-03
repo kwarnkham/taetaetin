@@ -27,7 +27,7 @@ const routes = [
       {
         path: 'product/:product',
         component: () => import('pages/ProductDetails.vue'),
-        name: 'productDetails',
+        name: 'product-details',
       },
       {
         path: 'financial-records',
@@ -92,6 +92,11 @@ const routes = [
         path: 'item/:item',
         component: () => import('src/pages/ItemDetails.vue'),
         name: 'item-details',
+      },
+      {
+        path: 'change-password',
+        component: () => import('src/pages/ChangePassword.vue'),
+        name: 'change-password',
       }
     ]
   },

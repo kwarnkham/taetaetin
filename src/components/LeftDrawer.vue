@@ -80,6 +80,14 @@ const links = [
     requiresAuth: true,
     role: "admin",
   },
+  {
+    title: "Change Password",
+    caption: "",
+    icon: "lock",
+    route: "change-password",
+    requiresAuth: true,
+    role: "sale",
+  },
 ];
 
 const props = defineProps(["modelValue"]);

@@ -69,7 +69,7 @@
               dense
               @click="
                 $router.push({
-                  name: 'productDetails',
+                  name: 'product-details',
                   params: {
                     product: product.id,
                   },
