@@ -10,7 +10,7 @@
         userStore.getUser.roles.map((role) => role.name).includes('admin')
       "
     >
-      Purchase price: {{ product.latest_purchase.price }}
+      Purchase price: {{ product.latest_purchase?.price }}
     </div>
     <div class="row items-center">
       <div>Stock : {{ product.stock }}</div>
