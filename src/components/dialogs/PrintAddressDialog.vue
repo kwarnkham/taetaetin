@@ -77,7 +77,7 @@ const print = () => {
   printing.value = true;
   sendPrinterData(document.getElementById("print-target"))
     .then(() => {
-      // sendTextData("\u000A\u000D");
+      sendTextData("\u000A\u000D");
     })
     .catch((error) => {
       if (error) notify(error);
