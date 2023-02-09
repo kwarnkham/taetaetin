@@ -340,11 +340,14 @@ const addProdcutToCart = (product) => {
       product.price = Number(value);
       cartStore.addProduct({ product, quantity: 1 });
     });
-  } else cartStore.addProduct({ product, quantity: 1 });
+  } else increaseCartQuantity(product);
 };
 
 const increaseCartQuantity = (product) => {
-  if (product.stock > product.quantity)
+  const cartProduct = cartStore.getCart.products.find(
+    (e) => e.id == product.id
+  );
+  if (!cartProduct || product.stock > cartProduct.quantity)
     cartStore.addProduct({ product, quantity: 1 });
   else
     notify({
