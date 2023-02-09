@@ -126,6 +126,7 @@ const assignGroup = (purchase) => {
     title: `Add to group`,
     persistent: true,
     cancel: true,
+    position: "bottom",
     prompt: {
       model: "",
       type: "tel",

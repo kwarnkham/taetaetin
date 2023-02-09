@@ -12,7 +12,8 @@
     />
     <q-input v-model="formData.note" label="Note" required type="text" />
     <FileInput v-model="formData.picture" />
-    <div class="text-right">
+    <div class="text-right q-gutter-x-sm">
+      <q-btn label="Cancel" no-caps @click="$emit('closed')" />
       <q-btn label="Submit" no-caps type="submit" />
     </div>
   </q-form>
@@ -35,7 +36,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["expenseRecorded"]);
+const emit = defineEmits(["expenseRecorded", "closed"]);
 
 const formData = ref({
   price: "",

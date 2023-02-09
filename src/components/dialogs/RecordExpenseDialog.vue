@@ -1,10 +1,14 @@
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide">
+  <q-dialog ref="dialogRef" @hide="onDialogHide" position="bottom" persistent>
     <q-card
       class="q-dialog-plugin q-pa-sm"
       style="width: 500px; max-width: 100vw"
     >
-      <RecordExpenseForm :expense="expense" @expense-recorded="onDialogOK" />
+      <RecordExpenseForm
+        :expense="expense"
+        @expense-recorded="onDialogOK"
+        @closed="onDialogCancel"
+      />
     </q-card>
   </q-dialog>
 </template>

@@ -182,6 +182,7 @@ const showAddProductToCart = (product) => {
     },
     cancel: true,
     persistent: true,
+    position: "bottom",
   }).onOk((quantity) => {
     quantity = Number(quantity);
     if (

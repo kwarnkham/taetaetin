@@ -1,6 +1,9 @@
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide">
+  <q-dialog ref="dialogRef" @hide="onDialogHide" persistent position="bottom">
     <q-card class="q-dialog-plugin q-pa-sm">
+      <div class="text-right">
+        <q-btn icon="close" flat @click="onDialogCancel" />
+      </div>
       <CheckoutForm update @submitted="onDialogOK" :order="order" />
     </q-card>
   </q-dialog>

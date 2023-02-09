@@ -1,5 +1,5 @@
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide">
+  <q-dialog ref="dialogRef" @hide="onDialogHide" persistent position="bottom">
     <q-card
       class="q-dialog-plugin q-pa-sm"
       style="width: 500px; max-width: 100vw"
@@ -60,6 +60,7 @@ const editStock = (batch, type) => {
     title: `${type == 1 ? "Remove" : "Add"} the stock of product ${
       props.product.name
     }`,
+    position: "bottom",
     prompt: {
       model: "",
       type: "tel",

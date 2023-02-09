@@ -4,7 +4,8 @@
       {{ update ? "Update" : "Create" }} Expense {{ expense?.name }}
     </div>
     <q-input v-model="formData.name" label="Name" required autofocus />
-    <div class="text-right">
+    <div class="text-right q-gutter-x-sm">
+      <q-btn label="Closed" no-caps @click="$emit('closed')" />
       <q-btn label="Submit" no-caps type="submit" />
     </div>
   </q-form>
@@ -31,7 +32,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["expenseSubmitted"]);
+const emit = defineEmits(["expenseSubmitted", "closed"]);
 
 const formData = ref({
   name: props.expense.name,

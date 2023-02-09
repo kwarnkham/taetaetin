@@ -60,6 +60,7 @@ const addService = (service) => {
     persistent: true,
     cancel: true,
     title: "Quantity",
+    position: "bottom",
   }).onOk((quantity) => {
     emit("serviceAdded", {
       service,

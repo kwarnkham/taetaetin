@@ -3,6 +3,9 @@
     <div class="text-h6 text-center text-weight-bold" v-if="update">
       Update Product {{ product?.name }}
     </div>
+    <div class="text-h6 text-center text-weight-bold" v-else>
+      Create Product
+    </div>
     <q-input v-model="formData.name" label="Name" required dense autofocus />
     <q-input
       v-model.number="formData.purchase_price"
