@@ -168,13 +168,23 @@
         </tr>
       </tbody>
     </q-markup-table>
-    <div class="q-mt-sm row justify-around q-gutter-y-xs">
+    <div class="q-mt-sm row justify-around q-gutter-xs">
       <q-btn
         label="Pay"
         no-caps
         color="primary"
         @click="makePayment"
-        :disabled="[3, 4, 5].includes(order.status)"
+        :disabled="[3, 4, 5, 6].includes(order.status)"
+      />
+      <q-btn
+        label="Pack"
+        no-caps
+        color="secondary"
+        @click="packOrder"
+        :disabled="
+          [1, 2, 4, 5, 6].includes(order.status) ||
+          !userStore.getUser.roles.map((e) => e.name).includes('admin')
+        "
       />
       <q-btn
         label="Complete"
@@ -182,10 +192,11 @@
         color="positive"
         @click="completeOrder"
         :disabled="
-          order.status != 3 ||
+          [1, 2, 4, 5].includes(order.status) ||
           !userStore.getUser.roles.map((e) => e.name).includes('admin')
         "
       />
+
       <q-btn
         label="Cancel"
         no-caps
@@ -362,6 +373,26 @@ const completeOrder = () => {
       order.value = response.data.order;
       notify({
         message: "Order is completed",
+        type: "positive",
+      });
+    });
+  });
+};
+
+const packOrder = () => {
+  dialog({
+    title: "Confirmation",
+    message: "Do you want to pack the order?",
+    noBackdropDismiss: true,
+    cancel: true,
+  }).onOk(() => {
+    api({
+      method: "POST",
+      url: `orders/${order.value.id}/pack`,
+    }).then((response) => {
+      order.value = response.data.order;
+      notify({
+        message: "Order is packed",
         type: "positive",
       });
     });

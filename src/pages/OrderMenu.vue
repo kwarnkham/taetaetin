@@ -12,6 +12,7 @@
       <q-tab name="pending" icon="timer" no-caps />
       <q-tab name="partially-paid" icon="attach_money" no-caps />
       <q-tab name="paid" icon="paid" no-caps />
+      <q-tab name="packed" icon="local_shipping" no-caps />
       <q-tab name="completed" icon="done" no-caps />
       <q-tab name="canceled" icon="cancel" no-caps />
     </q-tabs>
@@ -27,6 +28,9 @@
       </q-tab-panel>
       <q-tab-panel name="paid" id="paid">
         <OrderList status="3" />
+      </q-tab-panel>
+      <q-tab-panel name="packed" id="packed">
+        <OrderList status="6" />
       </q-tab-panel>
       <q-tab-panel name="completed" id="completed">
         <OrderList status="5" />
