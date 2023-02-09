@@ -3,11 +3,13 @@
     <q-tabs
       v-model="tab"
       dense
-      class="text-grey"
+      class="text-grey full-width"
       active-color="primary"
       indicator-color="primary"
       align="justify"
       narrow-indicator
+      outside-arrows
+      mobile-arrows
     >
       <q-tab name="pending" icon="timer" no-caps />
       <q-tab name="partially-paid" icon="attach_money" no-caps />
