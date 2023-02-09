@@ -345,16 +345,18 @@ const addProdcutToCart = (product) => {
 };
 
 const increaseCartQuantity = (product) => {
-  const cartProduct = cartStore.getCart.products.find(
-    (e) => e.id == product.id
-  );
-  if (!cartProduct || product.stock > cartProduct.quantity)
-    cartStore.addProduct({ product, quantity: 1 });
-  else
-    notify({
-      message: "No enough stock",
-      type: "warning",
-    });
+  if (!isPreorder.value) {
+    const cartProduct = cartStore.getCart.products.find(
+      (e) => e.id == product.id
+    );
+    if (!cartProduct || product.stock > cartProduct.quantity)
+      cartStore.addProduct({ product, quantity: 1 });
+    else
+      notify({
+        message: "No enough stock",
+        type: "warning",
+      });
+  } else cartStore.addProduct({ product, quantity: 1 });
 };
 
 const removeFromCart = (product) => {
@@ -466,7 +468,7 @@ const editProductQuantity = (product) => {
         if (isPreorder.value) {
           return val != "" && val >= 0;
         } else {
-          return val <= product && val != "";
+          return val <= product.stock && val != "";
         }
       },
     },
