@@ -239,11 +239,7 @@ const { sendPrinterData, printBit, printSize, printTime, printing } =
 
 const print = () => {
   printing.value = true;
-  sendPrinterData(
-    document.getElementById("print-target"),
-    printSize.value,
-    printBit.value
-  )
+  sendPrinterData(document.getElementById("print-target"))
     .then(() => {
       // sendTextData("\u000A\u000D");
     })

@@ -77,9 +77,10 @@ const print = () => {
   printing.value = true;
   sendPrinterData(document.getElementById("print-target"))
     .then(() => {
-      sendTextData("\u000A\u000D");
+      sendTextData("");
     })
     .catch((error) => {
+      console.warn(error);
       if (error) notify(error);
       else notify("Printer has disconnected");
     })
