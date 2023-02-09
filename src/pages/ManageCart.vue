@@ -280,7 +280,7 @@ const changeOrder = () => {
     dialog({
       titel: "Confirm",
       message: "The cart will be cleared",
-      persistent: true,
+      noBackdropDismiss: true,
       cancel: true,
     }).onOk(() => {
       cartStore.clear();
@@ -335,7 +335,7 @@ const addProdcutToCart = (product) => {
         isValid: (val) => val >= 0 && val != "",
       },
       position: "bottom",
-      persistent: true,
+      noBackdropDismiss: true,
       cancel: true,
     }).onOk((value) => {
       product.price = Number(value);
@@ -359,7 +359,7 @@ const increaseCartQuantity = (product) => {
 
 const removeFromCart = (product) => {
   dialog({
-    persistent: true,
+    noBackdropDismiss: true,
     cancel: true,
     title: "Remove the product from cart?",
   }).onOk(() => {
@@ -377,7 +377,7 @@ const applyProductDiscount = (product) => {
       isValid: (val) => val <= product.price,
     },
     position: "bottom",
-    persistent: true,
+    noBackdropDismiss: true,
     cancel: true,
     title: "Apply discount for " + product.name,
   }).onOk((value) => {
@@ -395,7 +395,7 @@ const applyServiceDiscount = (service) => {
       isValid: (val) => val <= service.price,
     },
     position: "bottom",
-    persistent: true,
+    noBackdropDismiss: true,
     cancel: true,
     title: "Apply discount for " + service.name,
   }).onOk((value) => {
@@ -409,7 +409,7 @@ const clearCart = () => {
     title: "Confirm",
     message: "Do you want to clear cart?",
     cancel: true,
-    persistent: true,
+    noBackdropDismiss: true,
   }).onOk(() => {
     cartStore.clear();
   });
@@ -419,7 +419,7 @@ const addOrderDiscount = () => {
   if (!userStore.getUser.roles.map((e) => e.name).includes("admin")) return;
   dialog({
     title: "Add discount for this order",
-    persistent: true,
+    noBackdropDismiss: true,
     cancel: true,
     position: "bottom",
     prompt: {
@@ -439,7 +439,7 @@ const addOrderDiscount = () => {
 const decreaseCartQuantity = (product) => {
   if (product.quantity == 1)
     dialog({
-      persistent: true,
+      noBackdropDismiss: true,
       cancel: true,
       title: "Remove the product from cart?",
     }).onOk(() => {
@@ -456,7 +456,7 @@ const editProductQuantity = (product) => {
   dialog({
     title: `Edit ${product.name} quantity`,
     message: isPreorder.value ? undefined : `Remaining stock ${product.stock}`,
-    persistent: true,
+    noBackdropDismiss: true,
     cancel: true,
     position: "bottom",
     prompt: {
@@ -482,7 +482,7 @@ const editProductQuantity = (product) => {
 const editServiceQuantity = (service) => {
   dialog({
     title: `Edit ${service.name} quantity`,
-    persistent: true,
+    noBackdropDismiss: true,
     cancel: true,
     position: "bottom",
     prompt: {

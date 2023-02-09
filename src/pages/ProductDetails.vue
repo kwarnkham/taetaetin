@@ -96,7 +96,7 @@ const deletePicture = (picture) => {
   dialog({
     title: "Confirm",
     message: "Do you want to delete the picture?",
-    persistent: true,
+    noBackdropDismiss: true,
     cancel: true,
   }).onOk(() => {
     api({
@@ -111,7 +111,7 @@ const deletePicture = (picture) => {
 };
 const showImage = (src) => {
   dialog({
-    persistent: true,
+    noBackdropDismiss: true,
     maximized: true,
     message: `<img src='${src}' style='width:90vw;'>`,
     html: true,

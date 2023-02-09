@@ -276,8 +276,6 @@ const paid = computed(() =>
 const makePayment = () => {
   dialog({
     component: OrderPaymentDialog,
-    persistent: true,
-    cancel: true,
     componentProps: {
       order: order.value,
     },
@@ -306,7 +304,7 @@ const showEditCustomerDialog = () => {
 
 const showScreenshot = (payment) => {
   dialog({
-    persistent: true,
+    noBackdropDismiss: true,
     title: "Payment screenshot",
     html: true,
     message: `<img src='${payment.pivot.picture}' style='width:100%'>`,
@@ -334,7 +332,7 @@ const cancelOrder = () => {
   dialog({
     title: "Confirmation",
     message: "Do you want to cancel the order?",
-    persistent: true,
+    noBackdropDismiss: true,
     cancel: true,
   }).onOk(() => {
     api({
@@ -354,7 +352,7 @@ const completeOrder = () => {
   dialog({
     title: "Confirmation",
     message: "Do you want to complete the order?",
-    persistent: true,
+    noBackdropDismiss: true,
     cancel: true,
   }).onOk(() => {
     api({

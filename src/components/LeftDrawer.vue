@@ -105,7 +105,7 @@ const logout = () => {
     title: "Confirm",
     message: "Would you like to logout?",
     cancel: true,
-    persistent: true,
+    noBackdropDismiss: true,
   }).onOk(() => {
     api({
       method: "POST",

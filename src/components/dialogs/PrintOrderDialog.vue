@@ -1,5 +1,5 @@
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide" persistent maximized>
+  <q-dialog ref="dialogRef" @hide="onDialogHide" no-backdrop-dismiss maximized>
     <q-card class="column items-center no-wrap">
       <div class="receipt text-grey-10 column justify-start" id="print-target">
         <img

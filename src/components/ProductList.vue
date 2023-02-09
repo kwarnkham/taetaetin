@@ -160,7 +160,7 @@ const showEditProductForm = (product) => {
       product,
     },
     cancel: true,
-    persistent: true,
+    noBackdropDismiss: true,
   }).onOk((updatedProduct) => {
     updateProductList(updatedProduct);
   });
@@ -181,7 +181,7 @@ const showAddProductToCart = (product) => {
       type: "tel", // optional
     },
     cancel: true,
-    persistent: true,
+    noBackdropDismiss: true,
     position: "bottom",
   }).onOk((quantity) => {
     quantity = Number(quantity);

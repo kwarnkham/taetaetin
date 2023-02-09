@@ -124,7 +124,7 @@ const purchaseType = {
 const assignGroup = (purchase) => {
   dialog({
     title: `Add to group`,
-    persistent: true,
+    noBackdropDismiss: true,
     cancel: true,
     position: "bottom",
     prompt: {
@@ -196,7 +196,7 @@ const cancelPurchase = (purchase) => {
   dialog({
     title: "Confirmation",
     message: "Do you want to cancel?",
-    persistent: true,
+    noBackdropDismiss: true,
     cancel: true,
   }).onOk(() => {
     api({

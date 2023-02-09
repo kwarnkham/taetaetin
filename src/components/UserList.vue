@@ -69,7 +69,7 @@ const toggleRole = (role, user) => {
   dialog({
     title: "Confirm",
     message,
-    persistent: true,
+    noBackdropDismiss: true,
     cancel: true,
   }).onOk(() => {
     console.log(role);

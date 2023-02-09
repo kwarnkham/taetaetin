@@ -78,7 +78,7 @@ const userStore = useUserStore();
 
 const showQR = (payment) => {
   dialog({
-    persistent: true,
+    noBackdropDismiss: true,
     title: `QR code for ${payment.payment_type.name} ${payment.number}`,
     message: `<img src='${payment.qr}' width='280'>`,
     html: true,
@@ -129,7 +129,7 @@ const togglePayment = (payment) => {
       payment.status == 1 ? "disable" : "enable"
     } the payment`,
     cancel: true,
-    persistent: true,
+    noBackdropDismiss: true,
   }).onOk(() => {
     api({
       method: "POST",

@@ -57,7 +57,7 @@ const addService = (service) => {
       type: "tel",
       isValid: (val) => val !== "" && val >= 1,
     },
-    persistent: true,
+    noBackdropDismiss: true,
     cancel: true,
     title: "Quantity",
     position: "bottom",

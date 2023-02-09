@@ -1,5 +1,10 @@
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide" position="bottom" persistent>
+  <q-dialog
+    ref="dialogRef"
+    @hide="onDialogHide"
+    position="bottom"
+    no-backdrop-dismiss
+  >
     <q-card
       class="q-dialog-plugin q-pa-sm"
       style="width: 500px; max-width: 100vw"
