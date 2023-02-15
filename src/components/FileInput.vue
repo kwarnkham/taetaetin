@@ -4,7 +4,6 @@
     @update:model-value="updateValue"
     :label="label"
     accept=".jpg, image/*"
-    capture="environment"
     @rejected="onRejected"
     clearable
     use-chips
