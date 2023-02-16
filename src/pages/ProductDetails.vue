@@ -52,6 +52,7 @@
           'col-10': $q.screen.lt.sm,
           'full-width': product.pictures.length == 1,
         }"
+        fit="contain"
         :src="picture.name"
         v-for="picture in product.pictures"
         :key="picture.id"

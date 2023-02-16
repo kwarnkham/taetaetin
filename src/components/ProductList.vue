@@ -67,14 +67,7 @@
               round
               icon="open_in_new"
               dense
-              @click="
-                $router.push({
-                  name: 'product-details',
-                  params: {
-                    product: product.id,
-                  },
-                })
-              "
+              @click="showProductDetails(product)"
             />
           </div>
         </q-item-section>
@@ -102,6 +95,7 @@ import { useCartStore } from "src/stores/cart-store";
 import { useUserStore } from "src/stores/user-store";
 import { useRoute } from "vue-router";
 import ProductFormDialog from "./dialogs/ProductFormDialog.vue";
+import ProductDetailsDialog from "./dialogs/ProductDetailsDialog.vue";
 
 const props = defineProps({
   item_id: {
@@ -131,6 +125,15 @@ const fetchProducts = (params) => {
       .catch((error) => {
         reject(error);
       });
+  });
+};
+
+const showProductDetails = (product) => {
+  dialog({
+    component: ProductDetailsDialog,
+    componentProps: {
+      productId: product.id,
+    },
   });
 };
 const route = useRoute();
