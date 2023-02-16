@@ -67,14 +67,7 @@
               rounded
               no-caps
               label="See more"
-              @click="
-                $router.push({
-                  name: 'order-details',
-                  params: {
-                    order: order.id,
-                  },
-                })
-              "
+              @click="showOrderDetails(order)"
             />
             <q-btn
               v-if="order.customer"
@@ -104,6 +97,7 @@
 import useUtil from "src/composables/util";
 import usePagination from "src/composables/pagination";
 import { useQuasar, date } from "quasar";
+import OrderDetailsDialog from "./dialogs/OrderDetailsDialog.vue";
 
 const props = defineProps({
   hasDateFilter: { type: Boolean, default: false },
@@ -143,6 +137,14 @@ const showOrderCustomer = (order) => {
   });
 };
 
+const showOrderDetails = (order) => {
+  dialog({
+    component: OrderDetailsDialog,
+    componentProps: {
+      orderId: order.id,
+    },
+  });
+};
 const { pagination, max, current, total, profit, from, to, findByDates } =
   usePagination(fetchOrders, {
     hasDateFilter: props.hasDateFilter,
