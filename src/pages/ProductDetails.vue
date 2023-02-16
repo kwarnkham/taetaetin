@@ -47,7 +47,11 @@
       class="row wrap justify-between no-wrap full-width overflow-auto q-gutter-x-sm col"
     >
       <q-img
-        :class="{ 'col-6': $q.screen.gt.xs, 'col-10': $q.screen.lt.sm }"
+        :class="{
+          'col-6': $q.screen.gt.xs,
+          'col-10': $q.screen.lt.sm,
+          'full-width': product.pictures.length == 1,
+        }"
         :src="picture.name"
         v-for="picture in product.pictures"
         :key="picture.id"
