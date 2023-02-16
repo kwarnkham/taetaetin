@@ -20,6 +20,9 @@
         </div>
       </div>
     </template>
+    <div v-if="hasSearch">
+      <q-input v-model="search" placeholder="Search..." />
+    </div>
     <q-list bordered separator class="overflow-auto col">
       <q-item v-for="order in pagination?.data" :key="order.id">
         <q-item-section>
@@ -53,9 +56,11 @@
                 'text-primary': order.status == 3,
                 'text-negative': order.status == 4,
                 'text-positive': order.status == 5,
+                'text-accent': order.status == 6,
               }"
-              >{{ orderStatus[order.status] }}</span
             >
+              {{ orderStatus[order.status] }}
+            </span>
             at
             <span class="text-weight-bold">
               {{ formatDate(order.updated_at, "hh:mm:ss A DD/MM/YYYY") }}
@@ -98,10 +103,12 @@ import useUtil from "src/composables/util";
 import usePagination from "src/composables/pagination";
 import { useQuasar, date } from "quasar";
 import OrderDetailsDialog from "./dialogs/OrderDetailsDialog.vue";
+import { ref } from "vue";
 
 const props = defineProps({
   hasDateFilter: { type: Boolean, default: false },
   status: { required: false },
+  hasSearch: { type: Boolean, default: false },
 });
 const { formatDate } = date;
 const { localStorage, screen, dialog } = useQuasar();
@@ -145,9 +152,18 @@ const showOrderDetails = (order) => {
     },
   });
 };
-const { pagination, max, current, total, profit, from, to, findByDates } =
-  usePagination(fetchOrders, {
-    hasDateFilter: props.hasDateFilter,
-    status: props.status,
-  });
+const {
+  pagination,
+  max,
+  current,
+  total,
+  profit,
+  from,
+  to,
+  findByDates,
+  search,
+} = usePagination(fetchOrders, {
+  hasDateFilter: props.hasDateFilter,
+  status: props.status,
+});
 </script>

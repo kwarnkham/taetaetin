@@ -22,29 +22,20 @@
     <q-separator />
 
     <q-tab-panels v-model="tab" animated class="col">
-      <q-tab-panel name="pending" id="pending">
-        <OrderList status="1" />
-      </q-tab-panel>
-      <q-tab-panel name="partially-paid" id="partially-paid">
-        <OrderList status="2" />
-      </q-tab-panel>
-      <q-tab-panel name="paid" id="paid">
-        <OrderList status="3" />
-      </q-tab-panel>
-      <q-tab-panel name="packed" id="packed">
-        <OrderList status="6" />
-      </q-tab-panel>
-      <q-tab-panel name="completed" id="completed">
-        <OrderList status="5" />
-      </q-tab-panel>
-      <q-tab-panel name="canceled" id="canceled">
-        <OrderList status="4" />
+      <q-tab-panel
+        :name="status[1].split(' ').join('-').toLowerCase()"
+        :id="status[1].split(' ').join('-').toLowerCase()"
+        v-for="status in orderStatus"
+        :key="status[0]"
+      >
+        <OrderList :status="status[0]" has-search />
       </q-tab-panel>
     </q-tab-panels>
   </q-page>
 </template>
 
 <script setup>
+import { useQuasar } from "quasar";
 import OrderList from "src/components/OrderList.vue";
 import { ref, watch, onUpdated, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -52,11 +43,13 @@ import { useRoute, useRouter } from "vue-router";
 const route = useRoute();
 const tab = ref(route.query.tab ?? "pending");
 const router = useRouter();
-
+const { localStorage } = useQuasar();
+const orderStatus = Object.entries(localStorage.getItem("orderStatus"));
 watch(tab, () => {
   router.replace({
     name: route.name,
     query: {
+      ...route.query,
       tab: tab.value,
     },
   });
