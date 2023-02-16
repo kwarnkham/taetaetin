@@ -8,7 +8,6 @@
     clearable
     use-chips
     :multiple="multiple"
-    :required="required"
   >
     <template v-slot:prepend>
       <q-icon :name="icon" />
@@ -17,7 +16,10 @@
 </template>
 
 <script setup>
+import imageCompression from "browser-image-compression";
+import { useQuasar } from "quasar";
 // const props = defineProps(["modelValue", "icon", "label"]);
+const { loading } = useQuasar();
 const props = defineProps({
   modelValue: {
     required: true,
@@ -47,7 +49,34 @@ const onRejected = () => {
   });
 };
 
-const updateValue = (value) => {
-  emit("update:modelValue", value);
+const updateValue = (files) => {
+  loading.show();
+  const temp = [];
+  files.forEach((imageFile) => {
+    // console.log("originalFile instanceof Blob", imageFile instanceof Blob);
+    // console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
+    const options = {
+      maxSizeMB: 0.9,
+    };
+
+    imageCompression(imageFile, options)
+      .then(function (compressedFile) {
+        // console.log(
+        //   "compressedFile instanceof Blob",
+        //   compressedFile instanceof Blob
+        // ); // true
+        // console.log(
+        //   `compressedFile size ${compressedFile.size / 1024 / 1024} MB`
+        // ); // smaller than maxSizeMB
+        temp.push(compressedFile);
+        if (temp.length === files.length) {
+          emit("update:modelValue", temp);
+          loading.hide();
+        }
+      })
+      .catch(function (error) {
+        console.log(error.message);
+      });
+  });
 };
 </script>

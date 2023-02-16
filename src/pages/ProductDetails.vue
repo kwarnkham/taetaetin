@@ -33,7 +33,12 @@
     >
       <FileInput icon="add_a_photo" v-model="form.pictures" multiple required />
       <div class="text-right">
-        <q-btn icon="upload" flat type="submit" />
+        <q-btn
+          icon="upload"
+          flat
+          type="submit"
+          :disabled="form.pictures.length <= 0"
+        />
       </div>
     </q-form>
     <div class="row wrap justify-between">
