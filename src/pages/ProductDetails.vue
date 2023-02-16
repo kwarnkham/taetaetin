@@ -25,6 +25,7 @@
       />
     </div>
     <q-form
+      class="full-width"
       @submit="submit"
       v-if="
         userStore.getUser &&
@@ -37,6 +38,7 @@
           icon="upload"
           flat
           type="submit"
+          :color="form.pictures.length <= 0 ? '' : 'primary'"
           :disabled="form.pictures.length <= 0"
         />
       </div>
@@ -90,19 +92,27 @@ const form = ref({
   pictures: [],
 });
 const submit = () => {
-  api({
-    method: "POST",
-    url: "pictures",
-    data: buildForm({
-      type: form.value.type,
-      type_id: form.value.type_id,
-      pictures: form.value.pictures,
-    }),
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  }).then((response) => {
-    product.value = response.data.feature;
+  Promise.all(
+    form.value.pictures.map((picture) =>
+      api({
+        method: "POST",
+        url: "pictures",
+        data: buildForm({
+          type: form.value.type,
+          type_id: form.value.type_id,
+          pictures: [picture],
+        }),
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+    )
+  ).then((responses) => {
+    product.value = responses.find(
+      (e) =>
+        e.data.feature.pictures.length ==
+        form.value.pictures.length + product.value.pictures.length
+    ).data.feature;
     form.value.pictures = [];
   });
 };

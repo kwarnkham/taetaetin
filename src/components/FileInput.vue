@@ -50,6 +50,10 @@ const onRejected = () => {
 };
 
 const updateValue = (files) => {
+  if (!files) {
+    emit("update:modelValue", []);
+    return;
+  }
   if (files.length > 0) loading.show();
   const temp = [];
   files.forEach((imageFile) => {
