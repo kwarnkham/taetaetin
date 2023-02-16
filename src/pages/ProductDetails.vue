@@ -1,5 +1,5 @@
 <template>
-  <q-page padding v-if="product">
+  <q-page padding v-if="product" :style-fn="vhPage" class="column">
     <div class="text-h6">{{ product.name }}</div>
     <div>From : {{ product.item.name }}</div>
     <div>Description: {{ product.item.description }}</div>
@@ -41,9 +41,11 @@
         />
       </div>
     </q-form>
-    <div class="row wrap justify-between">
+    <div
+      class="row wrap justify-between no-wrap full-width overflow-auto q-gutter-x-sm col"
+    >
       <q-img
-        :class="{ 'col-6': $q.screen.gt.xs }"
+        :class="{ 'col-6': $q.screen.gt.xs, 'col-10': $q.screen.lt.sm }"
         :src="picture.name"
         v-for="picture in product.pictures"
         :key="picture.id"
@@ -79,7 +81,7 @@ import FileInput from "src/components/FileInput.vue";
 
 const userStore = useUserStore();
 const product = ref(null);
-const { api, buildForm } = useUtil();
+const { api, buildForm, vhPage } = useUtil();
 const route = useRoute();
 const { dialog } = useQuasar();
 const form = ref({
@@ -101,6 +103,7 @@ const submit = () => {
     },
   }).then((response) => {
     product.value = response.data.feature;
+    form.value.pictures = [];
   });
 };
 const deletePicture = (picture) => {

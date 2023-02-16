@@ -61,6 +61,9 @@ export default function useUtil () {
     getTotalAmount (array, price, quantity) {
       return array.reduce((carry, el) => (el[price] - (el.discount ?? 0)) * el[quantity] + carry, 0)
     },
+    vhPage: (offset, height) => ({
+      height: height - offset + "px",
+    }),
     async init () {
       loading.show()
       try {
