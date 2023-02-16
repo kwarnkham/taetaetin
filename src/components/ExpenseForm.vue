@@ -5,7 +5,7 @@
     </div>
     <q-input v-model="formData.name" label="Name" required autofocus />
     <div class="text-right q-gutter-x-sm">
-      <q-btn label="Closed" no-caps @click="$emit('closed')" />
+      <q-btn label="Close" no-caps @click="$emit('closed')" v-if="update" />
       <q-btn label="Submit" no-caps type="submit" />
     </div>
   </q-form>

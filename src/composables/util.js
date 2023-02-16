@@ -2,7 +2,7 @@ import { api as axios } from "boot/axios";
 import { useQuasar } from "quasar";
 
 export default function useUtil () {
-  const { loading, notify, localStorage } = useQuasar();
+  const { loading, notify, localStorage, loadingBar } = useQuasar();
 
   return {
     pickBy (data) {
@@ -32,9 +32,10 @@ export default function useUtil () {
       });
       return formData;
     },
-    api (options, showLoading = true) {
+    api (options, showLoading = false) {
       if (showLoading)
         loading.show()
+      else loadingBar.start()
       return new Promise((resolve, reject) => {
         axios(options).then(response => {
           resolve(response)
@@ -52,6 +53,7 @@ export default function useUtil () {
         }).finally(() => {
           if (showLoading)
             loading.hide()
+          else loadingBar.stop()
         })
       })
     },
