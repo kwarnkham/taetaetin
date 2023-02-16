@@ -111,7 +111,7 @@ const submit = () => {
     product.value = responses.find(
       (e) =>
         e.data.feature.pictures.length ==
-        form.value.pictures.length + product.value.pictures.length
+        Math.max(...responses.map((e) => e.data.feature.pictures.length))
     ).data.feature;
     form.value.pictures = [];
   });
