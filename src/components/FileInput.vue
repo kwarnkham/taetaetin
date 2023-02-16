@@ -50,7 +50,7 @@ const onRejected = () => {
 };
 
 const updateValue = (files) => {
-  loading.show();
+  if (files.length > 0) loading.show();
   const temp = [];
   files.forEach((imageFile) => {
     // console.log("originalFile instanceof Blob", imageFile instanceof Blob);
