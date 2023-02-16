@@ -28,7 +28,7 @@
       @submit="submit"
       v-if="
         userStore.getUser &&
-        userStore.getUser.roles.map((role) => role.name).includes('admin')
+        userStore.getUser.roles.map((role) => role.name).includes('sale')
       "
     >
       <FileInput icon="add_a_photo" v-model="form.pictures" multiple required />
@@ -44,7 +44,13 @@
         :key="picture.id"
         @click="showImage(picture.name)"
       >
-        <div class="absolute-top text-right">
+        <div
+          class="absolute-top text-right"
+          v-if="
+            userStore.getUser &&
+            userStore.getUser.roles.map((role) => role.name).includes('sale')
+          "
+        >
           <q-btn
             icon="delete_forever"
             color="warning"
