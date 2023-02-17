@@ -66,27 +66,24 @@ export default function usePagination (fetcher, options = {
   };
 
   onMounted(() => {
-    setTimeout(() => {
-      let query = JSON.parse(JSON.stringify(route.query))
-      if (options.hasDateFilter) query = { ...query, from: from.value, to: to.value }
-      if (options.status) query = { ...query, status: status.value }
-      if (options.type) query = { ...query, type: type.value }
-      if (options.group) query = { ...query, group: group.value }
-      if (options.onlyStocked) query = { ...query, stocked: onlyStocked.value }
-      if (options.canceled) query = { ...query, canceled: canceled.value }
-      router.replace({
-        name: route.name,
-        query
-      }).then(() => {
-        fetcher(query).then((response) => {
-          pagination.value = response.data.data;
-          current.value = response.data.data.current_page;
-          total.value = response.data.total
-          profit.value = response.data.profit
-        });
-      })
-    }, 100)
-
+    let query = JSON.parse(JSON.stringify(route.query))
+    if (options.hasDateFilter) query = { ...query, from: from.value, to: to.value }
+    if (options.status) query = { ...query, status: status.value }
+    if (options.type) query = { ...query, type: type.value }
+    if (options.group) query = { ...query, group: group.value }
+    if (options.onlyStocked) query = { ...query, stocked: onlyStocked.value }
+    if (options.canceled) query = { ...query, canceled: canceled.value }
+    router.replace({
+      name: route.name,
+      query
+    }).then(() => {
+      fetcher(query).then((response) => {
+        pagination.value = response.data.data;
+        current.value = response.data.data.current_page;
+        total.value = response.data.total
+        profit.value = response.data.profit
+      });
+    })
   })
 
   watch(current, () => {

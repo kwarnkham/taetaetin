@@ -11,7 +11,6 @@ export default function useTabPanels (defaultTab) {
     localStorage.set(route.name + ".tab", tab.value);
   });
   const updateItemListHeight = () => {
-    console.log(tab.value)
     const el = document.getElementById(tab.value);
     el.style.height =
       document.querySelector(".q-tab-panels").clientHeight + "px";
