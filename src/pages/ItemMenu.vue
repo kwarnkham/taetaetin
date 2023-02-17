@@ -24,12 +24,12 @@
     <q-separator />
 
     <q-tab-panels v-model="tab" animated class="col">
-      <q-tab-panel name="create-item">
-        <CreateItem />
+      <q-tab-panel name="create-item" id="create-item">
+        <CreateItem @vnode-mounted="updateItemListHeight" />
       </q-tab-panel>
 
       <q-tab-panel name="item-list" id="item-list">
-        <ItemList />
+        <ItemList @vnode-mounted="updateItemListHeight" />
       </q-tab-panel>
     </q-tab-panels>
   </q-page>
@@ -39,26 +39,8 @@
 import CreateItem from "src/components/CreateItem.vue";
 import ItemList from "src/components/ItemList.vue";
 import { useUserStore } from "src/stores/user-store";
-import { ref, watch, onUpdated, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import useTabPanels from "src/composables/tabPanels";
 
+const { tab, updateItemListHeight } = useTabPanels("item-list");
 const userStore = useUserStore();
-const route = useRoute();
-const tab = ref(route.query.tab ?? "item-list");
-const router = useRouter();
-watch(tab, () => {
-  router.replace({
-    name: route.name,
-    query: {
-      tab: tab.value,
-    },
-  });
-});
-const updateItemListHeight = () => {
-  if (tab.value == "item-list")
-    document.getElementById("item-list").style.height =
-      document.querySelector(".q-tab-panels").clientHeight + "px";
-};
-onUpdated(updateItemListHeight);
-onMounted(updateItemListHeight);
 </script>

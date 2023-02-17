@@ -28,7 +28,11 @@
         v-for="status in orderStatus"
         :key="status[0]"
       >
-        <OrderList :status="status[0]" has-search />
+        <OrderList
+          :status="status[0]"
+          has-search
+          @vnode-mounted="updateItemListHeight"
+        />
       </q-tab-panel>
     </q-tab-panels>
   </q-page>
@@ -37,27 +41,9 @@
 <script setup>
 import { useQuasar } from "quasar";
 import OrderList from "src/components/OrderList.vue";
-import { ref, watch, onUpdated, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import useTabPanels from "src/composables/tabPanels";
 
-const route = useRoute();
-const tab = ref(route.query.tab ?? "pending");
-const router = useRouter();
 const { localStorage } = useQuasar();
 const orderStatus = Object.entries(localStorage.getItem("orderStatus"));
-watch(tab, () => {
-  router.replace({
-    name: route.name,
-    query: {
-      ...route.query,
-      tab: tab.value,
-    },
-  });
-});
-const updateItemListHeight = () => {
-  document.getElementById(tab.value).style.height =
-    document.querySelector(".q-tab-panels").clientHeight + "px";
-};
-onUpdated(updateItemListHeight);
-onMounted(updateItemListHeight);
+const { tab, updateItemListHeight } = useTabPanels("pending");
 </script>

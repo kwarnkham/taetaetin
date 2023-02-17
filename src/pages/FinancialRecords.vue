@@ -17,10 +17,14 @@
 
     <q-tab-panels v-model="tab" animated class="col">
       <q-tab-panel name="purchase" id="purchase">
-        <PurchaseList has-date-filter />
+        <PurchaseList has-date-filter @vnode-mounted="updateItemListHeight" />
       </q-tab-panel>
       <q-tab-panel name="order" id="order">
-        <OrderList has-date-filter :status="5" />
+        <OrderList
+          has-date-filter
+          :status="5"
+          @vnode-mounted="updateItemListHeight"
+        />
       </q-tab-panel>
     </q-tab-panels>
   </q-page>
@@ -29,25 +33,7 @@
 <script setup>
 import OrderList from "src/components/OrderList.vue";
 import PurchaseList from "src/components/PurchaseList.vue";
-import { ref, watch, onUpdated, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import useTabPanels from "src/composables/tabPanels";
 
-const route = useRoute();
-const tab = ref(route.query.tab ?? "purchase");
-const router = useRouter();
-
-watch(tab, () => {
-  router.replace({
-    name: route.name,
-    query: {
-      tab: tab.value,
-    },
-  });
-});
-const updatePurchaseListHeight = () => {
-  document.getElementById(tab.value).style.height =
-    document.querySelector(".q-tab-panels").clientHeight + "px";
-};
-onUpdated(updatePurchaseListHeight);
-onMounted(updatePurchaseListHeight);
+const { tab, updateItemListHeight } = useTabPanels("purchase");
 </script>

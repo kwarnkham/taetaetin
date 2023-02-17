@@ -52,11 +52,14 @@ const { getUser } = storeToRefs(useUserStore());
 
 const router = useRouter();
 const submit = () => {
-  api({
-    method: "POST",
-    url: "login",
-    data: formData.value,
-  })
+  api(
+    {
+      method: "POST",
+      url: "login",
+      data: formData.value,
+    },
+    true
+  )
     .then((response) => {
       localStorage.set("token", response.data.token);
       axios.defaults.headers.common["Authorization"] =

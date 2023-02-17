@@ -1,7 +1,7 @@
 <template>
-  <div class="column">
+  <div class="column fit">
     <div class="text-subtitle1 text-weight-bold text-center">Service List</div>
-    <q-list bordered separator class="overflow-auto col">
+    <q-list bordered separator class="col overflow-auto">
       <q-item v-for="service in pagination?.data" :key="service.id">
         <q-item-section>
           <q-item-label>

@@ -25,10 +25,10 @@
 
     <q-tab-panels v-model="tab" animated class="col">
       <q-tab-panel name="product-list" id="product-list">
-        <ProductList />
+        <ProductList @vnode-mounted="updateItemListHeight" />
       </q-tab-panel>
       <q-tab-panel name="stock-summery" id="stock-summery">
-        <ProductStockSummery />
+        <ProductStockSummery @vnode-mounted="updateItemListHeight" />
       </q-tab-panel>
     </q-tab-panels>
   </q-page>
@@ -37,29 +37,9 @@
 <script setup>
 import ProductList from "src/components/ProductList.vue";
 import ProductStockSummery from "src/components/ProductStockSummery.vue";
+import useTabPanels from "src/composables/tabPanels";
 import { useUserStore } from "src/stores/user-store";
-import { ref, watch, onUpdated, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
 
-const route = useRoute();
-const tab = ref(route.query.tab ?? "product-list");
-const router = useRouter();
 const userStore = useUserStore();
-
-watch(tab, () => {
-  router.replace({
-    name: route.name,
-    query: {
-      tab: tab.value,
-    },
-  });
-});
-const updateItemListHeight = () => {
-  if (tab.value == "product-list") {
-    document.getElementById("product-list").style.height =
-      document.querySelector(".q-tab-panels").clientHeight + "px";
-  }
-};
-onUpdated(updateItemListHeight);
-onMounted(updateItemListHeight);
+const { tab, updateItemListHeight } = useTabPanels("product-list");
 </script>

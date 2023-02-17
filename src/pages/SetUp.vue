@@ -34,7 +34,7 @@
 
     <q-tab-panels v-model="tab" animated class="col">
       <q-tab-panel name="expense" id="expense" class="column no-wrap">
-        <ExpenseForm />
+        <ExpenseForm @vnode-mounted="updateItemListHeight" />
         <ExpenseList class="col q-mt-sm" />
       </q-tab-panel>
       <q-tab-panel name="payment" id="payment" class="column no-wrap">
@@ -43,12 +43,13 @@
             userStore.getUser &&
             userStore.getUser.roles.map((e) => e.name).includes('admin')
           "
+          @vnode-mounted="updateItemListHeight"
         />
-        <PaymentList />
+        <PaymentList class="col" />
       </q-tab-panel>
       <q-tab-panel name="service" id="service" class="column no-wrap">
-        <ServiceForm />
-        <ServiceList />
+        <ServiceForm @vnode-mounted="updateItemListHeight" />
+        <ServiceList class="col" />
       </q-tab-panel>
     </q-tab-panels>
   </q-page>
@@ -61,26 +62,9 @@ import PaymentForm from "src/components/PaymentForm.vue";
 import PaymentList from "src/components/PaymentList.vue";
 import ServiceForm from "src/components/ServiceForm.vue";
 import ServiceList from "src/components/ServiceList.vue";
+import useTabPanels from "src/composables/tabPanels";
 import { useUserStore } from "src/stores/user-store";
-import { ref, watch, onUpdated, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
 
-const route = useRoute();
-const tab = ref(route.query.tab ?? "payment");
-const router = useRouter();
 const userStore = useUserStore();
-watch(tab, () => {
-  router.replace({
-    name: route.name,
-    query: {
-      tab: tab.value,
-    },
-  });
-});
-const updateTabPanelHeight = () => {
-  document.getElementById(tab.value).style.height =
-    document.querySelector(".q-tab-panels").clientHeight + "px";
-};
-onUpdated(updateTabPanelHeight);
-onMounted(updateTabPanelHeight);
+const { tab, updateItemListHeight } = useTabPanels("payment");
 </script>
