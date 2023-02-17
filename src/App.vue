@@ -4,9 +4,9 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import useUtil from "./composables/util";
+import useApp from "src/composables/app";
 
-const { init } = useUtil();
+const { init } = useApp();
 
 const isReady = ref(false);
 onMounted(() => {

@@ -139,8 +139,8 @@
           <td colspan="3" class="text-right">Total</td>
           <td class="text-right">
             {{
-              getTotal(cartStore.getCart.products, "quantity") +
-              getTotal(cartStore.getCart.services, "quantity")
+              sumArray(cartStore.getCart.products, "quantity") +
+              sumArray(cartStore.getCart.services, "quantity")
             }}
           </td>
 
@@ -264,11 +264,13 @@ import useUtil from "src/composables/util";
 import ManageServiceForCart from "components/ManageServiceForCart.vue";
 import { ref, watch } from "vue";
 import { useUserStore } from "src/stores/user-store";
+import useApp from "src/composables/app";
 
 const cartStore = useCartStore();
 const userStore = useUserStore();
 const { notify, dialog, screen, localStorage } = useQuasar();
-const { getTotalAmount, getTotal, api } = useUtil();
+const { api } = useUtil();
+const { sumArray, getTotalAmount } = useApp();
 const serviceShowed = ref(false);
 const search = ref("");
 const products = ref([]);
