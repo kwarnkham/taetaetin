@@ -126,7 +126,7 @@ const assignGroup = (purchase) => {
     title: `Add to group`,
     noBackdropDismiss: true,
     cancel: true,
-    position: "bottom",
+    position: "top",
     prompt: {
       model: "",
       type: "tel",

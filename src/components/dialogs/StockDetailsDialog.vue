@@ -3,7 +3,7 @@
     ref="dialogRef"
     @hide="onDialogHide"
     no-backdrop-dismiss
-    position="bottom"
+    position="top"
   >
     <q-card
       class="q-dialog-plugin q-pa-sm"
@@ -65,7 +65,7 @@ const editStock = (batch, type) => {
     title: `${type == 1 ? "Remove" : "Add"} the stock of product ${
       props.product.name
     }`,
-    position: "bottom",
+    position: "top",
     prompt: {
       model: "",
       type: "tel",

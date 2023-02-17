@@ -185,7 +185,7 @@ const showAddProductToCart = (product) => {
     },
     cancel: true,
     noBackdropDismiss: true,
-    position: "bottom",
+    position: "top",
   }).onOk((quantity) => {
     quantity = Number(quantity);
     if (

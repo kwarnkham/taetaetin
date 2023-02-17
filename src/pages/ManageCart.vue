@@ -336,7 +336,7 @@ const addProdcutToCart = (product) => {
         type: "tel",
         isValid: (val) => val >= 0 && val != "",
       },
-      position: "bottom",
+      position: "top",
       noBackdropDismiss: true,
       cancel: true,
     }).onOk((value) => {
@@ -380,7 +380,7 @@ const applyProductDiscount = (product) => {
       type: "tel",
       isValid: (val) => val <= product.price,
     },
-    position: "bottom",
+    position: "top",
     noBackdropDismiss: true,
     cancel: true,
     title: "Apply discount for " + product.name,
@@ -398,7 +398,7 @@ const applyServiceDiscount = (service) => {
       type: "tel",
       isValid: (val) => val <= service.price,
     },
-    position: "bottom",
+    position: "top",
     noBackdropDismiss: true,
     cancel: true,
     title: "Apply discount for " + service.name,
@@ -425,7 +425,7 @@ const addOrderDiscount = () => {
     title: "Add discount for this order",
     noBackdropDismiss: true,
     cancel: true,
-    position: "bottom",
+    position: "top",
     prompt: {
       model: cartStore.getCart.discount > 0 ? cartStore.getCart.discount : "",
       type: "tel",
@@ -462,7 +462,7 @@ const editProductQuantity = (product) => {
     message: isPreorder.value ? undefined : `Remaining stock ${product.stock}`,
     noBackdropDismiss: true,
     cancel: true,
-    position: "bottom",
+    position: "top",
     prompt: {
       model: product.quantity,
       type: "tel",
@@ -488,7 +488,7 @@ const editServiceQuantity = (service) => {
     title: `Edit ${service.name} quantity`,
     noBackdropDismiss: true,
     cancel: true,
-    position: "bottom",
+    position: "top",
     prompt: {
       model: service.quantity,
       type: "tel",

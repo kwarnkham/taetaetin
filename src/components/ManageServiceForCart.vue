@@ -60,7 +60,7 @@ const addService = (service) => {
     noBackdropDismiss: true,
     cancel: true,
     title: "Quantity",
-    position: "bottom",
+    position: "top",
   }).onOk((quantity) => {
     emit("serviceAdded", {
       service,

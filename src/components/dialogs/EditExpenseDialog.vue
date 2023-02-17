@@ -2,7 +2,7 @@
   <q-dialog
     ref="dialogRef"
     @hide="onDialogHide"
-    position="bottom"
+    position="top"
     no-backdrop-dismiss
   >
     <q-card

@@ -3,7 +3,7 @@
     ref="dialogRef"
     @hide="onDialogHide"
     no-backdrop-dismiss
-    position="bottom"
+    position="top"
   >
     <q-card class="q-dialog-plugin q-pa-sm">
       <div class="text-right">
