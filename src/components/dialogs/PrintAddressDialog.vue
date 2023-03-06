@@ -70,7 +70,8 @@ const props = defineProps({
 });
 const { loading, notify, platform, localStorage } = useQuasar();
 
-const { sendPrinterData, printSize, printBit, printing } = usePrinter();
+const { sendPrinterData, printSize, printBit, printing, sendTextData } =
+  usePrinter();
 const isLocal = process.env.DEV;
 const settings = localStorage.getItem("settings");
 const print = () => {

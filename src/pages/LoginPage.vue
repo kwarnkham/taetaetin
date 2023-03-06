@@ -39,6 +39,7 @@ import { api as axios } from "boot/axios";
 import { useUserStore } from "stores/user-store";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
+import useApp from "src/composables/app";
 const formData = ref({
   name: "",
   password: "",
@@ -46,7 +47,8 @@ const formData = ref({
 
 const isPwd = ref(true);
 const { localStorage } = useQuasar();
-const { api, init } = useUtil();
+const { api } = useUtil();
+const { init } = useApp();
 const { setUser } = useUserStore();
 const { getUser } = storeToRefs(useUserStore());
 
