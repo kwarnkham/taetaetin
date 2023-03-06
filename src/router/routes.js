@@ -42,6 +42,10 @@ const routes = [
         path: 'set-up',
         component: () => import('src/pages/SetUp.vue'),
         name: 'set-up',
+        meta: {
+          requireAuth: true,
+          role: 'admin'
+        }
       },
       {
         path: 'manage-cart',
@@ -97,7 +101,20 @@ const routes = [
         path: 'change-password',
         component: () => import('src/pages/ChangePassword.vue'),
         name: 'change-password',
-      }
+        meta: {
+          requireAuth: true,
+          role: 'sale'
+        }
+      },
+      {
+        path: 'printer-setting',
+        component: () => import('src/pages/PrinterSetting.vue'),
+        name: 'printer-setting',
+        meta: {
+          requireAuth: true,
+          role: 'sale'
+        }
+      },
     ]
   },
 

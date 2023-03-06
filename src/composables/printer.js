@@ -23,6 +23,7 @@ export default function usePrinter () {
   });
 
   const sendTextData = (input) => {
+    loading.show()
     return new Promise((resolve, reject) => {
       // Get the bytes for the text
       const encoder = new TextEncoder("utf-8");
@@ -36,6 +37,8 @@ export default function usePrinter () {
       }).catch(() => {
         printerStore.setPrinter(null)
         reject('error writing data')
+      }).finally(() => {
+        loading.hide()
       });
     })
   }
@@ -149,6 +152,7 @@ export default function usePrinter () {
           await sendTextData('')
           await sendTextData('')
           document.getElementById(printId).remove()
+          loading.hide()
           resolve();
         } else {
           await sendTextData('')

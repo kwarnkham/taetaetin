@@ -34,16 +34,6 @@
       </div>
 
       <div class="row justify-around receipt">
-        <div class="col-12" v-if="!platform.is.iphone && !platform.is.ipad">
-          <div class="full-width q-px-lg">
-            <q-badge color="primary"> Size: {{ printSize }} (1 to 10) </q-badge>
-            <q-slider v-model="printSize" markers :min="1" :max="10" />
-          </div>
-          <div class="full-width q-px-lg">
-            <q-badge color="primary"> Format: {{ printBit }} </q-badge>
-            <q-slider v-model="printBit" markers :min="1" :max="5" />
-          </div>
-        </div>
         <q-btn icon="close" @click="onDialogHide"></q-btn>
         <q-btn
           v-if="!platform.is.iphone && !platform.is.ipad"
@@ -68,10 +58,9 @@ const props = defineProps({
     required: true,
   },
 });
-const { loading, notify, platform, localStorage } = useQuasar();
+const { notify, platform, localStorage } = useQuasar();
 
-const { sendPrinterData, printSize, printBit, printing, sendTextData } =
-  usePrinter();
+const { sendPrinterData, printing, sendTextData } = usePrinter();
 const isLocal = process.env.DEV;
 const settings = localStorage.getItem("settings");
 const print = () => {
@@ -87,9 +76,6 @@ const print = () => {
     })
     .finally(() => {
       printing.value = false;
-      loading.hide();
-      localStorage.set("printSize", printSize.value);
-      localStorage.set("printBit", printBit.value);
     });
 
   // sendPrinterData(document.getElementById("foo"));

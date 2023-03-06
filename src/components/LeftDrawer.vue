@@ -88,6 +88,14 @@ const links = [
     requiresAuth: true,
     role: "sale",
   },
+  {
+    title: "Printer Setting",
+    caption: "",
+    icon: "print",
+    route: "printer-setting",
+    requiresAuth: true,
+    role: "sale",
+  },
 ];
 
 const props = defineProps(["modelValue"]);
