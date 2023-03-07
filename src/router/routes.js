@@ -115,6 +115,15 @@ const routes = [
           role: 'sale'
         }
       },
+      {
+        path: 'payments',
+        component: () => import('src/pages/PaymentsPage.vue'),
+        name: 'payments',
+        meta: {
+          requireAuth: true,
+          role: 'sale'
+        }
+      },
     ]
   },
 

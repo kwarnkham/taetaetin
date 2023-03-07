@@ -71,6 +71,16 @@ const links = [
     caption: "Payments, expense, etc...",
     icon: "topic",
     route: "set-up",
+    requiresAuth: true,
+    role: "admin",
+  },
+  {
+    title: "Payments",
+    caption: "Available payment methods",
+    icon: "attach_money",
+    route: "payments",
+    requiresAuth: true,
+    role: "sale",
   },
   {
     title: "Users",
