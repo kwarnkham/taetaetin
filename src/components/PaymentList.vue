@@ -72,7 +72,7 @@ import { inject, onBeforeUnmount } from "vue";
 import { useUserStore } from "src/stores/user-store";
 
 const { api } = useUtil();
-const { dialog, notify } = useQuasar();
+const { dialog, notify, localStorage } = useQuasar();
 const bus = inject("bus");
 const userStore = useUserStore();
 
@@ -86,6 +86,7 @@ const showQR = (payment) => {
 };
 const updatePaymentList = (payment) => {
   pagination.value.data.unshift(payment);
+  localStorage.set("payments", pagination.value.data);
 };
 bus.on("paymentCreated", updatePaymentList);
 

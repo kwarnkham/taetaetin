@@ -285,6 +285,13 @@ const paid = computed(() =>
 );
 
 const makePayment = () => {
+  if (localStorage.getItem("payments")?.length == 0) {
+    notify({
+      message: "You dont' have payment setup",
+      type: "warning",
+    });
+    return;
+  }
   dialog({
     component: OrderPaymentDialog,
     componentProps: {
