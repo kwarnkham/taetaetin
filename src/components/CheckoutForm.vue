@@ -52,13 +52,13 @@ const formData = ref({
   phone: props.order?.phone ?? "",
   address: props.order?.address ?? "",
   note: props.order?.note ?? "",
-  features: localStorage.getItem("products") ?? [],
+  products: localStorage.getItem("products") ?? [],
   discount: localStorage.getItem("discount") ?? "",
   services: localStorage.getItem("services") ?? [],
 });
 const submit = () => {
   if (
-    formData.value.features.length <= 0 &&
+    formData.value.products.length <= 0 &&
     formData.value.services.length <= 0 &&
     !props.update
   ) {
@@ -71,7 +71,7 @@ const submit = () => {
   let url;
   if (isPreorder.value) {
     url = "orders/pre-order";
-    formData.value.items = formData.value.features.map((product) => ({
+    formData.value.items = formData.value.products.map((product) => ({
       id: product.id,
       price: product.price,
       quantity: product.quantity,

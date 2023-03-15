@@ -54,7 +54,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="product in order.features" :key="product.id">
+            <tr v-for="product in order.products" :key="product.id">
               <td class="text-left">
                 {{ product.name }}
               </td>
@@ -187,7 +187,7 @@ const totalQty = computed(
       (carry, service) => carry + service.pivot.quantity,
       0
     ) +
-    props.order.features.reduce(
+    props.order.products.reduce(
       (carry, product) => carry + product.pivot.quantity,
       0
     ) +
@@ -205,7 +205,7 @@ const total = computed(
         (service.pivot.price - service.pivot.discount) * service.pivot.quantity,
       0
     ) +
-    props.order.features.reduce(
+    props.order.products.reduce(
       (carry, product) =>
         carry +
         (product.pivot.price - product.pivot.discount) * product.pivot.quantity,

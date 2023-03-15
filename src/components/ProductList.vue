@@ -114,7 +114,7 @@ const fetchProducts = (params) => {
     api(
       {
         method: "GET",
-        url: "features",
+        url: "products",
         params: params,
       },
       false

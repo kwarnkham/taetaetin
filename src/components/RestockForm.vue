@@ -59,14 +59,14 @@ const formData = ref({
 const submit = () => {
   api({
     method: "POST",
-    url: `features/${props.product.id}/restock`,
+    url: `products/${props.product.id}/restock`,
     data: buildForm(pickBy(formData.value)),
     headers: {
       "Content-Type": "multipart/form-data",
     },
   })
     .then((response) => {
-      emit("restocked", response.data.feature);
+      emit("restocked", response.data.product);
       notify({
         message: "Success",
         type: "positive",

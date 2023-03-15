@@ -67,7 +67,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(product, key) in order.features" :key="product.id">
+        <tr v-for="(product, key) in order.products" :key="product.id">
           <td class="text-left">{{ key + 1 }}</td>
           <td class="text-left">{{ product.name }}</td>
           <td class="text-right">
@@ -109,7 +109,7 @@
         </tr>
         <tr v-for="(service, key) in order.services" :key="service.id">
           <td class="text-left">
-            {{ key + 1 + order.features.length + order.items.length }}
+            {{ key + 1 + order.products.length + order.items.length }}
           </td>
           <td class="text-left">{{ service.name }}</td>
           <td class="text-right">
@@ -247,7 +247,7 @@ const totalQty = computed(
       (carry, service) => carry + service.pivot.quantity,
       0
     ) +
-    order.value.features.reduce(
+    order.value.products.reduce(
       (carry, product) => carry + product.pivot.quantity,
       0
     ) +
@@ -265,7 +265,7 @@ const total = computed(
         (service.pivot.price - service.pivot.discount) * service.pivot.quantity,
       0
     ) +
-    order.value.features.reduce(
+    order.value.products.reduce(
       (carry, product) =>
         carry +
         (product.pivot.price - product.pivot.discount) * product.pivot.quantity,

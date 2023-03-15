@@ -24,7 +24,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(row, key) in summery" :key="row.feature_id">
+        <tr v-for="(row, key) in summery" :key="row.product_id">
           <td class="text-left">{{ key + 1 }}</td>
           <td class="text-left">{{ row.product }}</td>
           <td class="text-left">{{ row.item }}</td>

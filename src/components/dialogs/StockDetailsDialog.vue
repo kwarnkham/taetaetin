@@ -85,7 +85,7 @@ const editStock = (batch, type) => {
         type: type, //1 reduce , 2 addd,
       },
     }).then((response) => {
-      onDialogOK(response.data.feature);
+      onDialogOK(response.data.product);
     });
   });
 };

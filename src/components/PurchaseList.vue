@@ -113,12 +113,12 @@ const props = defineProps({
     default: false,
   },
 });
-const purchaseTypes = ["All", "Feature", "Expense"];
+const purchaseTypes = ["All", "Product", "Expense"];
 const { api } = useUtil();
 const { dialog, notify, screen } = useQuasar();
 const route = useRoute();
 const purchaseType = {
-  "App\\Models\\Feature": "Product",
+  "App\\Models\\Product": "Product",
   "App\\Models\\Expense": "Expense",
 };
 const assignGroup = (purchase) => {
@@ -152,7 +152,7 @@ const fetchPurchases = (params = {}) => {
   }
   const types = {
     All: undefined,
-    Feature: "App\\Models\\Feature",
+    Product: "App\\Models\\Product",
     Expense: "App\\Models\\Expense",
   };
 

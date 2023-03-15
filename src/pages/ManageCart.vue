@@ -314,7 +314,7 @@ watch(
         limit: 5,
       };
     } else {
-      options.url = "features";
+      options.url = "products";
       options.params = {
         search: search.value,
         limit: 5,

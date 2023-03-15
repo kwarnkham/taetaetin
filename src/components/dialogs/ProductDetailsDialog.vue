@@ -112,7 +112,7 @@ const product = ref(null);
 const { api, buildForm } = useUtil();
 const { dialog } = useQuasar();
 const form = ref({
-  type: "feature",
+  type: "product",
   type_id: props.productId,
   pictures: [],
 });
@@ -135,9 +135,9 @@ const submit = () => {
   ).then((responses) => {
     product.value = responses.find(
       (e) =>
-        e.data.feature.pictures.length ==
-        Math.max(...responses.map((e) => e.data.feature.pictures.length))
-    ).data.feature;
+        e.data.product.pictures.length ==
+        Math.max(...responses.map((e) => e.data.product.pictures.length))
+    ).data.product;
     form.value.pictures = [];
   });
 };
@@ -179,10 +179,10 @@ const showStockDetails = () => {
 };
 onMounted(() => {
   api({
-    url: "features/" + props.productId,
+    url: "products/" + props.productId,
     method: "GET",
   }).then((response) => {
-    product.value = response.data.feature;
+    product.value = response.data.product;
   });
 });
 </script>

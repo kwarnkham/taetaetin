@@ -96,7 +96,7 @@ const formData = ref({
 });
 
 const submit = () => {
-  const url = props.update ? "features/" + props.product.id : "features";
+  const url = props.update ? "products/" + props.product.id : "products";
   if (props.update) formData.value._method = "PUT";
   api({
     method: "POST",
@@ -107,7 +107,7 @@ const submit = () => {
     },
   })
     .then((response) => {
-      emit("productSubmitted", response.data.feature);
+      emit("productSubmitted", response.data.product);
       notify({
         message: "Success",
         type: "positive",

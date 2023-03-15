@@ -92,7 +92,7 @@ const { api, buildForm, vhPage } = useUtil();
 const route = useRoute();
 const { dialog } = useQuasar();
 const form = ref({
-  type: "feature",
+  type: "product",
   type_id: route.params.product,
   pictures: [],
 });
@@ -115,9 +115,9 @@ const submit = () => {
   ).then((responses) => {
     product.value = responses.find(
       (e) =>
-        e.data.feature.pictures.length ==
-        Math.max(...responses.map((e) => e.data.feature.pictures.length))
-    ).data.feature;
+        e.data.product.pictures.length ==
+        Math.max(...responses.map((e) => e.data.product.pictures.length))
+    ).data.product;
     form.value.pictures = [];
   });
 };
@@ -159,10 +159,10 @@ const showStockDetails = () => {
 };
 onMounted(() => {
   api({
-    url: "features/" + route.params.product,
+    url: "products/" + route.params.product,
     method: "GET",
   }).then((response) => {
-    product.value = response.data.feature;
+    product.value = response.data.product;
   });
 });
 </script>
