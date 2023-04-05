@@ -6,18 +6,7 @@
         id="print-target"
       >
         <div class="text-right">
-          <img
-            src="~assets/delivery-logo.png"
-            alt="print_logo"
-            width="300"
-            v-if="isLocal || !settings"
-          />
-          <img
-            :src="settings.assets.delivery_logo + '?' + Date.now()"
-            alt="print_logo"
-            width="360"
-            v-else
-          />
+          <img src="~assets/delivery-logo.png" alt="print_logo" width="300" />
         </div>
         <div class="row items-center">
           {{ order.customer }}
@@ -58,11 +47,9 @@ const props = defineProps({
     required: true,
   },
 });
-const { notify, platform, localStorage } = useQuasar();
+const { notify, platform } = useQuasar();
 
 const { sendPrinterData, printing, sendTextData } = usePrinter();
-const isLocal = process.env.DEV;
-const settings = localStorage.getItem("settings");
 const print = () => {
   printing.value = true;
   sendPrinterData(document.getElementById("print-target"))

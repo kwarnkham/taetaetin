@@ -2,18 +2,7 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide" no-backdrop-dismiss maximized>
     <q-card class="column items-center no-wrap">
       <div class="receipt text-grey-10 column justify-start" id="print-target">
-        <img
-          src="~assets/print-logo.png"
-          alt="print_logo"
-          width="360"
-          v-if="isLocal || !settings"
-        />
-        <img
-          :src="settings.assets.print_logo"
-          alt="print_logo"
-          width="360"
-          v-else
-        />
+        <img src="~assets/print-logo.png" alt="print_logo" width="360" />
 
         <div class="row justify-between full-width no-wrap">
           <div class="col" v-if="order.customer">
@@ -178,9 +167,7 @@ const props = defineProps({
     required: true,
   },
 });
-const { notify, platform, localStorage } = useQuasar();
-const settings = localStorage.getItem("settings");
-const isLocal = process.env.DEV;
+const { notify, platform } = useQuasar();
 const totalQty = computed(
   () =>
     props.order.services.reduce(
