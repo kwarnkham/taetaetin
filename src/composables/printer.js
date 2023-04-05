@@ -48,7 +48,7 @@ export default function usePrinter () {
       message: "Printing...",
     });
     height.value = Math.round((node.clientHeight * width.value) / 360);
-    const dataUrl = await domtoimage.toPng(node, { cacheBust: true })
+    const dataUrl = await domtoimage.toPng(node)
 
     const printTarget = new Image();
     printTarget.src = dataUrl;
