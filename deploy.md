@@ -1,9 +1,8 @@
 ```
-scp spa.zip root@facile.madewithheart.tech:/root/
+scp spa.zip root@coffee.book-mm.com:/root/
 
-cd /var/www/taetaetin && rm -r ./* && mv /root/spa.zip ./spa.zip && unzip spa.zip && rm spa.zip && mv spa/* ./ && rm -r spa
+cd /etc/nginx/html/taetaetin && rm -rf ./* && mv /root/spa.zip ./spa.zip && unzip spa.zip && rm -rf spa.zip && mv spa/* ./ && rm -rf spa
 
-cd /var/www/maymay-client && rm -r ./* && mv /root/spa.zip ./spa.zip && unzip spa.zip && rm spa.zip && mv spa/* ./ && rm -r spa
 
 systemctl restart nginx
 ```
