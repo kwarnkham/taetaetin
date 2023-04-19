@@ -66,6 +66,15 @@ const routes = [
         }
       },
       {
+        path: 'sale',
+        component: () => import('src/pages/SalePage.vue'),
+        name: 'sale',
+        meta: {
+          requireAuth: true,
+          role: 'sale'
+        }
+      },
+      {
         path: 'order-menu',
         component: () => import('src/pages/OrderMenu.vue'),
         name: 'order-menu',

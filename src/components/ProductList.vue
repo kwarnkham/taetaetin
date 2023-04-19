@@ -93,10 +93,11 @@ import RestockDialog from "src/components/dialogs/RestockDialog.vue";
 import usePagination from "src/composables/pagination";
 import { useCartStore } from "src/stores/cart-store";
 import { useUserStore } from "src/stores/user-store";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import ProductFormDialog from "./dialogs/ProductFormDialog.vue";
 import ProductDetailsDialog from "./dialogs/ProductDetailsDialog.vue";
 import useSearchFilter from "src/composables/searchFilter";
+import useCart from "src/composables/cart";
 
 const props = defineProps({
   item_id: {
@@ -104,8 +105,10 @@ const props = defineProps({
   },
 });
 const userStore = useUserStore();
-const { dialog, notify } = useQuasar();
+const { dialog } = useQuasar();
 const cartStore = useCartStore();
+
+const { showAddProductToCart } = useCart();
 
 const showProductDetails = (product) => {
   dialog({
@@ -158,38 +161,5 @@ const updateProductList = (updatedProduct) => {
     (e) => e.id == updatedProduct.id
   );
   if (index >= 0) pagination.value.data.splice(index, 1, updatedProduct);
-};
-
-const showAddProductToCart = (product) => {
-  dialog({
-    title: "Quantity",
-    prompt: {
-      model: "1",
-      type: "tel", // optional
-    },
-    cancel: true,
-    noBackdropDismiss: true,
-    position: "top",
-  }).onOk((quantity) => {
-    quantity = Number(quantity);
-    if (
-      (cartStore.getCart.products.find((e) => e.id == product.id)?.quantity ??
-        0) +
-        quantity >
-      product.stock
-    ) {
-      notify({
-        message: "No enough stock",
-        type: "warning",
-      });
-      return;
-    }
-
-    cartStore.addProduct({ product, quantity });
-    notify({
-      message: "Added to cart",
-      type: "positive",
-    });
-  });
 };
 </script>

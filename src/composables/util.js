@@ -41,11 +41,7 @@ export default function useUtil () {
           resolve(response)
         }).catch(error => {
           notify({
-            message: error.message,
-            type: 'negative'
-          })
-          notify({
-            message: error?.response?.data?.message,
+            message: error?.response?.data?.message ?? error.message,
             type: 'negative'
           })
 

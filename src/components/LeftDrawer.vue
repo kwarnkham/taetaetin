@@ -39,6 +39,13 @@ import { useRouter } from "vue-router";
 
 const links = [
   {
+    title: "Sale",
+    icon: "point_of_sale",
+    route: "sale",
+    requiresAuth: true,
+    role: "sale",
+  },
+  {
     title: "Item",
     caption: "Manage items",
     icon: "inventory_2",
