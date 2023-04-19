@@ -16,12 +16,12 @@
           </template>
         </q-input>
         <div class="q-my-sm" :class="{ 'text-right col-12': screen.lt.sm }">
-          <q-btn icon="search" @click="findByDates" />
+          <q-btn icon="search" @click="searchByDates" />
         </div>
       </div>
     </template>
     <div v-if="hasSearch">
-      <q-input v-model="search" placeholder="Search..." />
+      <q-input v-model="search" placeholder="Search by phone number or ID" />
     </div>
     <q-list bordered separator class="overflow-auto col">
       <q-item v-for="order in pagination?.data" :key="order.id">
@@ -99,10 +99,11 @@
 </template>
 
 <script setup>
-import useUtil from "src/composables/util";
 import usePagination from "src/composables/pagination";
 import { useQuasar, date } from "quasar";
 import OrderDetailsDialog from "./dialogs/OrderDetailsDialog.vue";
+import useSearchFilter from "src/composables/searchFilter";
+import useDateFilter from "src/composables/dateFilter";
 
 const props = defineProps({
   hasDateFilter: { type: Boolean, default: false },
@@ -111,26 +112,7 @@ const props = defineProps({
 });
 const { formatDate } = date;
 const { localStorage, screen, dialog } = useQuasar();
-const { api } = useUtil();
 const orderStatus = localStorage.getItem("orderStatus");
-const fetchOrders = (params) => {
-  return new Promise((resolve, reject) => {
-    api(
-      {
-        method: "GET",
-        url: "orders",
-        params: params,
-      },
-      false
-    )
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-};
 
 const showOrderCustomer = (order) => {
   dialog({
@@ -151,18 +133,12 @@ const showOrderDetails = (order) => {
     },
   });
 };
-const {
-  pagination,
-  max,
-  current,
-  total,
-  profit,
-  from,
-  to,
-  findByDates,
-  search,
-} = usePagination(fetchOrders, {
-  hasDateFilter: props.hasDateFilter,
-  status: props.status,
-});
+const { pagination, max, current, total, profit, updateQueryAndFetch } =
+  usePagination("orders", {
+    status: props.status,
+  });
+
+const { search } = useSearchFilter({ updateQueryAndFetch });
+
+const { from, to, searchByDates } = useDateFilter({ updateQueryAndFetch });
 </script>

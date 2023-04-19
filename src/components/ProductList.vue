@@ -2,7 +2,7 @@
   <div class="full-height column">
     <div class="row justify-between">
       <q-input v-model.trim="search" label="Search" class="col" />
-      <q-checkbox left-label v-model="onlyStocked" label="Only stocked" />
+      <q-checkbox left-label v-model="stocked" label="Only stocked" />
     </div>
 
     <q-list bordered separator class="overflow-auto col">
@@ -87,15 +87,16 @@
 </template>
 
 <script setup>
-import useUtil from "src/composables/util";
+import { ref, watch } from "vue";
 import { useQuasar } from "quasar";
 import RestockDialog from "src/components/dialogs/RestockDialog.vue";
 import usePagination from "src/composables/pagination";
 import { useCartStore } from "src/stores/cart-store";
 import { useUserStore } from "src/stores/user-store";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import ProductFormDialog from "./dialogs/ProductFormDialog.vue";
 import ProductDetailsDialog from "./dialogs/ProductDetailsDialog.vue";
+import useSearchFilter from "src/composables/searchFilter";
 
 const props = defineProps({
   item_id: {
@@ -103,30 +104,8 @@ const props = defineProps({
   },
 });
 const userStore = useUserStore();
-const { api } = useUtil();
 const { dialog, notify } = useQuasar();
 const cartStore = useCartStore();
-const fetchProducts = (params) => {
-  if (params.stocked == "true" || params.stocked == true) {
-    params.stocked = 1;
-  }
-  return new Promise((resolve, reject) => {
-    api(
-      {
-        method: "GET",
-        url: "products",
-        params: params,
-      },
-      false
-    )
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-};
 
 const showProductDetails = (product) => {
   dialog({
@@ -137,10 +116,15 @@ const showProductDetails = (product) => {
   });
 };
 const route = useRoute();
-const { pagination, max, search, current, onlyStocked } = usePagination(
-  fetchProducts,
-  { onlyStocked: route.query.stocked == "true" ? true : false }
-);
+const stocked = ref(route.query.stocked ? true : false);
+const { pagination, max, current, updateQueryAndFetch } =
+  usePagination("products");
+
+const { search } = useSearchFilter({ updateQueryAndFetch });
+
+watch(stocked, () => {
+  updateQueryAndFetch({ stocked: stocked.value ? 1 : undefined });
+});
 
 const showRestockDialog = (product) => {
   dialog({

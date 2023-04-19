@@ -67,37 +67,19 @@
 </template>
 
 <script setup>
-import useUtil from "src/composables/util";
 import { useQuasar } from "quasar";
 import EditItemDialog from "src/components/dialogs/EditItemDialog.vue";
 import ProductFormDialog from "src/components/dialogs/ProductFormDialog.vue";
 import usePagination from "src/composables/pagination";
 import { useUserStore } from "src/stores/user-store";
+import useSearchFilter from "src/composables/searchFilter";
 
-const { api } = useUtil();
 const { dialog } = useQuasar();
 const userStore = useUserStore();
 
-const fetchItems = (params) => {
-  return new Promise((resolve, reject) => {
-    api(
-      {
-        method: "GET",
-        url: "items",
-        params,
-      },
-      false
-    )
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-};
-
-const { pagination, max, search, current } = usePagination(fetchItems);
+const { pagination, max, current, updateQueryAndFetch } =
+  usePagination("items");
+const { search } = useSearchFilter({ updateQueryAndFetch });
 
 const showCreateProductDialog = (item) => {
   dialog({

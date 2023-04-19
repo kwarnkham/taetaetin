@@ -33,13 +33,11 @@
 </template>
 
 <script setup>
-import useUtil from "src/composables/util";
 import { useQuasar } from "quasar";
 import usePagination from "src/composables/pagination";
 import { inject, onBeforeUnmount } from "vue";
 import EditServiceDialog from "src/components/dialogs/EditServiceDialog.vue";
 
-const { api } = useUtil();
 const { dialog } = useQuasar();
 const bus = inject("bus");
 
@@ -52,22 +50,7 @@ onBeforeUnmount(() => {
   bus.off("serviceCreated", updateServiceList);
 });
 
-const featchServices = () => {
-  return new Promise((resolve, reject) => {
-    api({
-      method: "GET",
-      url: "services",
-    })
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-};
-
-const { pagination, max, current } = usePagination(featchServices);
+const { pagination, max, current } = usePagination("services");
 
 const showEditService = (service) => {
   dialog({

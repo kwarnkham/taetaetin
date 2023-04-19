@@ -23,32 +23,11 @@
 <script setup>
 import { useQuasar } from "quasar";
 import usePagination from "src/composables/pagination";
-import useUtil from "src/composables/util";
 
 const emit = defineEmits(["serviceAdded"]);
-const { api } = useUtil();
 const { dialog } = useQuasar();
 
-const featchServices = (params) => {
-  return new Promise((resolve, reject) => {
-    api(
-      {
-        method: "GET",
-        url: "services",
-        params,
-      },
-      false
-    )
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-};
-
-const { pagination, search } = usePagination(featchServices);
+const { pagination, search } = usePagination("services");
 
 const addService = (service) => {
   dialog({

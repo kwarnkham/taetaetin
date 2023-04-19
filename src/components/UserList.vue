@@ -35,28 +35,12 @@
 <script setup>
 import { useQuasar } from "quasar";
 import usePagination from "src/composables/pagination";
-import useUtil from "src/composables/util";
 import { inject, onMounted, onBeforeUnmount } from "vue";
 
-const { api } = useUtil();
 const { dialog } = useQuasar();
 const bus = inject("bus");
-const fetchUser = (params = {}) => {
-  return new Promise((resolve, reject) => {
-    api({
-      method: "GET",
-      url: "users",
-      params,
-    })
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-};
-const { pagination } = usePagination(fetchUser);
+
+const { pagination } = usePagination("users");
 const addUserToList = (user) => {
   pagination.value.data.unshift(user);
 };

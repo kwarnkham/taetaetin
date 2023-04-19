@@ -94,22 +94,7 @@ onBeforeUnmount(() => {
   bus.off("paymentCreated", updatePaymentList);
 });
 
-const fetchPayments = () => {
-  return new Promise((resolve, reject) => {
-    api({
-      method: "GET",
-      url: "payments",
-    })
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-};
-
-const { pagination, max, current } = usePagination(fetchPayments);
+const { pagination, max, current } = usePagination("payments");
 
 const showEditPayment = (payment) => {
   dialog({

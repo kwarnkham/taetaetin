@@ -28,14 +28,12 @@
 </template>
 
 <script setup>
-import useUtil from "src/composables/util";
 import { useQuasar } from "quasar";
 import usePagination from "src/composables/pagination";
 import RecordExpenseDialog from "./dialogs/RecordExpenseDialog.vue";
 import EditExpenseDialog from "./dialogs/EditExpenseDialog.vue";
 import { inject, onBeforeUnmount } from "vue";
 
-const { api } = useUtil();
 const { dialog } = useQuasar();
 const bus = inject("bus");
 const updateExpenseList = (expense) => {
@@ -45,25 +43,8 @@ bus.on("expenseCreated", updateExpenseList);
 onBeforeUnmount(() => {
   bus.off("expenseCreated", updateExpenseList);
 });
-const fetchExpenses = () => {
-  return new Promise((resolve, reject) => {
-    api(
-      {
-        method: "GET",
-        url: "expenses",
-      },
-      false
-    )
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-};
 
-const { pagination, max, current } = usePagination(fetchExpenses);
+const { pagination, max, current } = usePagination("expenses");
 
 const showRecordExpense = (expense) => {
   dialog({

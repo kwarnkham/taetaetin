@@ -6,14 +6,18 @@
     </div>
     <div class="row">
       <div class="col">
-        <q-checkbox left-label v-model="canceled" label="Include Canceled" />
+        <q-checkbox left-label v-model="canceled" label="Only Canceled" />
       </div>
 
       <q-select
         :options="purchaseTypes"
+        emit-value
+        option-value="value"
+        option-label="label"
         label="Type"
         v-model="type"
         class="col"
+        map-options
       />
     </div>
     <div>
@@ -32,7 +36,7 @@
         </template>
       </q-input>
       <div class="q-my-sm" :class="{ 'text-right col-12': screen.lt.sm }">
-        <q-btn icon="search" @click="findByDates" />
+        <q-btn icon="search" @click="searchByDates" />
       </div>
     </div>
 
@@ -103,9 +107,14 @@
 
 <script setup>
 import useUtil from "src/composables/util";
-import { useQuasar } from "quasar";
+import { debounce, useQuasar } from "quasar";
 import usePagination from "src/composables/pagination";
 import { useRoute } from "vue-router";
+import useSearchFilter from "src/composables/searchFilter";
+import { ref, watch } from "vue";
+import useDateFilter from "src/composables/dateFilter.js";
+import { date } from "quasar";
+const { formatDate } = date;
 
 const props = defineProps({
   hasDateFilter: {
@@ -113,10 +122,22 @@ const props = defineProps({
     default: false,
   },
 });
-const purchaseTypes = ["All", "Product", "Expense"];
+
+const purchaseTypes = [
+  { label: "All", value: "All" },
+  { label: "Product", value: "App\\Models\\Product" },
+  { label: "Expense", value: "App\\Models\\Expense" },
+];
 const { api } = useUtil();
 const { dialog, notify, screen } = useQuasar();
 const route = useRoute();
+const type = ref(route.query.type ?? "All");
+const group = ref(route.query.group ?? "");
+watch(type, () => {
+  updateQueryAndFetch({
+    type: type.value == "All" ? undefined : type.value,
+  });
+});
 const purchaseType = {
   "App\\Models\\Product": "Product",
   "App\\Models\\Expense": "Expense",
@@ -146,51 +167,37 @@ const assignGroup = (purchase) => {
     });
   });
 };
-const fetchPurchases = (params = {}) => {
-  if (params.canceled != "true") {
-    params.status = 1;
-  }
-  const types = {
-    All: undefined,
-    Product: "App\\Models\\Product",
-    Expense: "App\\Models\\Expense",
-  };
 
-  params.type = types[params.type];
+const canceled = ref(route.query.status == 2 ? true : false);
 
-  return new Promise((resolve, reject) => {
-    api({
-      method: "GET",
-      url: "purchases",
-      params: params,
-    })
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-};
-
-const {
-  pagination,
-  max,
-  search,
-  current,
-  findByDates,
-  from,
-  to,
-  total,
-  canceled,
-  type,
-  group,
-} = usePagination(fetchPurchases, {
-  hasDateFilter: props.hasDateFilter,
-  canceled: route.query.canceled == "true" ? true : false,
-  type: route.query.type ?? "All",
-  group: route.query.group ?? null,
+watch(canceled, () => {
+  updateQueryAndFetch({ status: canceled.value ? 2 : 1 });
 });
+
+watch(
+  group,
+  debounce(() => {
+    updateQueryAndFetch({ group: group.value || undefined });
+  }, 1000)
+);
+
+const { pagination, max, current, total, updateQueryAndFetch } = usePagination(
+  "purchases",
+  {
+    status: canceled.value ? 2 : 1,
+    from: props.hasDateFilter
+      ? route.query.from ?? formatDate(new Date(), "YYYY-MM-DD")
+      : undefined,
+    to: props.hasDateFilter
+      ? route.query.to ?? formatDate(new Date(), "YYYY-MM-DD")
+      : undefined,
+    group: group.value || undefined,
+  }
+);
+
+const { search } = useSearchFilter({ updateQueryAndFetch });
+
+const { from, to, searchByDates } = useDateFilter({ updateQueryAndFetch });
 
 const cancelPurchase = (purchase) => {
   dialog({
