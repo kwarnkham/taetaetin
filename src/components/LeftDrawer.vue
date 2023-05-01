@@ -2,15 +2,15 @@
   <q-drawer bordered :modelValue="modelValue" @update:model-value="toggle">
     <q-list>
       <q-item-label header> {{ getUser?.name ?? "Welcome" }}</q-item-label>
-      <template v-for="link in links" :key="link.title">
+      <template v-for="link in links" :key="link.name">
         <LeftDrawerLink
           v-bind="link"
           :class="{
             hidden:
-              (!getUser && link.requiresAuth) ||
+              (!getUser && link.meta?.requireAuth) ||
               (getUser &&
-                link.requiresAuth &&
-                !getUser.roles.map((e) => e.name).includes(link.role)),
+                link.meta?.requiresAuth &&
+                !getUser.roles.map((e) => e.name).includes(link.meta.role)),
           }"
         />
       </template>
@@ -24,7 +24,7 @@
           <q-item-label>Logout</q-item-label>
         </q-item-section>
       </q-item>
-      <LeftDrawerLink title="Login" icon="login" route="login" v-else />
+      <LeftDrawerLink title="Login" icon="login" name="login" v-else />
     </q-list>
   </q-drawer>
 </template>
@@ -36,78 +36,11 @@ import LeftDrawerLink from "src/components/LeftDrawerLink.vue";
 import useUtil from "src/composables/util";
 import { useUserStore } from "src/stores/user-store";
 import { useRouter } from "vue-router";
+import routes from "src/router/routes";
 
-const links = [
-  {
-    title: "Sale",
-    icon: "point_of_sale",
-    route: "sale",
-    requiresAuth: true,
-    role: "sale",
-  },
-  {
-    title: "Item",
-    caption: "Manage items",
-    icon: "inventory_2",
-    route: "items",
-  },
-  {
-    title: "Order",
-    caption: "Manage Order",
-    icon: "shopping_basket",
-    route: "order-menu",
-    requiresAuth: true,
-    role: "sale",
-  },
-  {
-    title: "Financial Records",
-    caption: "All income and outcome",
-    icon: "price_change",
-    route: "financial-records",
-    requiresAuth: true,
-    role: "admin",
-  },
-  {
-    title: "Set Up",
-    caption: "Payments, expense, etc...",
-    icon: "topic",
-    route: "set-up",
-    requiresAuth: true,
-    role: "admin",
-  },
-  {
-    title: "Payments",
-    caption: "Available payment methods",
-    icon: "attach_money",
-    route: "payments",
-    requiresAuth: true,
-    role: "sale",
-  },
-  {
-    title: "Users",
-    caption: "Manage users, roels",
-    icon: "group",
-    route: "users",
-    requiresAuth: true,
-    role: "admin",
-  },
-  {
-    title: "Change Password",
-    caption: "",
-    icon: "lock",
-    route: "change-password",
-    requiresAuth: true,
-    role: "sale",
-  },
-  {
-    title: "Printer Setting",
-    caption: "",
-    icon: "print",
-    route: "printer-setting",
-    requiresAuth: true,
-    role: "sale",
-  },
-];
+const links = routes[0].children.filter(
+  (e) => e.meta?.navigation && e.name != "login"
+);
 
 const props = defineProps(["modelValue"]);
 const emit = defineEmits(["update:modelValue"]);

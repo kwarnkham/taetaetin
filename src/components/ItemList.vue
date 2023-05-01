@@ -12,7 +12,7 @@
       <q-item v-for="item in pagination?.data" :key="item.id">
         <q-item-section>
           <q-item-label>{{ item.name }}</q-item-label>
-          <q-item-label caption>{{ item.stock }}</q-item-label>
+          <q-item-label caption>Stock : {{ item.stock }}</q-item-label>
           <div class="row justify-start q-gutter-x-sm q-mt-sm">
             <template
               v-if="
@@ -38,7 +38,7 @@
         </q-item-section>
         <q-item-section side top>
           <q-item-label> Price : {{ item.price }} </q-item-label>
-          <q-item-label caption v-if="item.type == 1">
+          <q-item-label caption v-if="item.type == 1 && userStore.getUser">
             Purchase price: {{ item.latest_purchase.price }}
           </q-item-label>
         </q-item-section>

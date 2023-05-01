@@ -5,46 +5,48 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
+        title: 'Home',
+        icon: 'home',
         path: '',
         component: () => import('pages/IndexPage.vue'),
         name: 'index',
+        meta: {
+          navigation: true
+        }
       },
+
       {
-        path: 'login',
-        component: () => import('pages/LoginPage.vue'),
-        name: 'login',
-      },
-      {
+        title: 'Items',
+        icon: 'inventory_2',
         path: 'items',
         component: () => import('pages/ItemMenu.vue'),
         name: 'items',
+        meta: {
+          navigation: true
+        }
       },
       {
-        path: 'products',
-        component: () => import('pages/ProductMenu.vue'),
-        name: 'products',
-      },
-      {
-        path: 'product/:product',
-        component: () => import('pages/ProductDetails.vue'),
-        name: 'product-details',
-      },
-      {
+        title: 'Financial Records',
+        icon: "price_change",
         path: 'financial-records',
         component: () => import('src/pages/FinancialRecords.vue'),
         name: 'financial-records',
         meta: {
           requireAuth: true,
-          role: 'admin'
+          role: 'admin',
+          navigation: true
         }
       },
       {
+        title: 'Set up',
+        icon: "topic",
         path: 'set-up',
         component: () => import('src/pages/SetUp.vue'),
         name: 'set-up',
         meta: {
           requireAuth: true,
-          role: 'admin'
+          role: 'admin',
+          navigation: true
         }
       },
       {
@@ -53,7 +55,7 @@ const routes = [
         name: 'manage-cart',
         meta: {
           requireAuth: true,
-          role: 'sale'
+          role: 'sale',
         }
       },
       {
@@ -66,39 +68,39 @@ const routes = [
         }
       },
       {
+        title: 'Sale',
+        icon: 'point_of_sale',
         path: 'sale',
         component: () => import('src/pages/SalePage.vue'),
         name: 'sale',
         meta: {
           requireAuth: true,
-          role: 'sale'
+          role: 'sale',
+          navigation: true
         }
       },
       {
+        title: 'Orders',
+        icon: "shopping_basket",
         path: 'order-menu',
         component: () => import('src/pages/OrderMenu.vue'),
         name: 'order-menu',
         meta: {
           requireAuth: true,
-          role: 'sale'
+          role: 'sale',
+          navigation: true
         }
       },
       {
-        path: 'order/:order',
-        component: () => import('src/pages/OrderDetails.vue'),
-        name: 'order-details',
-        meta: {
-          requireAuth: true,
-          role: 'sale'
-        }
-      },
-      {
+        title: 'Users',
+        icon: 'group',
         path: 'users',
         component: () => import('src/pages/UserMenu.vue'),
         name: 'users',
         meta: {
           requireAuth: true,
-          role: 'admin'
+          role: 'admin',
+          navigation: true
         }
       },
       {
@@ -107,30 +109,49 @@ const routes = [
         name: 'item-details',
       },
       {
+        title: 'Change Password',
+        icon: "lock",
         path: 'change-password',
         component: () => import('src/pages/ChangePassword.vue'),
         name: 'change-password',
         meta: {
           requireAuth: true,
-          role: 'sale'
+          role: 'sale',
+          navigation: true
         }
       },
       {
+        title: 'Printer Setting',
+        icon: 'print',
         path: 'printer-setting',
         component: () => import('src/pages/PrinterSetting.vue'),
         name: 'printer-setting',
         meta: {
           requireAuth: true,
-          role: 'sale'
+          role: 'sale',
+          navigation: true
         }
       },
       {
+        title: 'Payments',
+        icon: 'attach_money',
         path: 'payments',
         component: () => import('src/pages/PaymentsPage.vue'),
         name: 'payments',
         meta: {
           requireAuth: true,
-          role: 'sale'
+          role: 'sale',
+          navigation: true
+        }
+      },
+      {
+        title: 'Login',
+        icon: 'login',
+        path: 'login',
+        component: () => import('pages/LoginPage.vue'),
+        name: 'login',
+        meta: {
+          navigation: true
         }
       },
     ]
