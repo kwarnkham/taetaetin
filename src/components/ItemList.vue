@@ -12,6 +12,7 @@
       <q-item v-for="item in pagination?.data" :key="item.id">
         <q-item-section>
           <q-item-label>{{ item.name }}</q-item-label>
+          <q-item-label caption>{{ item.stock }}</q-item-label>
           <div class="row justify-start q-gutter-x-sm q-mt-sm">
             <template
               v-if="
@@ -32,24 +33,13 @@
                 @click="showEditItemDialog(item)"
               />
             </template>
-
-            <q-btn
-              rounded
-              label="More"
-              no-caps
-              @click="
-                $router.push({
-                  name: 'item-details',
-                  params: {
-                    item: item.id,
-                  },
-                  query: {
-                    item: item.id,
-                  },
-                })
-              "
-            />
           </div>
+        </q-item-section>
+        <q-item-section side top>
+          <q-item-label> Price : {{ item.price }} </q-item-label>
+          <q-item-label caption>
+            Purchase price: {{ item.latest_purchase.price }}
+          </q-item-label>
         </q-item-section>
       </q-item>
     </q-list>
@@ -68,41 +58,74 @@
 
 <script setup>
 import { useQuasar } from "quasar";
-import EditItemDialog from "src/components/dialogs/EditItemDialog.vue";
-import ProductFormDialog from "src/components/dialogs/ProductFormDialog.vue";
 import usePagination from "src/composables/pagination";
 import { useUserStore } from "src/stores/user-store";
 import useSearchFilter from "src/composables/searchFilter";
+import useItem from "src/composables/item";
+import { api } from "src/boot/axios";
 
 const { dialog } = useQuasar();
 const userStore = useUserStore();
+const { reStock } = useItem();
 
 const { pagination, max, current, updateQueryAndFetch } =
-  usePagination("items");
+  usePagination("a-items");
 const { search } = useSearchFilter({ updateQueryAndFetch });
 
 const showCreateProductDialog = (item) => {
-  dialog({
-    component: ProductFormDialog,
-    componentProps: {
-      item_id: item.id,
-      product: {
-        price: item.latest_product?.price,
-        purchase_price: item.latest_product?.latest_purchase?.price,
-      },
-    },
+  reStock(item).then((response) => {
+    const index = pagination.value.data.findIndex(
+      (e) => e.id == response.data.a_item.id
+    );
+    pagination.value.data[index] = response.data.a_item;
   });
 };
 
 const showEditItemDialog = (item) => {
   dialog({
-    component: EditItemDialog,
-    componentProps: {
-      item: item,
+    title: `Edit item ${item.name}`,
+    message: "Choose an option:",
+    position: "top",
+    options: {
+      type: "radio",
+      model: "name",
+      items: [
+        { label: "Name", value: "name" },
+        { label: "Price", value: "price" },
+      ],
     },
-  }).onOk((item) => {
-    const index = pagination.value.data.findIndex((e) => e.id == item.id);
-    if (index >= 0) pagination.value.data.splice(index, 1, item);
+    cancel: true,
+    persistent: true,
+  }).onOk((option) => {
+    const prompt = {
+      model: item[option],
+    };
+    if (option == "name") {
+      prompt.isValid = (val) => val != "";
+    } else if (option == "price") {
+      prompt.isValid = (val) => val != "" || val > 0;
+      prompt.type = "number";
+      prompt.inputmode = "numeric";
+      prompt.pattern = "[0-9]*";
+    }
+    dialog({
+      title: `Edit item ${item.name} - ${option}`,
+      position: "top",
+      prompt,
+      cancel: true,
+      noBackdropDismiss: true,
+    }).onOk((val) => {
+      const data = JSON.parse(JSON.stringify(item));
+      data[option] = val;
+      api({
+        method: "PUT",
+        url: `a-items/${item.id}`,
+        data,
+      }).then((response) => {
+        const index = pagination.value.data.findIndex((e) => e.id == item.id);
+        pagination.value.data[index] = response.data.a_item;
+      });
+    });
   });
 };
 </script>

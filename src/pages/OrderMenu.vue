@@ -1,52 +1,61 @@
 <template>
-  <q-page padding class="column">
-    <div class="row justify-between">
+  <q-page padding class="column" :style-fn="vhPage">
+    <div class="row justify-between q-gutter-y-xs">
       <q-checkbox
+        dense
         v-model="status.pending"
         label="Pending"
         :disable="String(statusParam).length == 1 && status.pending"
       />
       <q-checkbox
+        dense
         v-model="status.patiallyPaid"
         label="Partial Paid"
         :disable="String(statusParam).length == 1 && status.patiallyPaid"
       />
       <q-checkbox
+        dense
         v-model="status.paid"
         label="Paid"
         :disable="String(statusParam).length == 1 && status.paid"
       />
       <q-checkbox
+        dense
         v-model="status.packed"
         label="Packed"
         :disable="String(statusParam).length == 1 && status.packed"
       />
       <q-checkbox
+        dense
         v-model="status.onDelivery"
         label="On Delivery"
         :disable="String(statusParam).length == 1 && status.onDelivery"
       />
       <q-checkbox
+        dense
         v-model="status.completed"
         label="Completed"
         :disable="String(statusParam).length == 1 && status.completed"
       />
       <q-checkbox
+        dense
         v-model="status.canceled"
         label="Canceled"
         :disable="String(statusParam).length == 1 && status.canceled"
       />
     </div>
-    <OrderList :status="statusParam" />
+    <OrderList :status="statusParam" class="col" />
   </q-page>
 </template>
 
 <script setup>
 import { useQuasar } from "quasar";
 import OrderList from "src/components/OrderList.vue";
+import useUtil from "src/composables/util";
 import { computed, ref, watch } from "vue";
 
 const { localStorage } = useQuasar();
+const { vhPage } = useUtil();
 const orderMenuStatus = localStorage.getItem("orderMenuStatus");
 const status = ref(
   typeof orderMenuStatus == "object"

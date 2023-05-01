@@ -42,7 +42,7 @@
                 <q-btn
                   label="Re-stock"
                   no-caps
-                  @click="reStock(a_item)"
+                  @click="addStock(a_item)"
                   color="secondary"
                 />
               </div>
@@ -74,11 +74,22 @@ import { useDialogPluginComponent, useQuasar } from "quasar";
 import usePagination from "src/composables/pagination";
 import useSearchFilter from "src/composables/searchFilter";
 import useUtil from "src/composables/util";
+import useItem from "src/composables/item";
 import { useOrderStore } from "src/stores/order-store";
 import { computed } from "vue";
 
 const { dialog } = useQuasar();
 const { api } = useUtil();
+const { reStock } = useItem();
+
+const addStock = (aItem) => {
+  reStock(aItem).then((response) => {
+    const index = pagination.value.data.findIndex(
+      (e) => e.id == response.data.a_item.id
+    );
+    pagination.value.data[index] = response.data.a_item;
+  });
+};
 const props = defineProps({
   a_items: {
     type: Array,
@@ -104,48 +115,6 @@ const getRealStock = (a_item) => {
 
 const isInOrder = (a_item) => {
   return props.a_items.map((e) => e?.id).includes(a_item.id);
-};
-
-const reStock = (a_item) => {
-  dialog({
-    title: `Purchase price for ${a_item.name}`,
-    position: "top",
-    cancel: true,
-    noBackdropDismiss: true,
-    prompt: {
-      model: a_item.latest_purchase.price,
-      type: "number",
-      inputmode: "numeric",
-      pattern: "[0-9]*",
-    },
-  }).onOk((purchasePrice) => {
-    dialog({
-      title: `Restock quantity for ${a_item.name}`,
-      position: "top",
-      cancel: true,
-      noBackdropDismiss: true,
-      prompt: {
-        model: "",
-        type: "number",
-        inputmode: "numeric",
-        pattern: "[0-9]*",
-      },
-    }).onOk((quantity) => {
-      api({
-        method: "POST",
-        url: `a-items/${a_item.id}/restock`,
-        data: {
-          quantity,
-          price: purchasePrice,
-        },
-      }).then((response) => {
-        const index = pagination.value.data.findIndex(
-          (e) => e.id == response.data.aItem.id
-        );
-        pagination.value.data[index] = response.data.aItem;
-      });
-    });
-  });
 };
 
 defineEmits([...useDialogPluginComponent.emits]);

@@ -43,79 +43,58 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="product in order.products" :key="product.id">
-              <td class="text-left">
-                {{ product.name }}
-              </td>
+            <template v-for="item in order.a_items">
+              <tr v-if="item" :key="item.id">
+                <td class="text-left">
+                  {{ item.name }}
+                </td>
 
-              <td class="text-right">
-                {{
-                  (
-                    product.pivot.price - product.pivot.discount
-                  ).toLocaleString()
-                }}
-              </td>
-              <td class="text-right">
-                {{ product.pivot.quantity }}
-              </td>
-              <td class="text-right">
-                {{
-                  (
-                    (product.pivot.price - product.pivot.discount) *
-                    product.pivot.quantity
-                  ).toLocaleString()
-                }}
-              </td>
-            </tr>
-            <tr v-for="product in order.items" :key="product.id">
-              <td class="text-left">
-                {{ product.name }}
-              </td>
-              <td class="text-right">
-                {{ product.pivot.price.toLocaleString() }}
-              </td>
-              <td class="text-right">
-                {{ product.pivot.quantity }}
-              </td>
-              <td class="text-right">
-                {{
-                  (
-                    product.pivot.price * product.pivot.quantity
-                  ).toLocaleString()
-                }}
-              </td>
-            </tr>
-            <tr v-for="service in order.services" :key="service.id">
-              <td class="text-left">
-                {{ service.name }}
-              </td>
-              <td class="text-right">
-                {{ service.pivot.price.toLocaleString() }}
-              </td>
-              <td class="text-right">
-                {{ service.pivot.quantity }}
-              </td>
-              <td class="text-right">
-                {{
-                  (
-                    service.pivot.price * service.pivot.quantity
-                  ).toLocaleString()
-                }}
-              </td>
-            </tr>
+                <td class="text-right">
+                  {{
+                    (item.pivot.price - item.pivot.discount).toLocaleString()
+                  }}
+                </td>
+                <td class="text-right">
+                  {{ item.pivot.quantity }}
+                </td>
+                <td class="text-right">
+                  {{
+                    (
+                      (item.pivot.price - item.pivot.discount) *
+                      item.pivot.quantity
+                    ).toLocaleString()
+                  }}
+                </td>
+              </tr>
+            </template>
+
             <tr class="summery">
               <td colspan="2" class="text-right">Total</td>
               <td class="text-right">
-                {{ totalQty }}
+                {{
+                  order.a_items
+                    .filter((e) => !!e)
+                    .reduce((carry, e) => carry + e.pivot.quantity, 0)
+                }}
               </td>
               <td class="text-right">
-                {{ total.toLocaleString() }}
+                {{
+                  order.a_items
+                    .filter((e) => !!e)
+                    .reduce(
+                      (carry, e) =>
+                        carry +
+                        (e.pivot.price - e.pivot.discount) * e.pivot.quantity,
+                      0
+                    )
+                    .toLocaleString()
+                }}
               </td>
             </tr>
             <tr>
               <td colspan="3" class="text-right">Paid</td>
               <td class="text-right">
-                {{ paid.toLocaleString() }}
+                {{ order.paid.toLocaleString() }}
               </td>
             </tr>
             <tr>
@@ -129,7 +108,9 @@
                 Grand Total
               </td>
               <td class="text-right text-weight-bolder">
-                {{ (order.amount - order.discount - paid).toLocaleString() }}
+                {{
+                  (order.amount - order.discount - order.paid).toLocaleString()
+                }}
               </td>
             </tr>
           </tbody>
@@ -167,49 +148,8 @@ const props = defineProps({
     required: true,
   },
 });
+
 const { notify, platform } = useQuasar();
-const totalQty = computed(
-  () =>
-    props.order.services.reduce(
-      (carry, service) => carry + service.pivot.quantity,
-      0
-    ) +
-    props.order.products.reduce(
-      (carry, product) => carry + product.pivot.quantity,
-      0
-    ) +
-    props.order.items.reduce(
-      (carry, product) => carry + product.pivot.quantity,
-      0
-    )
-);
-
-const total = computed(
-  () =>
-    props.order.services.reduce(
-      (carry, service) =>
-        carry +
-        (service.pivot.price - service.pivot.discount) * service.pivot.quantity,
-      0
-    ) +
-    props.order.products.reduce(
-      (carry, product) =>
-        carry +
-        (product.pivot.price - product.pivot.discount) * product.pivot.quantity,
-      0
-    ) +
-    props.order.items.reduce(
-      (carry, product) => carry + product.pivot.price * product.pivot.quantity,
-      0
-    )
-);
-
-const paid = computed(() =>
-  props.order.payments.reduce(
-    (carry, payment) => carry + payment.pivot.amount,
-    0
-  )
-);
 
 const { sendPrinterData, printTime, printing } = usePrinter();
 

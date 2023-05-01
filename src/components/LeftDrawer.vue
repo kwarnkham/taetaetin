@@ -52,12 +52,6 @@ const links = [
     route: "items",
   },
   {
-    title: "Product",
-    caption: "Manage Product",
-    icon: "storefront",
-    route: "products",
-  },
-  {
     title: "Order",
     caption: "Manage Order",
     icon: "shopping_basket",

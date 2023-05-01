@@ -93,7 +93,7 @@
 
 <script setup>
 import useUtil from "src/composables/util";
-import { ref, computed, watch, onBeforeUnmount } from "vue";
+import { ref, onBeforeUnmount } from "vue";
 import { useQuasar, useDialogPluginComponent } from "quasar";
 import EditCustomerDialog from "src/components/dialogs/EditCustomerDialog.vue";
 import PrintOrderDialog from "src/components/dialogs/PrintOrderDialog.vue";
@@ -114,7 +114,7 @@ const props = defineProps({
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
 
-const { localStorage, dialog, notify } = useQuasar();
+const { localStorage, dialog } = useQuasar();
 const orderStore = useOrderStore();
 const { api } = useUtil();
 const order = ref(null);
@@ -127,71 +127,6 @@ const updateOrder = () => {
 };
 const orderStatus = localStorage.getItem("orderStatus");
 const userStore = useUserStore();
-const totalQty = computed(
-  () =>
-    order.value.services.reduce(
-      (carry, service) => carry + service.pivot.quantity,
-      0
-    ) +
-    order.value.products.reduce(
-      (carry, product) => carry + product.pivot.quantity,
-      0
-    ) +
-    order.value.items.reduce(
-      (carry, product) => carry + product.pivot.quantity,
-      0
-    )
-);
-
-const total = computed(
-  () =>
-    order.value.services.reduce(
-      (carry, service) =>
-        carry +
-        (service.pivot.price - service.pivot.discount) * service.pivot.quantity,
-      0
-    ) +
-    order.value.products.reduce(
-      (carry, product) =>
-        carry +
-        (product.pivot.price - product.pivot.discount) * product.pivot.quantity,
-      0
-    ) +
-    order.value.items.reduce(
-      (carry, product) => carry + product.pivot.price * product.pivot.quantity,
-      0
-    )
-);
-
-const paid = computed(() =>
-  order.value.payments.reduce(
-    (carry, payment) => carry + payment.pivot.amount,
-    0
-  )
-);
-
-const showEditCustomerDialog = () => {
-  dialog({
-    component: EditCustomerDialog,
-    componentProps: {
-      order: order.value,
-    },
-  }).onOk((updatedOrder) => {
-    order.value.customer = updatedOrder.customer;
-    order.value.phone = updatedOrder.phone;
-    order.value.address = updatedOrder.address;
-    order.value.note = updatedOrder.note;
-  });
-};
-
-const showScreenshot = (payment) => {
-  dialog({
-    noBackdropDismiss: true,
-    title: "Payment screenshot",
-    html: true,
-    message: `<img src='${payment.pivot.picture}' style='width:100%'>`,
-  });
-};
 
 const showPrintOrderDialog = () => {
   dialog({
