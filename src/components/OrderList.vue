@@ -31,13 +31,7 @@
           </q-item-label>
           <q-item-label v-if="![3, 4, 5].includes(order.status)">
             Remaining:
-            {{
-              (
-                order.amount -
-                order.discount -
-                order.payments.reduce((carry, e) => carry + e.pivot.amount, 0)
-              ).toLocaleString()
-            }}
+            {{ (order.amount - order.discount - order.paid).toLocaleString() }}
             MMK
           </q-item-label>
           <q-item-label>
@@ -100,10 +94,11 @@
 
 <script setup>
 import usePagination from "src/composables/pagination";
-import { useQuasar, date } from "quasar";
+import { useQuasar, date, debounce } from "quasar";
 import OrderDetailsDialog from "./dialogs/OrderDetailsDialog.vue";
 import useSearchFilter from "src/composables/searchFilter";
 import useDateFilter from "src/composables/dateFilter";
+import { watch } from "vue";
 
 const props = defineProps({
   hasDateFilter: { type: Boolean, default: false },
@@ -131,6 +126,9 @@ const showOrderDetails = (order) => {
     componentProps: {
       orderId: order.id,
     },
+  }).onOk((val) => {
+    const key = pagination.value.data.findIndex((e) => e.id == val.id);
+    pagination.value.data[key] = val;
   });
 };
 const { pagination, max, current, total, profit, updateQueryAndFetch } =
@@ -141,4 +139,11 @@ const { pagination, max, current, total, profit, updateQueryAndFetch } =
 const { search } = useSearchFilter({ updateQueryAndFetch });
 
 const { from, to, searchByDates } = useDateFilter({ updateQueryAndFetch });
+
+watch(
+  props,
+  debounce(() => {
+    updateQueryAndFetch({ status: props.status || undefined });
+  }, 800)
+);
 </script>

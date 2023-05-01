@@ -3,12 +3,13 @@
     ref="dialogRef"
     @hide="onDialogHide"
     no-backdrop-dismiss
-    full-height
+    maximized
     no-route-dismiss
-    class="column"
+    class="full-height"
+    position="bottom"
   >
     <div
-      class="q-dialog-plugin q-pa-sm col column no-wrap bg-white"
+      class="q-dialog-plugin q-pa-sm window-height column no-wrap bg-white"
       style="width: 500px; max-width: 100vw"
     >
       <div class="row justify-between items-center">
@@ -16,7 +17,7 @@
         <q-btn icon="close" flat @click="onDialogCancel" dense />
       </div>
       <div class="col column">
-        <q-input label="Prodcut Name" v-model.trim="search" autofocus />
+        <q-input label="Prodcut Name" v-model="search" autofocus />
         <q-list
           v-if="saleItems.length"
           class="overflow-auto col"
@@ -24,25 +25,34 @@
           separator
           bordered
         >
-          <q-item
-            v-for="aItem in saleItems"
-            :key="aItem.id"
-            clickable
-            @click="onDialogOK(aItem)"
-            :disable="aItem.realStock < 1"
-          >
+          <q-item v-for="a_item in saleItems" :key="a_item.id">
             <q-item-section>
-              <div :class="{ 'text-primary': aItem.isInOrder }">
-                {{ aItem.name }}
+              <div :class="{ 'text-primary': a_item.isInOrder }">
+                {{ a_item.name }}
               </div>
-              <q-item-label overline>{{ aItem.price }}</q-item-label>
+              <q-item-label overline>{{ a_item.price }}</q-item-label>
+              <div class="q-mt-sm q-gutter-x-xs">
+                <q-btn
+                  label="Select"
+                  no-caps
+                  @click="onDialogOK(a_item)"
+                  :disable="a_item.realStock < 1"
+                  :color="a_item.realStock ? 'primary' : 'grey'"
+                />
+                <q-btn
+                  label="Re-stock"
+                  no-caps
+                  @click="reStock(a_item)"
+                  color="secondary"
+                />
+              </div>
             </q-item-section>
             <q-item-section
               side
               top
-              :class="{ 'text-red': aItem.realStock < 1 }"
+              :class="{ 'text-red': a_item.realStock < 1 }"
             >
-              Stock:{{ aItem.realStock }}
+              Stock:{{ a_item.realStock }}
             </q-item-section>
           </q-item>
         </q-list>
@@ -50,8 +60,8 @@
           class="text-right q-mt-sm"
           v-else-if="pagination && pagination.data.length == 0 && search"
         >
-          <q-btn no-caps flat @click="showCreateAItem">
-            Create new aItem "{{ search }}"
+          <q-btn no-caps flat @click="showCreatea_item">
+            Create new a_item "{{ search }}"
           </q-btn>
         </div>
       </div>
@@ -64,27 +74,78 @@ import { useDialogPluginComponent, useQuasar } from "quasar";
 import usePagination from "src/composables/pagination";
 import useSearchFilter from "src/composables/searchFilter";
 import useUtil from "src/composables/util";
+import { useOrderStore } from "src/stores/order-store";
 import { computed } from "vue";
 
 const { dialog } = useQuasar();
 const { api } = useUtil();
 const props = defineProps({
-  aItems: {
+  a_items: {
     type: Array,
     required: true,
   },
 });
 
-const getRealStock = (aItem) => {
-  const existed = props.aItems.reduce((carry, e) => {
-    if (aItem.id == e.id) return e.quantity + carry;
+const orderStore = useOrderStore();
+
+const getRealStock = (a_item) => {
+  let existed = props.a_items.reduce((carry, e) => {
+    if (a_item.id == e?.id) return e.quantity + carry;
     else return carry;
   }, 0);
-  return aItem.stock - existed;
+
+  existed -= orderStore.getExistedItems.reduce((carry, e) => {
+    if (a_item.id == e?.id) return e.quantity + carry;
+    else return carry;
+  }, 0);
+
+  return a_item.stock - existed;
 };
 
-const isInOrder = (aItem) => {
-  return props.aItems.map((e) => e.id).includes(aItem.id);
+const isInOrder = (a_item) => {
+  return props.a_items.map((e) => e?.id).includes(a_item.id);
+};
+
+const reStock = (a_item) => {
+  dialog({
+    title: `Purchase price for ${a_item.name}`,
+    position: "top",
+    cancel: true,
+    noBackdropDismiss: true,
+    prompt: {
+      model: a_item.latest_purchase.price,
+      type: "number",
+      inputmode: "numeric",
+      pattern: "[0-9]*",
+    },
+  }).onOk((purchasePrice) => {
+    dialog({
+      title: `Restock quantity for ${a_item.name}`,
+      position: "top",
+      cancel: true,
+      noBackdropDismiss: true,
+      prompt: {
+        model: "",
+        type: "number",
+        inputmode: "numeric",
+        pattern: "[0-9]*",
+      },
+    }).onOk((quantity) => {
+      api({
+        method: "POST",
+        url: `a-items/${a_item.id}/restock`,
+        data: {
+          quantity,
+          price: purchasePrice,
+        },
+      }).then((response) => {
+        const index = pagination.value.data.findIndex(
+          (e) => e.id == response.data.aItem.id
+        );
+        pagination.value.data[index] = response.data.aItem;
+      });
+    });
+  });
 };
 
 defineEmits([...useDialogPluginComponent.emits]);
@@ -105,7 +166,7 @@ const saleItems = computed(() => {
     }));
 });
 
-const showCreateAItem = () => {
+const showCreatea_item = () => {
   dialog({
     title: `What is the purchase price for ${search.value}?`,
     message: "After this you'll be asked to fill sale price",
@@ -138,7 +199,6 @@ const showCreateAItem = () => {
     }).onOk((salePrice) => {
       dialog({
         title: `How many of ${search.value} is going to inventory?`,
-        message: "After this you'll be asked to fill note for this purchase",
         position: "top",
         noBackdropDismiss: true,
         cancel: true,
@@ -151,42 +211,21 @@ const showCreateAItem = () => {
           isValid: (val) => val != "" && val > 0,
         },
       }).onOk((quantity) => {
-        dialog({
-          title: `Do you have note for the purchase of ${search.value}?`,
-          message: "After this you'll be asked to fill expired date",
-          position: "top",
-          noBackdropDismiss: true,
-          cancel: true,
-          prompt: {
-            model: "",
-            type: "textarea",
-            placeholder: "Note",
+        const data = {
+          name: search.value,
+          purchase_price: purchasePrice,
+          price: salePrice,
+          stock: quantity,
+        };
+        api(
+          {
+            method: "POST",
+            url: "a-items",
+            data,
           },
-        }).onOk((note) => {
-          console.log({
-            name: search.value,
-            purchasePrice,
-            salePrice,
-            quantity,
-            note: note || undefined,
-          });
-          const data = {
-            name: search.value,
-            purchase_price: purchasePrice,
-            price: salePrice,
-            stock: quantity,
-            note: note || undefined,
-          };
-          api(
-            {
-              method: "POST",
-              url: "a-items",
-              data,
-            },
-            true
-          ).then((response) => {
-            pagination.value.data.unshift(response.data.a_item);
-          });
+          true
+        ).then((response) => {
+          pagination.value.data.unshift(response.data.a_item);
         });
       });
     });

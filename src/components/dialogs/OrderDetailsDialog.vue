@@ -1,226 +1,91 @@
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide" no-backdrop-dismiss maximized>
+  <q-dialog
+    ref="dialogRef"
+    @hide="onDialogHide"
+    no-backdrop-dismiss
+    maximized
+    no-route-dismiss
+  >
     <div class="q-pa-xs fit bg-white column no-wrap" v-if="order">
-      <div class="text-h6 text-center">#{{ order.id }}</div>
-      <div class="row wrap" v-if="order.customer">
-        <div class="col-6 text-left">
-          <q-icon name="person" class="q-mr-sm" size="sm" />{{ order.customer }}
-        </div>
-        <div class="col-6 text-right">
-          <q-icon name="phone" class="q-mr-sm" size="sm" />{{ order.phone }}
-        </div>
-      </div>
-      <div v-if="order.address">Address:{{ order.address }}</div>
-      <div v-if="order.note">Note:{{ order.note }}</div>
-      <div class="row justify-between">
-        <div class="row items-center">
-          <q-icon name="calendar_month" size="sm" class="q-mr-sm" />
-          <div>
-            {{ formatDate(order.updated_at, "hh:mm:ss A DD/MM/YYYY") }}
-          </div>
-        </div>
-        <div class="text-weight-bold">
-          Status : {{ orderStatus[order.status] }}
-        </div>
-      </div>
-      <div class="text-center">
+      <div class="row q-my-xs q-gutter-xs justify-between">
         <q-btn
-          label="Update customer info"
-          no-caps
-          flat
-          icon="edit"
-          @click="showEditCustomerDialog"
-        />
-      </div>
-      <q-separator spaced />
-      <div v-if="order.payments.length">
-        <div class="text-center text-subtitle1 text-weight-bold">
-          Payment Information
-        </div>
-        <div v-for="payment in order.payments" :key="payment.pivot.id">
-          <div v-if="payment.payment_type_id == 1">
-            {{ payment.pivot.amount.toLocaleString() }} is paid by cash on
-            {{ formatDate(payment.pivot.created_at, "hh:mm:ss A DD/MM/YYYY") }}
-          </div>
-          <div v-else>
-            {{ payment.pivot.amount }} is paid to {{ payment.pivot.number }},
-            {{ payment.pivot.account_name }} on
-            {{ formatDate(payment.pivot.created_at, "hh:mm:ss A DD/MM/YYYY") }}
-            <q-btn
-              icon="screenshot"
-              rounded
-              flat
-              @click="showScreenshot(payment)"
-              v-if="payment.pivot.picture"
-            />
-          </div>
-          <q-separator spaced />
-        </div>
-      </div>
-      <q-markup-table separator="cell" flat bordered wrap-cells>
-        <thead>
-          <tr>
-            <th class="text-left">#</th>
-            <th class="text-left">Item</th>
-            <th class="text-right">Price</th>
-            <th class="text-right">Qty</th>
-            <th class="text-right">Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(product, key) in order.products" :key="product.id">
-            <td class="text-left">{{ key + 1 }}</td>
-            <td class="text-left">{{ product.name }}</td>
-            <td class="text-right">
-              {{
-                (
-                  product.pivot.price - (product.pivot.discount ?? 0) || "FOC"
-                ).toLocaleString()
-              }}
-            </td>
-            <td class="text-right">{{ product.pivot.quantity }}</td>
-            <td class="text-right">
-              {{
-                (
-                  (product.pivot.price - (product.pivot.discount ?? 0)) *
-                    product.pivot.quantity || "FOC"
-                ).toLocaleString()
-              }}
-            </td>
-          </tr>
-          <tr v-for="(product, key) in order.items" :key="product.id">
-            <td class="text-left">{{ key + 1 }}</td>
-            <td class="text-left">{{ product.name }}</td>
-            <td class="text-right">
-              {{
-                (
-                  product.pivot.price - (product.pivot.discount ?? 0) || "FOC"
-                ).toLocaleString()
-              }}
-            </td>
-            <td class="text-right">{{ product.pivot.quantity }}</td>
-            <td class="text-right">
-              {{
-                (
-                  (product.pivot.price - (product.pivot.discount ?? 0)) *
-                    product.pivot.quantity || "FOC"
-                ).toLocaleString()
-              }}
-            </td>
-          </tr>
-          <tr v-for="(service, key) in order.services" :key="service.id">
-            <td class="text-left">
-              {{ key + 1 + order.products.length + order.items.length }}
-            </td>
-            <td class="text-left">{{ service.name }}</td>
-            <td class="text-right">
-              {{
-                (
-                  service.pivot.price - (service.pivot.discount ?? 0)
-                ).toLocaleString()
-              }}
-            </td>
-            <td class="text-right">{{ service.pivot.quantity }}</td>
-            <td class="text-right">
-              {{
-                (
-                  (service.pivot.price - (service.pivot.discount ?? 0)) *
-                  service.pivot.quantity
-                ).toLocaleString()
-              }}
-            </td>
-          </tr>
-          <tr>
-            <td colspan="3" class="text-right">Total</td>
-            <td class="text-right">
-              {{ totalQty }}
-            </td>
-            <td class="text-right">
-              {{ total.toLocaleString() }}
-            </td>
-          </tr>
-          <tr>
-            <td colspan="3"></td>
-            <td class="text-right">Discount</td>
-            <td class="text-right">
-              {{ order.discount.toLocaleString() }}
-            </td>
-          </tr>
-          <tr>
-            <td colspan="3"></td>
-            <td class="text-right">Amount</td>
-            <td class="text-right">
-              {{ (order.amount - order.discount || "FOC").toLocaleString() }}
-            </td>
-          </tr>
-          <tr>
-            <td colspan="3"></td>
-            <td class="text-right">Paid</td>
-            <td class="text-right">
-              {{ paid.toLocaleString() }}
-            </td>
-          </tr>
-          <tr>
-            <td colspan="3"></td>
-            <td class="text-right">Remaining</td>
-            <td class="text-right">
-              {{ order.amount - order.discount - paid }}
-            </td>
-          </tr>
-        </tbody>
-      </q-markup-table>
-      <div class="q-mt-sm row justify-around q-gutter-xs">
-        <q-btn
-          label="Pay"
-          no-caps
-          color="primary"
-          @click="makePayment"
-          :disabled="[3, 4, 5, 6].includes(order.status)"
+          icon="save"
+          @click="updateOrder()"
+          v-if="[1, 2, 3, 6, 7].includes(order.status)"
         />
         <q-btn
-          label="Pack"
+          icon="cleaning_services"
+          @click="clearData(orderStore.getExistedOrder)"
+          v-if="[1, 2, 3, 6, 7].includes(order?.status)"
+        />
+
+        <q-btn
+          icon="backpack"
           no-caps
           color="secondary"
           @click="packOrder"
-          :disabled="
-            [1, 2, 4, 5, 6].includes(order.status) ||
-            !userStore.getUser.roles.map((e) => e.name).includes('admin')
-          "
-        />
-        <q-btn
-          label="Complete"
-          no-caps
-          color="positive"
-          @click="completeOrder"
-          :disabled="
-            [1, 2, 4, 5].includes(order.status) ||
-            !userStore.getUser.roles.map((e) => e.name).includes('admin')
+          v-if="
+            order.status == 3 &&
+            userStore.getUser.roles.map((e) => e.name).includes('admin')
           "
         />
 
         <q-btn
-          label="Cancel"
+          icon="local_shipping"
+          no-caps
+          color="secondary"
+          @click="deliverOrder"
+          v-if="
+            order.status == 6 &&
+            userStore.getUser.roles.map((e) => e.name).includes('admin')
+          "
+        />
+
+        <q-btn
+          icon="done"
+          no-caps
+          color="positive"
+          @click="completeOrder"
+          v-if="
+            [3, 6, 7].includes(order.status) &&
+            userStore.getUser.roles.map((e) => e.name).includes('admin')
+          "
+        />
+
+        <q-btn
+          icon="block"
           no-caps
           color="warning"
           @click="cancelOrder"
-          :disabled="
-            [4, 5].includes(order.status) ||
-            !userStore.getUser.roles.map((e) => e.name).includes('admin')
+          v-if="
+            [1, 2, 3, 6, 7].includes(order.status) &&
+            userStore.getUser.roles.map((e) => e.name).includes('admin')
           "
         />
         <q-btn
-          label="Print"
+          icon="print"
           no-caps
           color="accent"
           @click="showPrintOrderDialog"
         />
         <q-btn
-          label="Print Address"
+          icon="pin_drop"
           no-caps
           color="accent"
           @click="showPrintAddressDialog"
         />
-        <q-btn icon="close" no-caps @click="onDialogOK" />
+        <q-btn icon="close" @click="onDialogOK(order)" />
+      </div>
+      <div>
+        <div class="text-center text-h6">
+          #{{ order.id }} ({{ orderStatus[order.status] }})
+        </div>
+        <CustomerInfo v-bind="order" @dataUpdated="syncOrder" />
+        <OrderSaleItems
+          class="q-mt-xs"
+          v-bind="order"
+          @dataUpdated="syncOrder"
+        />
       </div>
     </div>
   </q-dialog>
@@ -228,13 +93,16 @@
 
 <script setup>
 import useUtil from "src/composables/util";
-import { onMounted, ref, computed } from "vue";
-import { date, useQuasar, useDialogPluginComponent } from "quasar";
-import OrderPaymentDialog from "src/components/OrderPaymentDialog.vue";
+import { ref, computed, watch, onBeforeUnmount } from "vue";
+import { useQuasar, useDialogPluginComponent } from "quasar";
 import EditCustomerDialog from "src/components/dialogs/EditCustomerDialog.vue";
 import PrintOrderDialog from "src/components/dialogs/PrintOrderDialog.vue";
 import PrintAddressDialog from "src/components/dialogs/PrintAddressDialog.vue";
 import { useUserStore } from "src/stores/user-store";
+import CustomerInfo from "../CustomerInfo.vue";
+import OrderSaleItems from "../OrderSaleItems.vue";
+import useOrder from "src/composables/order";
+import { useOrderStore } from "src/stores/order-store";
 
 defineEmits([...useDialogPluginComponent.emits]);
 const props = defineProps({
@@ -246,10 +114,17 @@ const props = defineProps({
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
 
-const { formatDate } = date;
 const { localStorage, dialog, notify } = useQuasar();
+const orderStore = useOrderStore();
 const { api } = useUtil();
 const order = ref(null);
+
+const { syncOrder, saveOrder, clearData } = useOrder(order);
+const updateOrder = () => {
+  saveOrder(true).then((response) => {
+    assignOrder(response.data.order);
+  });
+};
 const orderStatus = localStorage.getItem("orderStatus");
 const userStore = useUserStore();
 const totalQty = computed(
@@ -294,21 +169,6 @@ const paid = computed(() =>
     0
   )
 );
-
-const makePayment = () => {
-  dialog({
-    component: OrderPaymentDialog,
-    componentProps: {
-      order: order.value,
-    },
-  }).onOk((updatedOrder) => {
-    order.value = updatedOrder;
-    notify({
-      message: "Success",
-      type: "positive",
-    });
-  });
-};
 
 const showEditCustomerDialog = () => {
   dialog({
@@ -357,15 +217,8 @@ const cancelOrder = () => {
     noBackdropDismiss: true,
     cancel: true,
   }).onOk(() => {
-    api({
-      method: "POST",
-      url: `orders/${order.value.id}/cancel`,
-    }).then((response) => {
-      order.value = response.data.order;
-      notify({
-        message: "Order is canceled",
-        type: "positive",
-      });
+    saveOrder(true, 4).then((response) => {
+      assignOrder(response.data.order);
     });
   });
 };
@@ -377,15 +230,8 @@ const completeOrder = () => {
     noBackdropDismiss: true,
     cancel: true,
   }).onOk(() => {
-    api({
-      method: "POST",
-      url: `orders/${order.value.id}/complete`,
-    }).then((response) => {
-      order.value = response.data.order;
-      notify({
-        message: "Order is completed",
-        type: "positive",
-      });
+    saveOrder(true, 5).then((response) => {
+      assignOrder(response.data.order);
     });
   });
 };
@@ -397,25 +243,51 @@ const packOrder = () => {
     noBackdropDismiss: true,
     cancel: true,
   }).onOk(() => {
-    api({
-      method: "POST",
-      url: `orders/${order.value.id}/pack`,
-    }).then((response) => {
-      order.value = response.data.order;
-      notify({
-        message: "Order is packed",
-        type: "positive",
-      });
+    saveOrder(true, 6).then((response) => {
+      assignOrder(response.data.order);
     });
   });
 };
 
-onMounted(() => {
-  api({
-    method: "GET",
-    url: "orders/" + props.orderId,
-  }).then((response) => {
-    order.value = response.data.order;
+const deliverOrder = () => {
+  dialog({
+    title: "Confirmation",
+    message: "Do you want to delivery the order?",
+    noBackdropDismiss: true,
+    cancel: true,
+  }).onOk(() => {
+    saveOrder(true, 7).then((response) => {
+      assignOrder(response.data.order);
+    });
   });
+};
+
+const assignOrder = (value) => {
+  order.value = value;
+  order.value.created_at = new Date(value.created_at).toJSON().slice(0, 10);
+  order.value.a_items = value.a_items.map((a_item) => ({
+    ...a_item,
+    quantity: a_item.pivot.quantity,
+    price: a_item.pivot.price,
+    name: a_item.pivot.name,
+    discount: a_item.pivot.discount,
+  }));
+
+  orderStore.setExistedItems(JSON.parse(JSON.stringify(order.value.a_items)));
+  orderStore.setExistedOrder(JSON.parse(JSON.stringify(order.value)));
+
+  order.value.a_items.push(null);
+};
+
+api({
+  method: "GET",
+  url: "orders/" + props.orderId,
+}).then((response) => {
+  assignOrder(response.data.order);
+});
+
+onBeforeUnmount(() => {
+  orderStore.setExistedItems([]);
+  orderStore.setExistedOrder(null);
 });
 </script>

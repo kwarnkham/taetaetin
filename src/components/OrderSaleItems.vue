@@ -7,7 +7,7 @@
       flat
       dense
     >
-      <thead class="bg-black">
+      <thead>
         <tr>
           <th class="text-left number-column">#</th>
           <th class="text-left">Name</th>
@@ -17,52 +17,35 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, key) in aItems" :key="key">
-          <td class="text-left number-column">
-            {{ key + 1 }}
-          </td>
-
-          <td class="text-left" @click="showSelectAItemsDialog(key)">
-            {{ item?.name }}
-          </td>
-
-          <td class="text-right" @click="editQuantity(item, key)">
-            {{ item?.quantity }}
-          </td>
+        <OrderRow
+          v-for="(item, key) in a_items"
+          :key="key"
+          :item="item"
+          :number="key"
+          @dataUpdated="emitDataUpdated"
+          :a_items="a_items"
+        />
+        <tr>
+          <td colspan="4" class="text-right">Total</td>
+          <td class="text-right">{{ total.toLocaleString() }}</td>
+        </tr>
+        <tr @click="applyOrderPaid">
+          <td colspan="4" class="text-right">Paid</td>
+          <td class="text-right">{{ paid.toLocaleString() }}</td>
+        </tr>
+        <tr @click="applyOrderDiscount">
+          <td colspan="4" class="text-right">Discount</td>
+          <td class="text-right">{{ discount.toLocaleString() }}</td>
+        </tr>
+        <tr>
+          <td colspan="4" class="text-right">Remaining</td>
           <td
             class="text-right"
-            @click="applyItemDiscount(item, key)"
-            :class="{ 'text-indigo': item?.discount }"
+            :class="{ 'text-red': total - paid - discount < 0 }"
           >
-            <span v-if="item?.price">
-              {{ (item.price - (item?.discount || 0)).toLocaleString() }}
-              <span v-if="item.discount">
-                (-{{ item.discount.toLocaleString() }})
-              </span>
-            </span>
-          </td>
-          <td class="text-right">
-            <span v-if="item?.quantity * item?.price">
-              {{
-                (
-                  item?.quantity *
-                  (item?.price - (item?.discount || 0))
-                ).toLocaleString()
-              }}
-            </span>
+            {{ (total - paid - discount).toLocaleString() }}
           </td>
         </tr>
-        <!-- <tr>
-          <td colspan="5" class="text-center">
-            <q-btn
-              icon="add"
-              dense
-              flat
-              color="primary"
-              @click="$emit('addRow')"
-            />
-          </td>
-        </tr> -->
       </tbody>
     </q-markup-table>
   </div>
@@ -70,82 +53,77 @@
 
 <script setup>
 import { useQuasar } from "quasar";
-import { ref, watch } from "vue";
-import SelectAItemsDialog from "src/components/dialogs/SelectAItemsDialog";
+import { computed } from "vue";
+import OrderRow from "src/components/OrderRow";
 
-const { dialog, localStorage } = useQuasar();
-const aItems = ref(localStorage.getItem("aItems") ?? new Array(10));
-
-watch(
-  aItems,
-  () => {
-    localStorage.set("aItems", aItems.value);
+const props = defineProps({
+  paid: {
+    type: Number,
+    required: true,
   },
-  { deep: true }
-);
+  discount: {
+    type: Number,
+    required: true,
+  },
+  a_items: {
+    type: Array,
+    required: true,
+  },
+  onDataUpdated: {
+    type: Function,
+    required: true,
+  },
+});
 
-const showSelectAItemsDialog = (key) => {
+const emit = defineEmits("dataUpdated");
+const emitDataUpdated = (...args) => {
+  emit("dataUpdated", args[0], args[1]);
+};
+const { dialog } = useQuasar();
+
+const applyOrderPaid = () => {
   dialog({
-    component: SelectAItemsDialog,
-    componentProps: {
-      aItems: aItems.value,
+    title: "Paid amount",
+    noBackdropDismiss: true,
+    cancel: true,
+    position: "top",
+    prompt: {
+      model: props.paid > 0 ? props.paid : "",
+      type: "number",
+      inputmode: "numeric",
+      pattern: "[0-9*]",
+      isValid: (val) => val <= total.value - props.discount && val >= 0,
     },
-  }).onOk((aItem) => {
-    aItems.value[key] = { ...aItem, quantity: 1 };
+  }).onOk((val) => {
+    emit("dataUpdated", "paid", Number(val));
+  });
+};
+const applyOrderDiscount = () => {
+  dialog({
+    title: "Order discount",
+    noBackdropDismiss: true,
+    cancel: true,
+    position: "top",
+    prompt: {
+      model: props.discount > 0 ? props.discount : "",
+      type: "number",
+      inputmode: "numeric",
+      pattern: "[0-9*]",
+      isValid: (val) => val <= total.value - props.paid && val >= 0,
+    },
+  }).onOk((val) => {
+    emit("dataUpdated", "discount", Number(val));
   });
 };
 
-const getRealStock = (aItem) => {
-  const existed = aItems.value.reduce((carry, e) => {
-    if (aItem.id == e?.id) return e.quantity + carry;
-    else return carry;
-  }, 0);
-  return aItem.stock - existed + aItem.quantity;
-};
-
-const editQuantity = (item, key) => {
-  if (item)
-    dialog({
-      title: "Edit quantity for " + item.name,
-      message: `Stock : ${getRealStock(item)}`,
-      position: "top",
-      noBackdropDismiss: true,
-      cancel: true,
-      prompt: {
-        model: item.quantity,
-        type: "number",
-        inputmode: "numeric",
-        pattern: "[0-9]*",
-        isValid: (val) => val != "" && val >= 0 && val <= getRealStock(item),
-      },
-    }).onOk((qty) => {
-      qty = Number(qty);
-      if (qty > 0) aItems.value[key].quantity = qty;
-      else aItems.value.splice(key, 1);
-    });
-};
-
-const applyItemDiscount = (item, key) => {
-  if (item)
-    dialog({
-      title: "Discount for " + item.name,
-      message: `Normal price is ${item.price}`,
-      position: "top",
-      noBackdropDismiss: true,
-      cancel: true,
-      prompt: {
-        model: item.price - (item.discount || 0),
-        type: "number",
-        inputmode: "numeric",
-        pattern: "[0-9]*",
-        isValid: (val) => val != "" && val >= 0 && val <= item.price,
-      },
-    }).onOk((price) => {
-      price = Number(price);
-      const discount = item.price - price;
-      aItems.value[key].discount = discount;
-    });
-};
+const total = computed(() => {
+  return props.a_items
+    .filter((v) => !!v)
+    .reduce(
+      (carry, e) => (e.price - (e.discount ?? 0)) * e.quantity + carry,
+      0
+    );
+});
 </script>
 
 <style scoped lang="scss">
@@ -160,9 +138,8 @@ thead {
   position: sticky;
   top: 0;
   z-index: 10;
-  color: white;
   th {
-    border-color: white;
+    border-color: black;
   }
 }
 

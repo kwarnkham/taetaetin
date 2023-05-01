@@ -2,38 +2,75 @@
   <div class="row">
     <div class="col-6 row">
       <q-icon name="phone" size="sm" />
-      <input v-model="customerInfo.phone" type="tel" class="col" />
+      <input
+        :value="phone"
+        type="tel"
+        class="col"
+        @input="
+          (e) => {
+            $emit('dataUpdated', 'phone', e.target.value);
+          }
+        "
+      />
     </div>
     <div class="col-6 row">
       <q-icon name="today" size="sm" />
-      <input v-model="customerInfo.date" type="date" class="col" />
+      <input
+        :value="created_at"
+        type="date"
+        class="col"
+        @input="
+          (e) => {
+            $emit('dataUpdated', 'created_at', e.target.value);
+          }
+        "
+      />
     </div>
     <div class="separator col-12"></div>
     <div class="col-12 row">
       <q-icon name="person" size="sm" />
-      <input v-model="customerInfo.name" type="text" class="col" />
+      <input
+        :value="customer"
+        type="text"
+        class="col"
+        @input="
+          (e) => {
+            $emit('dataUpdated', 'customer', e.target.value);
+          }
+        "
+      />
     </div>
     <div class="separator col-12"></div>
 
     <div class="col-12 row">
       <q-icon name="place" size="sm" />
       <textarea
-        v-model="customerInfo.address"
+        :value="address"
         type="text-area"
         class="col"
         rows="1"
-        @input="autogrow"
+        @input="
+          (e) => {
+            autogrow(e);
+            $emit('dataUpdated', 'address', e.target.value);
+          }
+        "
       />
     </div>
     <div class="separator col-12"></div>
     <div class="col-12 row">
       <q-icon name="note" size="sm" />
       <textarea
-        v-model="customerInfo.note"
+        :value="note"
         type="text"
         class="col"
         rows="1"
-        @input="autogrow"
+        @input="
+          (e) => {
+            autogrow(e);
+            $emit('dataUpdated', 'note', e.target.value);
+          }
+        "
       />
     </div>
     <div class="separator col-12"></div>
@@ -41,30 +78,27 @@
 </template>
 
 <script setup>
-import { useQuasar } from "quasar";
-import { ref, watch } from "vue";
-
-const { localStorage } = useQuasar();
-
-const customerInfo = ref(
-  localStorage.getItem("customerInfo") ?? {
-    phone: "",
-    date: new Date().toJSON().slice(0, 10),
-    name: "",
-    address: "",
-    note: "",
-  }
-);
-
-watch(
-  customerInfo,
-  () => {
-    localStorage.set("customerInfo", customerInfo.value);
+const props = defineProps({
+  phone: {
+    required: true,
   },
-  {
-    deep: true,
-  }
-);
+  created_at: {
+    required: true,
+  },
+  customer: {
+    required: true,
+  },
+  address: {
+    required: true,
+  },
+  note: {
+    required: true,
+  },
+  onDataUpdated: {
+    type: Function,
+    required: true,
+  },
+});
 
 const autogrow = (e) => {
   const element = e.target;

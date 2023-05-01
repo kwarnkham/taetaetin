@@ -1,49 +1,90 @@
 <template>
   <q-page padding class="column">
-    <q-tabs
-      v-model="tab"
-      dense
-      class="text-grey full-width"
-      active-color="primary"
-      indicator-color="primary"
-      align="justify"
-      narrow-indicator
-      outside-arrows
-      mobile-arrows
-    >
-      <q-tab name="pending" icon="timer" no-caps />
-      <q-tab name="partially-paid" icon="attach_money" no-caps />
-      <q-tab name="paid" icon="paid" no-caps />
-      <q-tab name="packed" icon="local_shipping" no-caps />
-      <q-tab name="completed" icon="done" no-caps />
-      <q-tab name="canceled" icon="cancel" no-caps />
-    </q-tabs>
-
-    <q-separator />
-
-    <q-tab-panels v-model="tab" animated class="col">
-      <q-tab-panel
-        :name="status[1].split(' ').join('-').toLowerCase()"
-        :id="status[1].split(' ').join('-').toLowerCase()"
-        v-for="status in orderStatus"
-        :key="status[0]"
-      >
-        <OrderList
-          :status="status[0]"
-          has-search
-          @vnode-mounted="updateItemListHeight"
-        />
-      </q-tab-panel>
-    </q-tab-panels>
+    <div class="row justify-between">
+      <q-checkbox
+        v-model="status.pending"
+        label="Pending"
+        :disable="String(statusParam).length == 1 && status.pending"
+      />
+      <q-checkbox
+        v-model="status.patiallyPaid"
+        label="Partial Paid"
+        :disable="String(statusParam).length == 1 && status.patiallyPaid"
+      />
+      <q-checkbox
+        v-model="status.paid"
+        label="Paid"
+        :disable="String(statusParam).length == 1 && status.paid"
+      />
+      <q-checkbox
+        v-model="status.packed"
+        label="Packed"
+        :disable="String(statusParam).length == 1 && status.packed"
+      />
+      <q-checkbox
+        v-model="status.onDelivery"
+        label="On Delivery"
+        :disable="String(statusParam).length == 1 && status.onDelivery"
+      />
+      <q-checkbox
+        v-model="status.completed"
+        label="Completed"
+        :disable="String(statusParam).length == 1 && status.completed"
+      />
+      <q-checkbox
+        v-model="status.canceled"
+        label="Canceled"
+        :disable="String(statusParam).length == 1 && status.canceled"
+      />
+    </div>
+    <OrderList :status="statusParam" />
   </q-page>
 </template>
 
 <script setup>
 import { useQuasar } from "quasar";
 import OrderList from "src/components/OrderList.vue";
-import useTabPanels from "src/composables/tabPanels";
+import { computed, ref, watch } from "vue";
 
 const { localStorage } = useQuasar();
-const orderStatus = Object.entries(localStorage.getItem("orderStatus"));
-const { tab, updateItemListHeight } = useTabPanels("pending");
+const orderMenuStatus = localStorage.getItem("orderMenuStatus");
+const status = ref(
+  typeof orderMenuStatus == "object"
+    ? orderMenuStatus
+    : {
+        pending: true,
+        patiallyPaid: true,
+        paid: true,
+        packed: true,
+        onDelivery: true,
+        completed: true,
+        canceled: true,
+      }
+);
+const statusNumber = {
+  pending: 1,
+  patiallyPaid: 2,
+  paid: 3,
+  packed: 6,
+  onDelivery: 7,
+  completed: 5,
+  canceled: 4,
+};
+
+const statusParam = computed(() =>
+  Object.keys(status.value)
+    .filter((e) => status.value[e])
+    .map((e) => statusNumber[e])
+    .join(",")
+);
+
+watch(
+  status,
+  () => {
+    localStorage.set("orderMenuStatus", status.value);
+  },
+  {
+    deep: true,
+  }
+);
 </script>
