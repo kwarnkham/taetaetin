@@ -23,6 +23,7 @@
     <div v-if="hasSearch">
       <q-input v-model="search" placeholder="Search by phone number or ID" />
     </div>
+    <div class="text-center text-overline">{{ total.toLocaleString() }}</div>
     <q-list bordered separator class="overflow-auto col">
       <q-item v-for="order in pagination?.data" :key="order.id">
         <q-item-section>
@@ -131,10 +132,12 @@ const showOrderDetails = (order) => {
     pagination.value.data[key] = val;
   });
 };
-const { pagination, max, current, total, profit, updateQueryAndFetch } =
-  usePagination("orders", {
+const { pagination, max, current, total, updateQueryAndFetch } = usePagination(
+  "orders",
+  {
     status: props.status,
-  });
+  }
+);
 
 const { search } = useSearchFilter({ updateQueryAndFetch });
 
