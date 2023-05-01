@@ -25,6 +25,7 @@
                 icon="add"
                 dense
                 @click="showCreateProductDialog(item)"
+                v-if="item.type == 1"
               />
               <q-btn
                 round
@@ -37,7 +38,7 @@
         </q-item-section>
         <q-item-section side top>
           <q-item-label> Price : {{ item.price }} </q-item-label>
-          <q-item-label caption>
+          <q-item-label caption v-if="item.type == 1">
             Purchase price: {{ item.latest_purchase.price }}
           </q-item-label>
         </q-item-section>
@@ -62,23 +63,25 @@ import usePagination from "src/composables/pagination";
 import { useUserStore } from "src/stores/user-store";
 import useSearchFilter from "src/composables/searchFilter";
 import useItem from "src/composables/item";
-import { api } from "src/boot/axios";
+import useUtil from "src/composables/util";
 
 const { dialog } = useQuasar();
 const userStore = useUserStore();
 const { reStock } = useItem();
+const { api } = useUtil();
 
 const { pagination, max, current, updateQueryAndFetch } =
   usePagination("a-items");
 const { search } = useSearchFilter({ updateQueryAndFetch });
 
 const showCreateProductDialog = (item) => {
-  reStock(item).then((response) => {
-    const index = pagination.value.data.findIndex(
-      (e) => e.id == response.data.a_item.id
-    );
-    pagination.value.data[index] = response.data.a_item;
-  });
+  if (item.type == 1)
+    reStock(item).then((response) => {
+      const index = pagination.value.data.findIndex(
+        (e) => e.id == response.data.a_item.id
+      );
+      pagination.value.data[index] = response.data.a_item;
+    });
 };
 
 const showEditItemDialog = (item) => {

@@ -66,7 +66,8 @@ const editQuantity = (item) => {
   if (item)
     dialog({
       title: "Edit quantity for " + item.name,
-      message: `Max : ${getRealStock(item)}`,
+      message:
+        item.type == 1 ? `Max : ${getRealStock(item)}` : "Non stocked item",
       position: "top",
       noBackdropDismiss: true,
       cancel: true,
@@ -75,7 +76,10 @@ const editQuantity = (item) => {
         type: "number",
         inputmode: "numeric",
         pattern: "[0-9]*",
-        isValid: (val) => val != "" && val >= 0 && val <= getRealStock(item),
+        isValid: (val) =>
+          val != "" &&
+          val >= 0 &&
+          (item.type == 1 ? val <= getRealStock(item) : item.type == 2),
       },
     }).onOk((qty) => {
       qty = Number(qty);

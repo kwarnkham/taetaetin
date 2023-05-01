@@ -37,9 +37,9 @@
           <thead>
             <tr>
               <th class="text-left">Name</th>
-              <th class="text-right">Price</th>
+              <th class="text-right">Price(Dis)</th>
               <th class="text-right">Qty</th>
-              <th class="text-right">Amount</th>
+              <th class="text-right">Amt</th>
             </tr>
           </thead>
           <tbody>
@@ -53,6 +53,9 @@
                   {{
                     (item.pivot.price - item.pivot.discount).toLocaleString()
                   }}
+                  <span v-if="item.pivot.discount">
+                    (-{{ item.pivot.discount }})</span
+                  >
                 </td>
                 <td class="text-right">
                   {{ item.pivot.quantity }}
@@ -138,7 +141,6 @@
 
 <script setup>
 import { useDialogPluginComponent, date, useQuasar } from "quasar";
-import { computed } from "vue";
 import usePrinter from "src/composables/printer";
 
 const { formatDate } = date;
@@ -151,13 +153,13 @@ const props = defineProps({
 
 const { notify, platform } = useQuasar();
 
-const { sendPrinterData, printTime, printing } = usePrinter();
+const { sendPrinterData, printTime, printing, sendTextData } = usePrinter();
 
 const print = () => {
   printing.value = true;
   sendPrinterData(document.getElementById("print-target"))
     .then(() => {
-      // sendTextData("\u000A\u000D");
+      sendTextData("\u000A\u000D");
     })
     .catch((error) => {
       if (error) notify(error);
