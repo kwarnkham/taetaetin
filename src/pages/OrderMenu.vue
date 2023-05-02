@@ -45,7 +45,7 @@
       />
     </div>
 
-    <OrderList :status="statusParam" class="col" />
+    <OrderList :status="statusParam" class="col" has-date-filter />
   </q-page>
 </template>
 

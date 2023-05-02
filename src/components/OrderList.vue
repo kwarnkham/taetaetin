@@ -2,7 +2,6 @@
   <div class="full-height column">
     <template v-if="hasDateFilter">
       <div v-if="total">Total: {{ total.toLocaleString() }} MMK</div>
-      <div v-if="profit">Profit: {{ profit.toLocaleString() }} MMK</div>
       <div class="row justify-between items-center">
         <q-input v-model="from" type="date" :class="{ 'col-6': screen.lt.sm }">
           <template v-slot:prepend>
@@ -23,7 +22,6 @@
     <div v-if="hasSearch">
       <q-input v-model="search" placeholder="Search by phone number or ID" />
     </div>
-    <div class="text-center text-overline">{{ total.toLocaleString() }}</div>
     <q-list bordered separator class="overflow-auto col">
       <q-item v-for="order in pagination?.data" :key="order.id">
         <q-item-section>
@@ -100,7 +98,9 @@ import OrderDetailsDialog from "./dialogs/OrderDetailsDialog.vue";
 import useSearchFilter from "src/composables/searchFilter";
 import useDateFilter from "src/composables/dateFilter";
 import { watch } from "vue";
+import { useRoute } from "vue-router";
 
+const route = useRoute();
 const props = defineProps({
   hasDateFilter: { type: Boolean, default: false },
   status: { required: false },
@@ -132,10 +132,25 @@ const showOrderDetails = (order) => {
     pagination.value.data[key] = val;
   });
 };
+
 const { pagination, max, current, total, updateQueryAndFetch } = usePagination(
   "orders",
   {
     status: props.status,
+    from: props.hasDateFilter
+      ? route.query.from ??
+        formatDate(
+          new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+          "YYYY-MM-DD"
+        )
+      : undefined,
+    to: props.hasDateFilter
+      ? route.query.to ??
+        formatDate(
+          new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+          "YYYY-MM-DD"
+        )
+      : undefined,
   }
 );
 

@@ -19,15 +19,6 @@
         "
       />
       <q-tab name="payment" label="Payment" no-caps />
-      <q-tab
-        name="service"
-        label="Service"
-        no-caps
-        v-if="
-          userStore.getUser &&
-          userStore.getUser.roles.map((e) => e.name).includes('admin')
-        "
-      />
     </q-tabs>
 
     <q-separator />
@@ -47,10 +38,6 @@
         />
         <PaymentList class="col" />
       </q-tab-panel>
-      <q-tab-panel name="service" id="service" class="column no-wrap">
-        <ServiceForm @vnode-mounted="updateItemListHeight" />
-        <ServiceList class="col" />
-      </q-tab-panel>
     </q-tab-panels>
   </q-page>
 </template>
@@ -60,8 +47,6 @@ import ExpenseForm from "src/components/ExpenseForm.vue";
 import ExpenseList from "src/components/ExpenseList.vue";
 import PaymentForm from "src/components/PaymentForm.vue";
 import PaymentList from "src/components/PaymentList.vue";
-import ServiceForm from "src/components/ServiceForm.vue";
-import ServiceList from "src/components/ServiceList.vue";
 import useTabPanels from "src/composables/tabPanels";
 import { useUserStore } from "src/stores/user-store";
 

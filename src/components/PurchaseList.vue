@@ -1,6 +1,8 @@
 <template>
   <div class="full-height column">
-    <div v-if="total">Total: {{ total.toLocaleString() }} MMK</div>
+    <div v-if="total" class="text-center text-h6 text-weight-bold">
+      Total: {{ total.toLocaleString() }} MMK
+    </div>
     <div>
       <q-input v-model.trim="search" label="Search" />
     </div>
@@ -45,10 +47,14 @@
         <q-item-section>
           <q-item-label>
             <span>
-              {{ purchase.name || purchase.purchasable.name }}
+              {{ purchase.name }}
             </span>
             <span
-              v-if="purchase.name && purchase.name != purchase.purchasable.name"
+              v-if="
+                purchase.name &&
+                purchase.purchasable.name &&
+                purchase.name != purchase.purchasable.name
+              "
               class="text-overline"
             >
               ({{ purchase.purchasable.name }})
@@ -125,8 +131,9 @@ const props = defineProps({
 
 const purchaseTypes = [
   { label: "All", value: "All" },
-  { label: "Product", value: "App\\Models\\Product" },
+  { label: "Item", value: "App\\Models\\AItem" },
   { label: "Expense", value: "App\\Models\\Expense" },
+  { label: "Order", value: "App\\Models\\Order" },
 ];
 const { api } = useUtil();
 const { dialog, notify, screen } = useQuasar();
@@ -139,8 +146,9 @@ watch(type, () => {
   });
 });
 const purchaseType = {
-  "App\\Models\\Product": "Product",
+  "App\\Models\\AItem": "Item",
   "App\\Models\\Expense": "Expense",
+  "App\\Models\\Order": "Order",
 };
 const assignGroup = (purchase) => {
   dialog({
@@ -186,10 +194,18 @@ const { pagination, max, current, total, updateQueryAndFetch } = usePagination(
   {
     status: canceled.value ? 2 : 1,
     from: props.hasDateFilter
-      ? route.query.from ?? formatDate(new Date(), "YYYY-MM-DD")
+      ? route.query.from ??
+        formatDate(
+          new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+          "YYYY-MM-DD"
+        )
       : undefined,
     to: props.hasDateFilter
-      ? route.query.to ?? formatDate(new Date(), "YYYY-MM-DD")
+      ? route.query.to ??
+        formatDate(
+          new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+          "YYYY-MM-DD"
+        )
       : undefined,
     group: group.value || undefined,
   }

@@ -12,7 +12,7 @@ export default function useItem () {
         cancel: true,
         noBackdropDismiss: true,
         prompt: {
-          model: a_item.latest_purchase.price,
+          model: a_item?.latest_purchase?.price || '',
           type: "number",
           inputmode: "numeric",
           pattern: "[0-9]*",

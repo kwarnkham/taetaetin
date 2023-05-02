@@ -38,7 +38,10 @@
         </q-item-section>
         <q-item-section side top>
           <q-item-label> Price : {{ item.price }} </q-item-label>
-          <q-item-label caption v-if="item.type == 1 && userStore.getUser">
+          <q-item-label
+            caption
+            v-if="item.type == 1 && userStore.getUser && item.latest_purchase"
+          >
             Purchase price: {{ item.latest_purchase.price }}
           </q-item-label>
         </q-item-section>

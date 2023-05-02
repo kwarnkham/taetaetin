@@ -26,11 +26,11 @@ const routes = [
         }
       },
       {
-        title: 'Financial Records',
+        title: 'Purchases',
         icon: "price_change",
-        path: 'financial-records',
-        component: () => import('src/pages/FinancialRecords.vue'),
-        name: 'financial-records',
+        path: 'purchases',
+        component: () => import('src/pages/PurchasePage.vue'),
+        name: 'purchases',
         meta: {
           requireAuth: true,
           role: 'admin',
