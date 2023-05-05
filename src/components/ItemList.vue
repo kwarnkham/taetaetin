@@ -37,6 +37,20 @@
                 dense
                 @click="showEditItemDialog(item)"
               />
+              <q-btn
+                flat
+                icon="more"
+                dense
+                no-caps
+                @click="
+                  $router.push({
+                    name: 'item-details',
+                    params: {
+                      item: item.id,
+                    },
+                  })
+                "
+              />
             </template>
           </div>
         </q-item-section>

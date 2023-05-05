@@ -1,40 +1,51 @@
 <template>
   <q-page padding v-if="item">
     <div class="text-center text-h5">
-      {{ item.name }} <q-btn icon="qr_code" round @click="printQR" />
+      {{ item.name }}
     </div>
     <p>{{ item.description }}</p>
+    <div class="text-right" v-if="item.type == 1">
+      <div>
+        Total purchased quantity :{{
+          item.purchases.reduce((carry, e) => carry + e.quantity, 0)
+        }}
+      </div>
+      <div>Total ordered quantity :{{ item.ordered_quantity }}</div>
+      <div>Total remaining quantity :{{ item.stock }}</div>
+      <div>
+        {{
+          Number(item.stock) +
+          Number(item.ordered_quantity) -
+          item.purchases.reduce((carry, e) => carry + e.quantity, 0)
+        }}
+      </div>
+    </div>
     <q-separator spaced />
-    <ProductList />
   </q-page>
 </template>
 
 <script setup>
-import { useQuasar } from "quasar";
-import PrintQrDialog from "src/components/dialogs/PrintQrDialog.vue";
-import ProductList from "src/components/ProductList.vue";
 import useUtil from "src/composables/util";
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
 const { api } = useUtil();
-const { dialog } = useQuasar();
 const item = ref(null);
 const route = useRoute();
-const printQR = () => {
-  dialog({
-    component: PrintQrDialog,
-    componentProps: {
-      item: item.value,
-    },
-  });
-};
+// const printQR = () => {
+//   dialog({
+//     component: PrintQrDialog,
+//     componentProps: {
+//       item: item.value,
+//     },
+//   });
+// };
 onMounted(() => {
   api({
     method: "GET",
-    url: `items/${route.params.item}`,
+    url: `a-items/${route.params.item}`,
   }).then((response) => {
-    item.value = response.data.item;
+    item.value = response.data.a_item;
   });
 });
 </script>
