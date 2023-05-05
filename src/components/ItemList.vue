@@ -11,8 +11,12 @@
     <q-list bordered separator class="overflow-auto col">
       <q-item v-for="item in pagination?.data" :key="item.id">
         <q-item-section>
-          <q-item-label>{{ item.name }}</q-item-label>
-          <q-item-label caption>Stock : {{ item.stock }}</q-item-label>
+          <q-item-label :class="{ 'text-indigo': item.type == 2 }">
+            {{ item.name }}
+          </q-item-label>
+          <q-item-label caption v-if="item.type == 1">
+            Stock : {{ item.stock }}
+          </q-item-label>
           <div class="row justify-start q-gutter-x-sm q-mt-sm">
             <template
               v-if="

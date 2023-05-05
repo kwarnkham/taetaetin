@@ -4,7 +4,11 @@
       {{ number + 1 }}
     </td>
 
-    <td class="text-left" @click="showSelectAItemsDialog()">
+    <td
+      class="text-left"
+      @click="showSelectAItemsDialog()"
+      :class="{ 'text-white bg-indigo': item?.type == 2 }"
+    >
       {{ item?.name }}
     </td>
 
