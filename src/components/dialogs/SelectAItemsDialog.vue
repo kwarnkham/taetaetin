@@ -61,7 +61,7 @@
               <span v-else class="text-grey"> Non stocked item </span>
             </q-item-section>
           </q-item>
-          <q-item>
+          <q-item v-if="search">
             <q-item-section></q-item-section>
             <q-item-section side top>
               <q-btn
@@ -77,7 +77,7 @@
         </q-list>
         <div
           class="text-right q-mt-sm"
-          v-else-if="pagination && pagination.data.length == 0 && search"
+          v-else-if="aItems.length == 0 && search"
         >
           <q-btn no-caps flat @click="showCreateAItem()">
             Create new item "{{ search }}"
@@ -89,13 +89,11 @@
 </template>
 
 <script setup>
-import { useDialogPluginComponent, useQuasar } from "quasar";
-import usePagination from "src/composables/pagination";
-import useSearchFilter from "src/composables/searchFilter";
+import { debounce, useDialogPluginComponent, useQuasar } from "quasar";
 import useUtil from "src/composables/util";
 import useItem from "src/composables/item";
 import { useOrderStore } from "src/stores/order-store";
-import { computed } from "vue";
+import { computed, watch, ref } from "vue";
 
 const { dialog } = useQuasar();
 const { api } = useUtil();
@@ -103,10 +101,10 @@ const { reStock } = useItem();
 
 const addStock = (aItem) => {
   reStock(aItem).then((response) => {
-    const index = pagination.value.data.findIndex(
+    const index = aItems.value.findIndex(
       (e) => e.id == response.data.a_item.id
     );
-    pagination.value.data[index] = response.data.a_item;
+    aItems.value[index] = response.data.a_item;
   });
 };
 const props = defineProps({
@@ -117,7 +115,8 @@ const props = defineProps({
 });
 
 const orderStore = useOrderStore();
-
+const aItems = ref([]);
+const search = ref("");
 const getRealStock = (a_item) => {
   let existed = props.a_items.reduce((carry, e) => {
     if (a_item.id == e?.id) return e.quantity + carry;
@@ -141,17 +140,29 @@ defineEmits([...useDialogPluginComponent.emits]);
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
 
-const { pagination, updateQueryAndFetch } = usePagination("a-items");
-const { search } = useSearchFilter({ updateQueryAndFetch });
+const fetch = () => {
+  api({
+    method: "GET",
+    url: "a-items",
+    params: {
+      search: search.value || undefined,
+      per_page: 10,
+    },
+  }).then((response) => {
+    aItems.value = response.data.data.data;
+  });
+};
+
+fetch();
+
+watch(search, debounce(fetch, 700));
 
 const saleItems = computed(() => {
-  if (!pagination.value) return [];
-  else
-    return pagination.value.data.map((e) => ({
-      ...e,
-      realStock: getRealStock(e),
-      isInOrder: isInOrder(e),
-    }));
+  return aItems.value.map((e) => ({
+    ...e,
+    realStock: getRealStock(e),
+    isInOrder: isInOrder(e),
+  }));
 });
 
 const showCreateAItem = () => {
@@ -242,7 +253,7 @@ const submitItem = (data) => {
     },
     true
   ).then((response) => {
-    pagination.value.data.unshift(response.data.a_item);
+    aItems.value.unshift(response.data.a_item);
   });
 };
 </script>

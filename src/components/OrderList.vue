@@ -1,7 +1,9 @@
 <template>
   <div class="full-height column">
     <template v-if="hasDateFilter">
-      <div v-if="total">Total: {{ total.toLocaleString() }} MMK</div>
+      <div v-if="total" class="text-center text-subtitle2 q-mt-sm">
+        Total: {{ total.toLocaleString() }} MMK
+      </div>
       <div class="row justify-between items-center">
         <q-input v-model="from" type="date" :class="{ 'col-6': screen.lt.sm }">
           <template v-slot:prepend>
@@ -116,7 +118,7 @@ const showOrderCustomer = (order) => {
     title: order.customer,
     message: `<div>Phone : ${order.phone}. </div>
               <div>Address : ${order.address}.</div>
-              <div>Note :${order.note}</div>`,
+              <div>Note :${order.note ?? ""}</div>`,
     html: true,
   });
 };
