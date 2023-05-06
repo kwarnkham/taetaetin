@@ -59,7 +59,7 @@ const { localStorage } = useQuasar();
 const { vhPage } = useUtil();
 const orderMenuStatus = localStorage.getItem("orderMenuStatus");
 const status = ref(
-  typeof orderMenuStatus == "object"
+  typeof orderMenuStatus == "object" && orderMenuStatus != null
     ? orderMenuStatus
     : {
         pending: true,
