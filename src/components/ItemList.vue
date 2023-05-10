@@ -127,7 +127,7 @@ const showEditItemDialog = (item) => {
     if (option == "name") {
       prompt.isValid = (val) => val != "";
     } else if (option == "price") {
-      prompt.isValid = (val) => val != "" || val > 0;
+      prompt.isValid = (val) => val != "" || val >= 0;
       prompt.type = "number";
       prompt.inputmode = "numeric";
       prompt.pattern = "[0-9]*";
