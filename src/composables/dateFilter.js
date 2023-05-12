@@ -3,7 +3,7 @@ import { useRoute } from "vue-router";
 import { date } from "quasar";
 const { formatDate } = date;
 
-export default function useDateFilter ({ updateQueryAndFetch }) {
+export default function useDateFilter () {
   const route = useRoute();
   const from = ref(route.query.from ?? formatDate(
     new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -14,13 +14,8 @@ export default function useDateFilter ({ updateQueryAndFetch }) {
     "YYYY-MM-DD"
   ));
 
-
-  const searchByDates = () => {
-    updateQueryAndFetch({ to: to.value, from: from.value })
-  }
   return {
     from,
-    to,
-    searchByDates
+    to
   }
 }

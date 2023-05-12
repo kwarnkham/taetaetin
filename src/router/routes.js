@@ -38,11 +38,11 @@ const routes = [
         }
       },
       {
-        title: 'Set up',
-        icon: "topic",
-        path: 'set-up',
-        component: () => import('src/pages/SetUp.vue'),
-        name: 'set-up',
+        title: 'Expenses',
+        icon: "request_quote",
+        path: 'expenses',
+        component: () => import('src/pages/ExpensePage.vue'),
+        name: 'expenses',
         meta: {
           requireAuth: true,
           role: 'admin',

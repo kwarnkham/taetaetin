@@ -1,15 +1,7 @@
 <template>
-  <div class="full-height column">
-    <div>
-      <q-input v-model.trim="search" label="Search">
-        <template v-slot:append>
-          <q-icon name="search" />
-        </template>
-      </q-input>
-    </div>
-
-    <q-list bordered separator class="overflow-auto col">
-      <q-item v-for="item in pagination?.data" :key="item.id">
+  <q-list bordered separator class="overflow-auto col">
+    <template v-if="items.length">
+      <q-item v-for="item in items" :key="item.id">
         <q-item-section>
           <q-item-label :class="{ 'text-indigo': item.type == 2 }">
             {{ item.name }}
@@ -28,7 +20,7 @@
                 round
                 icon="add"
                 dense
-                @click="showCreateProductDialog(item)"
+                @click="showRestockProductDialog(item)"
                 v-if="item.type == 1"
               />
               <q-btn
@@ -64,44 +56,33 @@
           </q-item-label>
         </q-item-section>
       </q-item>
-    </q-list>
-
-    <div
-      class="row justify-center full-width"
-      :class="{
-        hidden:
-          pagination?.current_page == 1 && pagination?.next_page_url == null,
-      }"
-    >
-      <q-pagination v-model="current" :max="max" input />
-    </div>
-  </div>
+    </template>
+    <div v-else class="text-h6 text-center">No products</div>
+  </q-list>
 </template>
 
 <script setup>
 import { useQuasar } from "quasar";
-import usePagination from "src/composables/pagination";
 import { useUserStore } from "src/stores/user-store";
-import useSearchFilter from "src/composables/searchFilter";
 import useItem from "src/composables/item";
 import useUtil from "src/composables/util";
 
+const props = defineProps({
+  items: {
+    type: Array,
+    required: true,
+  },
+});
+const emit = defineEmits(["itemUpdated"]);
 const { dialog } = useQuasar();
 const userStore = useUserStore();
 const { reStock } = useItem();
 const { api } = useUtil();
 
-const { pagination, max, current, updateQueryAndFetch } =
-  usePagination("a-items");
-const { search } = useSearchFilter({ updateQueryAndFetch });
-
-const showCreateProductDialog = (item) => {
+const showRestockProductDialog = (item) => {
   if (item.type == 1)
     reStock(item).then((response) => {
-      const index = pagination.value.data.findIndex(
-        (e) => e.id == response.data.a_item.id
-      );
-      pagination.value.data[index] = response.data.a_item;
+      emit("itemUpdated", response.data.a_item);
     });
 };
 
@@ -127,7 +108,7 @@ const showEditItemDialog = (item) => {
     if (option == "name") {
       prompt.isValid = (val) => val != "";
     } else if (option == "price") {
-      prompt.isValid = (val) => val != "" || val >= 0;
+      prompt.isValid = (val) => val != "" || val > 0;
       prompt.type = "number";
       prompt.inputmode = "numeric";
       prompt.pattern = "[0-9]*";
@@ -146,8 +127,7 @@ const showEditItemDialog = (item) => {
         url: `a-items/${item.id}`,
         data,
       }).then((response) => {
-        const index = pagination.value.data.findIndex((e) => e.id == item.id);
-        pagination.value.data[index] = response.data.a_item;
+        emit("itemUpdated", response.data.a_item);
       });
     });
   });

@@ -20,7 +20,15 @@
           @click="$router.go(-1)"
           v-if="$route.name != 'items'"
         />
-        <q-toolbar-title> သေးသေးတင် </q-toolbar-title>
+        <q-toolbar-title
+          @click="
+            $router.push({
+              name: 'index',
+            })
+          "
+        >
+          သေးသေးတင်
+        </q-toolbar-title>
 
         <div>
           <q-btn

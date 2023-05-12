@@ -16,7 +16,7 @@ export default function useItem () {
           type: "number",
           inputmode: "numeric",
           pattern: "[0-9]*",
-          isValid: (val) => val != '' && val > 0
+          isValid: (val) => val != '' && val >= 0
         },
       }).onOk((purchasePrice) => {
         dialog({
