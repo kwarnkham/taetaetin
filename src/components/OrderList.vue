@@ -17,7 +17,15 @@
           </template>
         </q-input>
         <div class="q-my-sm" :class="{ 'text-right col-12': screen.lt.sm }">
-          <q-btn icon="search" @click="searchByDates" />
+          <q-btn
+            icon="search"
+            @click="
+              updateQueryAndFetch({
+                from,
+                to,
+              })
+            "
+          />
         </div>
       </div>
     </template>
@@ -158,7 +166,7 @@ const { pagination, max, current, total, updateQueryAndFetch } = usePagination(
 
 const { search } = useSearchFilter({ updateQueryAndFetch });
 
-const { from, to, searchByDates } = useDateFilter({ updateQueryAndFetch });
+const { from, to } = useDateFilter();
 
 watch(
   props,
