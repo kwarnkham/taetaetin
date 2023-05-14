@@ -49,7 +49,10 @@
       Total: {{ total.toLocaleString() }} MMK
     </div>
 
-    <div class="row justify-between items-end">
+    <div
+      class="row justify-between items-end q-pa-xs"
+      :class="{ 'bg-info rounded-borders': $route.query.report }"
+    >
       <q-input v-model="from" type="date" label="From" class="col" />
       <q-separator vertical spaced />
       <q-input v-model="to" type="date" label="To" class="col" />
@@ -102,7 +105,6 @@ import { useRoute } from "vue-router";
 const route = useRoute();
 const { localStorage } = useQuasar();
 const { vhPage } = useUtil();
-const { from, to } = useDateFilter();
 
 const orderMenuStatus = localStorage.getItem("orderMenuStatus");
 
@@ -126,7 +128,9 @@ if (route.query.report) {
     else status.value[key] = false;
   });
 }
-
+const { from, to } = useDateFilter(
+  route.query.report ? new Date().getMonth() : undefined
+);
 const statusNumber = {
   pending: 1,
   patiallyPaid: 2,
