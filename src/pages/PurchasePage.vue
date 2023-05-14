@@ -16,35 +16,12 @@
     <div>
       <q-input v-model.trim="search" label="Search" dense />
     </div>
-    <div class="row justify-between items-center">
-      <q-input
-        v-model="from"
-        type="date"
-        :class="{ 'col-5': screen.lt.sm }"
-        dense
-      >
-        <template v-slot:prepend>
-          <span class="text-caption text-weight-bold">From</span>
-        </template>
-      </q-input>
-      <q-separator vertical v-if="screen.lt.sm" />
-      <q-input
-        v-model="to"
-        type="date"
-        :class="{ 'col-5': screen.lt.sm }"
-        dense
-      >
-        <template v-slot:prepend>
-          <span class="text-caption text-weight-bold">To</span>
-        </template>
-      </q-input>
-      <div class="q-my-sm" :class="{ 'text-right': screen.lt.sm }">
-        <q-btn
-          icon="search"
-          @click="updateQueryAndFetch({ from, to })"
-          flat
-          dense
-        />
+    <div class="row justify-between items-end">
+      <q-input v-model="from" type="date" label="From" class="col" dense />
+      <q-separator vertical spaced />
+      <q-input v-model="to" type="date" label="To" class="col" dense />
+      <div class="q-my-sm">
+        <q-btn icon="search" @click="updateQueryAndFetch({ from, to })" flat />
       </div>
     </div>
     <q-select

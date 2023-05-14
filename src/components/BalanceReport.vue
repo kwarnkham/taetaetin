@@ -2,9 +2,9 @@
   <div class="bg-light-blue-2 rounded-borders q-pa-xs">
     <div class="text-h5 text-center">Balance Report</div>
     <div class="row no-wrap q-pa-sm">
-      <q-input type="date" v-model="from" dense class="col" />
+      <q-input type="date" v-model="from" dense class="col" label="From" />
       <q-separator vertical spaced />
-      <q-input type="date" v-model="to" dense class="col" />
+      <q-input type="date" v-model="to" dense class="col" label="To" />
       <q-btn
         icon="download"
         flat
@@ -26,6 +26,9 @@
               @click="
                 $router.push({
                   name: 'order-menu',
+                  query: {
+                    report: '1',
+                  },
                 })
               "
               no-caps
@@ -79,7 +82,7 @@ import usePagination from "src/composables/pagination";
 import useDateFilter from "src/composables/dateFilter";
 import { ref } from "vue";
 
-const { from, to } = useDateFilter();
+const { from, to } = useDateFilter(new Date().getMonth());
 
 const loading = ref(false);
 

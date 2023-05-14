@@ -45,19 +45,67 @@
       />
     </div>
 
-    <OrderList :status="statusParam" class="col" has-date-filter has-search />
+    <div v-if="total" class="text-center text-subtitle2 q-mt-sm">
+      Total: {{ total.toLocaleString() }} MMK
+    </div>
+
+    <div class="row justify-between items-end">
+      <q-input v-model="from" type="date" label="From" class="col" />
+      <q-separator vertical spaced />
+      <q-input v-model="to" type="date" label="To" class="col" />
+      <div class="q-my-sm">
+        <q-btn
+          icon="search"
+          flat
+          @click="
+            updateQueryAndFetch({
+              from,
+              to,
+            })
+          "
+        />
+      </div>
+    </div>
+
+    <div>
+      <q-input v-model="search" placeholder="Search by phone number or ID" />
+    </div>
+
+    <OrderList
+      :status="statusParam"
+      class="col"
+      :orders="pagination.data"
+      v-if="pagination"
+    />
+    <div
+      class="row justify-center full-width"
+      :class="{
+        hidden:
+          pagination?.current_page == 1 && pagination?.next_page_url == null,
+      }"
+    >
+      <q-pagination v-model="current" :max="max" input />
+    </div>
   </q-page>
 </template>
 
 <script setup>
-import { useQuasar } from "quasar";
+import { debounce, useQuasar } from "quasar";
 import OrderList from "src/components/OrderList.vue";
+import useDateFilter from "src/composables/dateFilter";
+import usePagination from "src/composables/pagination";
+import useSearchFilter from "src/composables/searchFilter";
 import useUtil from "src/composables/util";
 import { computed, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 
+const route = useRoute();
 const { localStorage } = useQuasar();
 const { vhPage } = useUtil();
+const { from, to } = useDateFilter();
+
 const orderMenuStatus = localStorage.getItem("orderMenuStatus");
+
 const status = ref(
   typeof orderMenuStatus == "object" && orderMenuStatus != null
     ? orderMenuStatus
@@ -71,6 +119,14 @@ const status = ref(
         canceled: true,
       }
 );
+
+if (route.query.report) {
+  Object.keys(status.value).forEach((key) => {
+    if (key == "completed") status.value.completed = true;
+    else status.value[key] = false;
+  });
+}
+
 const statusNumber = {
   pending: 1,
   patiallyPaid: 2,
@@ -88,6 +144,16 @@ const statusParam = computed(() =>
     .join(",")
 );
 
+const { pagination, max, current, total, updateQueryAndFetch } = usePagination(
+  "orders",
+  {
+    status: statusParam.value,
+    from: from.value,
+    to: to.value,
+  }
+);
+const { search } = useSearchFilter({ updateQueryAndFetch });
+
 watch(
   status,
   () => {
@@ -96,5 +162,14 @@ watch(
   {
     deep: true,
   }
+);
+
+watch(
+  statusParam,
+  debounce(() => {
+    updateQueryAndFetch({
+      status: statusParam.value,
+    });
+  }, 1000)
 );
 </script>
