@@ -1,6 +1,18 @@
 <template>
   <div class="bg-light-blue-2 rounded-borders q-pa-xs">
     <div class="text-h5 text-center">Balance Report</div>
+    <div class="row no-wrap q-pa-sm">
+      <q-input type="date" v-model="from" dense class="col" />
+      <q-separator vertical spaced />
+      <q-input type="date" v-model="to" dense class="col" />
+      <q-btn
+        icon="download"
+        flat
+        :color="loading ? 'grey' : 'secondary'"
+        @click="getData()"
+        :disable="loading"
+      />
+    </div>
     <q-separator />
     <div class="row q-gutter-y-xs">
       <div class="col-6 q-pr-xs">
@@ -64,27 +76,38 @@
 
 <script setup>
 import usePagination from "src/composables/pagination";
-import { date } from "quasar";
+import useDateFilter from "src/composables/dateFilter";
+import { ref } from "vue";
 
-const { formatDate } = date;
-const from = formatDate(
-  new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-  "YYYY-MM-DD"
+const { from, to } = useDateFilter();
+
+const loading = ref(false);
+
+const { total: orders, updateQueryAndFetch: getOrders } = usePagination(
+  "orders",
+  {
+    per_page: 1,
+    status: 5,
+    from: from.value,
+    to: to.value,
+  }
 );
-const to = formatDate(
-  new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
-  "YYYY-MM-DD"
+const { total: purchases, updateQueryAndFetch: getPurchases } = usePagination(
+  "purchases",
+  {
+    per_page: 1,
+    status: 1,
+    from: from.value,
+    to: to.value,
+  }
 );
-const { total: orders } = usePagination("orders", {
-  per_page: 1,
-  status: 5,
-  from,
-  to,
-});
-const { total: purchases } = usePagination("purchases", {
-  per_page: 1,
-  status: 1,
-  from,
-  to,
-});
+
+const getData = () => {
+  loading.value = true;
+  setTimeout(() => {
+    loading.value = false;
+  }, 2000);
+  getOrders({ from: from.value, to: to.value });
+  getPurchases({ from: from.value, to: to.value });
+};
 </script>

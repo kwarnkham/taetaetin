@@ -2,10 +2,9 @@
   <q-page padding>
     <q-form @submit.prevent="submit" class="q-gutter-y-sm" v-if="!getUser">
       <q-input
-        label="Email"
-        v-model="formData.email"
+        label="Username"
+        v-model="formData.username"
         autocomplete="username"
-        type="email"
         required
         autofocus
       />
@@ -13,7 +12,7 @@
         label="Password"
         v-model="formData.password"
         :type="isPwd ? 'password' : 'text'"
-        autocomplete="current-password"
+        autocomplete="password"
         required
       >
         <template v-slot:append>
@@ -41,7 +40,7 @@ import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 import useApp from "src/composables/app";
 const formData = ref({
-  name: "",
+  username: "",
   password: "",
 });
 

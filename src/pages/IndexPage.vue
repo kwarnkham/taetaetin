@@ -1,6 +1,10 @@
 <template>
   <q-page padding>
-    <div class="text-center text-h5">သေးသေးတင်မှ ကြိုဆိုပါတယ်</div>
+    <div
+      class="text-center text-h5 q-py-sm q-my-sm rounded-borders bg-grey text-white"
+    >
+      Welcome
+    </div>
     <div class="row justify-around">
       <q-btn
         icon="point_of_sale"
@@ -32,6 +36,7 @@
             name: 'login',
           })
         "
+        outline
       >
         Login to see the reports
       </q-btn>
@@ -42,8 +47,6 @@
 <script setup>
 import { useUserStore } from "src/stores/user-store";
 import BalanceReport from "src/components/BalanceReport.vue";
-import { useQuasar } from "quasar";
-import useUtil from "src/composables/util";
 
 const userStore = useUserStore();
 </script>
