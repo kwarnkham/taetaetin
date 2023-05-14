@@ -1,12 +1,25 @@
 <template>
-  <q-form @submit.prevent="submit" class="q-gutter-y-sm">
-    <div class="text-h6 text-center text-weight-bold">
-      {{ update ? "Update" : "Create" }} Expense {{ expense?.name }}
+  <q-form
+    @submit.prevent="submit"
+    class="q-gutter-y-sm q-pa-sm rounded-borders"
+    :class="{ 'shadow-1': !update }"
+  >
+    <div class="text-h6 text-center text-weight-bold" v-if="update">
+      Update Expense {{ expense.name }}
+    </div>
+    <div class="text-h6 text-center text-weight-bold" v-else>
+      Create new expense type
     </div>
     <q-input v-model="formData.name" label="Name" required />
     <div class="text-right q-gutter-x-sm">
-      <q-btn label="Close" no-caps @click="$emit('closed')" v-if="update" />
-      <q-btn label="Submit" no-caps type="submit" />
+      <q-btn
+        label="Close"
+        no-caps
+        @click="$emit('closed')"
+        v-if="update"
+        outline
+      />
+      <q-btn label="Submit" no-caps type="submit" outline />
     </div>
   </q-form>
 </template>

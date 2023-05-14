@@ -1,9 +1,10 @@
 <template>
-  <q-page padding>
+  <q-page padding class="bg-white">
     <div class="row q-my-xs q-gutter-x-xs">
-      <q-btn icon="save" @click="submit()" />
-      <q-btn icon="cleaning_services" @click="clearData()" />
+      <q-btn icon="save" @click="submit()" outline />
+      <q-btn icon="cleaning_services" @click="clearData()" outline />
     </div>
+    <q-separator spaced />
     <div>
       <CustomerInfo v-bind="order" @dataUpdated="syncOrder" />
       <OrderSaleItems class="q-mt-xs" v-bind="order" @dataUpdated="syncOrder" />

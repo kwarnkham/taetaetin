@@ -95,7 +95,7 @@ const purchaseTypes = [
   { label: "Order", value: "App\\Models\\Order" },
 ];
 const { screen } = useQuasar();
-const { from, to } = useDateFilter();
+const { from, to } = useDateFilter(new Date().getMonth());
 const { pagination, max, current, total, updateQueryAndFetch } = usePagination(
   "purchases",
   {

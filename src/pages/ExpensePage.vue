@@ -1,6 +1,7 @@
 <template>
   <q-page padding :style-fn="vhPage" class="column">
     <ExpenseForm />
+    <q-separator spaced />
     <ExpenseList class="col" />
   </q-page>
 </template>

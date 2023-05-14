@@ -166,7 +166,7 @@ const { pagination, max, current, total, updateQueryAndFetch } = usePagination(
 
 const { search } = useSearchFilter({ updateQueryAndFetch });
 
-const { from, to } = useDateFilter();
+const { from, to } = useDateFilter(new Date().getMonth());
 
 watch(
   props,

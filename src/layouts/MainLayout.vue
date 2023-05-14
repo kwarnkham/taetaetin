@@ -11,24 +11,29 @@
           @click="toggleLeftDrawer"
         />
         <q-separator vertical spaced />
-        <q-btn
-          flat
-          dense
-          round
-          icon="keyboard_arrow_left"
-          aria-label="Back"
-          @click="$router.go(-1)"
-          v-if="$route.name != 'index'"
-        />
-        <q-toolbar-title
-          @click="
-            $router.push({
-              name: 'index',
-            })
-          "
-        >
-          <q-icon name="home"></q-icon>
-        </q-toolbar-title>
+        <template v-if="$route.name != 'index'">
+          <q-btn
+            flat
+            dense
+            round
+            icon="keyboard_arrow_left"
+            aria-label="Back"
+            @click="$router.go(-1)"
+          />
+          <q-separator vertical spaced />
+          <q-btn
+            flat
+            dense
+            round
+            icon="home"
+            aria-label="Back"
+            @click="
+              $router.push({
+                name: 'index',
+              })
+            "
+          />
+        </template>
       </q-toolbar>
     </q-header>
     <LeftDrawer v-model="leftDrawerOpen" />

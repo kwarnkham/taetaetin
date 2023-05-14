@@ -3,10 +3,10 @@ import { useRoute } from "vue-router";
 import { date } from "quasar";
 const { formatDate } = date;
 
-export default function useDateFilter () {
+export default function useDateFilter (startMonth = 0) {
   const route = useRoute();
   const from = ref(route.query.from ?? formatDate(
-    new Date(new Date().getFullYear(), 0, 1),
+    new Date(new Date().getFullYear(), startMonth, 1),
     "YYYY-MM-DD"
   ))
   const to = ref(route.query.to ?? formatDate(
