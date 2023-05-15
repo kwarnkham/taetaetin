@@ -83,11 +83,11 @@ const statuses = ref(
     )
     .map((e) => ({ ...e, value: true }))
 );
-
-selectedStatuses.forEach((e) => {
-  const index = statuses.value.findIndex((el) => el.id == e.id);
-  if (index != -1) statuses.value[index].value = e.value;
-});
+if (selectedStatuses)
+  selectedStatuses.forEach((e) => {
+    const index = statuses.value.findIndex((el) => el.id == e.id);
+    if (index != -1) statuses.value[index].value = e.value;
+  });
 
 if (route.query.report) {
   statuses.value.forEach((e) => {
