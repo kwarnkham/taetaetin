@@ -29,7 +29,7 @@
               'text-accent': order.status == 6,
             }"
           >
-            {{ orderStatus[order.status] }}
+            {{ orderStatuses.find((e) => e.id == order.status).label }}
           </span>
           at
           <span class="text-weight-bold">
@@ -70,7 +70,7 @@ const props = defineProps({
 const emit = defineEmits(["orderUpdated"]);
 const { formatDate } = date;
 const { localStorage, dialog } = useQuasar();
-const orderStatus = localStorage.getItem("orderStatus");
+const orderStatuses = localStorage.getItem("orderStatuses");
 
 const showOrderCustomer = (order) => {
   dialog({

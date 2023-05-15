@@ -101,7 +101,9 @@
       </div>
       <div>
         <div class="text-center text-h6">
-          #{{ order.id }} ({{ orderStatus[order.status] }})
+          #{{ order.id }} ({{
+            orderStatuses.find((e) => e.id == order.status).label
+          }})
         </div>
         <CustomerInfo v-bind="order" @dataUpdated="syncOrder" />
         <OrderSaleItems
@@ -147,7 +149,7 @@ const updateOrder = () => {
     assignOrder(response.data.order);
   });
 };
-const orderStatus = localStorage.getItem("orderStatus");
+const orderStatuses = localStorage.getItem("orderStatuses");
 const userStore = useUserStore();
 
 const showExpenses = () => {

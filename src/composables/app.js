@@ -28,13 +28,13 @@ export default function useApp () {
           }),
           axios({
             method: "GET",
-            url: "settings",
+            url: "settings/1",
           })
         ]);
         localStorage.set("paymentTypes", values[0].data.payment_types);
-        localStorage.set("orderStatus", values[1].data.status);
+        localStorage.set("orderStatuses", values[1].data.statuses);
         localStorage.set("payments", values[2].data.data.data);
-        localStorage.set("settings", values[3].data);
+        localStorage.set("setting", values[3].data.setting);
         loading.hide()
         return true;
       } catch (error) {

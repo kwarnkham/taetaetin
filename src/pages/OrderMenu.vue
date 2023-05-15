@@ -2,46 +2,12 @@
   <q-page padding class="column" :style-fn="vhPage">
     <div class="row justify-between q-gutter-y-xs">
       <q-checkbox
+        v-for="status in statuses"
+        :key="status.id"
         dense
-        v-model="status.pending"
-        label="Pending"
-        :disable="String(statusParam).length == 1 && status.pending"
-      />
-      <q-checkbox
-        dense
-        v-model="status.patiallyPaid"
-        label="Partial Paid"
-        :disable="String(statusParam).length == 1 && status.patiallyPaid"
-      />
-      <q-checkbox
-        dense
-        v-model="status.paid"
-        label="Paid"
-        :disable="String(statusParam).length == 1 && status.paid"
-      />
-      <q-checkbox
-        dense
-        v-model="status.packed"
-        label="Packed"
-        :disable="String(statusParam).length == 1 && status.packed"
-      />
-      <q-checkbox
-        dense
-        v-model="status.onDelivery"
-        label="On Delivery"
-        :disable="String(statusParam).length == 1 && status.onDelivery"
-      />
-      <q-checkbox
-        dense
-        v-model="status.completed"
-        label="Completed"
-        :disable="String(statusParam).length == 1 && status.completed"
-      />
-      <q-checkbox
-        dense
-        v-model="status.canceled"
-        label="Canceled"
-        :disable="String(statusParam).length == 1 && status.canceled"
+        v-model="status.value"
+        :label="status.label"
+        :disable="String(statusParam).length == 1 && status.value"
       />
     </div>
 
@@ -106,45 +72,38 @@ const route = useRoute();
 const { localStorage } = useQuasar();
 const { vhPage } = useUtil();
 
-const orderMenuStatus = localStorage.getItem("orderMenuStatus");
+const orderStatuses = localStorage.getItem("orderStatuses");
+const setting = localStorage.getItem("setting");
+const selectedStatuses = localStorage.getItem("selectedStatuses");
 
-const status = ref(
-  typeof orderMenuStatus == "object" && orderMenuStatus != null
-    ? orderMenuStatus
-    : {
-        pending: true,
-        patiallyPaid: true,
-        paid: true,
-        packed: true,
-        onDelivery: true,
-        completed: true,
-        canceled: true,
-      }
+const statuses = ref(
+  orderStatuses
+    .filter((e) =>
+      setting.active_order_status.split(",").includes(String(e.id))
+    )
+    .map((e) => ({ ...e, value: true }))
 );
 
+selectedStatuses.forEach((e) => {
+  const index = statuses.value.findIndex((el) => el.id == e.id);
+  if (index != -1) statuses.value[index].value = e.value;
+});
+
 if (route.query.report) {
-  Object.keys(status.value).forEach((key) => {
-    if (key == "completed") status.value.completed = true;
-    else status.value[key] = false;
+  statuses.value.forEach((e) => {
+    if (e.id == 5) e.value = true;
+    else e.value = false;
   });
 }
+
 const { from, to } = useDateFilter(
   route.query.report ? new Date().getMonth() : undefined
 );
-const statusNumber = {
-  pending: 1,
-  patiallyPaid: 2,
-  paid: 3,
-  packed: 6,
-  onDelivery: 7,
-  completed: 5,
-  canceled: 4,
-};
 
 const statusParam = computed(() =>
-  Object.keys(status.value)
-    .filter((e) => status.value[e])
-    .map((e) => statusNumber[e])
+  statuses.value
+    .filter((e) => e.value)
+    .map((el) => el.id)
     .join(",")
 );
 
@@ -159,9 +118,9 @@ const { pagination, max, current, total, updateQueryAndFetch } = usePagination(
 const { search } = useSearchFilter({ updateQueryAndFetch });
 
 watch(
-  status,
+  statuses,
   () => {
-    localStorage.set("orderMenuStatus", status.value);
+    localStorage.set("selectedStatuses", statuses.value);
   },
   {
     deep: true,

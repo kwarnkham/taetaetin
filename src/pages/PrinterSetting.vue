@@ -22,18 +22,7 @@
     </div>
     <div class="row justify-center full-width">
       <div class="text-grey-10" id="print-target" style="width: 360px">
-        <img
-          src="~assets/print-logo.png"
-          alt="print_logo"
-          width="360"
-          v-if="isLocal || !settings"
-        />
-        <img
-          :src="settings.assets.print_logo"
-          alt="print_logo"
-          width="360"
-          v-else
-        />
+        <img :src="setting.print_logo" alt="print_logo" width="360" />
       </div>
     </div>
   </q-page>
@@ -46,9 +35,9 @@ import { ref, watch } from "vue";
 
 const { localStorage, notify } = useQuasar();
 const { printBit, printSize, sendPrinterData } = usePrinter();
-const settings = localStorage.getItem("settings");
+const setting = localStorage.getItem("setting");
+
 const printing = ref(false);
-const isLocal = process.env.DEV;
 
 watch(printSize, () => {
   localStorage.set("printSize", printSize.value);

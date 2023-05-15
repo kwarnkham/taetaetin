@@ -6,7 +6,7 @@
         id="print-target"
       >
         <div class="text-right">
-          <img src="~assets/delivery-logo.png" alt="print_logo" width="300" />
+          <img :src="setting.delivery_logo" alt="print_logo" width="300" />
         </div>
         <div class="row items-center">
           {{ order.customer }}
@@ -47,7 +47,8 @@ const props = defineProps({
     required: true,
   },
 });
-const { notify, platform } = useQuasar();
+const { notify, platform, localStorage } = useQuasar();
+const setting = localStorage.getItem("setting");
 
 const { sendPrinterData, printing, sendTextData } = usePrinter();
 const print = () => {

@@ -92,6 +92,16 @@ const routes = [
         }
       },
       {
+        title: 'Order Setting',
+        path: 'order-setting',
+        component: () => import('src/pages/OrderSetting.vue'),
+        name: 'order-setting',
+        meta: {
+          requireAuth: true,
+          role: 'admin',
+        }
+      },
+      {
         title: 'Users',
         icon: 'group',
         path: 'users',
@@ -129,7 +139,7 @@ const routes = [
         meta: {
           requireAuth: true,
           role: 'sale',
-          navigation: true
+          navigation: false
         }
       },
       {
@@ -138,6 +148,18 @@ const routes = [
         path: 'payments',
         component: () => import('src/pages/PaymentsPage.vue'),
         name: 'payments',
+        meta: {
+          requireAuth: true,
+          role: 'sale',
+          navigation: true
+        }
+      },
+      {
+        title: 'Settings',
+        icon: 'settings',
+        path: 'settings',
+        component: () => import('src/pages/SettingPage.vue'),
+        name: 'settings',
         meta: {
           requireAuth: true,
           role: 'sale',

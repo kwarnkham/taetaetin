@@ -19,7 +19,7 @@
         </div>
       </div>
       <div class="text-weight-bold">
-        Status : {{ orderStatus[order.status] }}
+        Status : {{ orderStatuses.find((e) => e.id == order.status).id }}
       </div>
     </div>
     <div class="text-center">
@@ -239,7 +239,7 @@ const { localStorage, dialog, notify } = useQuasar();
 const { api } = useUtil();
 const order = ref(null);
 const route = useRoute();
-const orderStatus = localStorage.getItem("orderStatus");
+const orderStatuses = localStorage.getItem("orderStatuses");
 const userStore = useUserStore();
 const totalQty = computed(
   () =>
