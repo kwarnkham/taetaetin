@@ -38,12 +38,7 @@
         </q-item-label>
 
         <div class="row justify-start q-gutter-x-sm q-mt-sm">
-          <q-btn
-            rounded
-            no-caps
-            label="See more"
-            @click="showOrderDetails(order)"
-          />
+          <q-btn rounded no-caps label="See more" @click="showOrder(order)" />
           <q-btn
             v-if="order.customer"
             rounded
@@ -59,7 +54,7 @@
 
 <script setup>
 import { useQuasar, date } from "quasar";
-import OrderDetailsDialog from "./dialogs/OrderDetailsDialog.vue";
+import useOrder from "src/composables/order";
 
 const props = defineProps({
   orders: {
@@ -67,6 +62,12 @@ const props = defineProps({
     required: true,
   },
 });
+const { showOrderDetails } = useOrder();
+const showOrder = (order) => {
+  showOrderDetails(order).then((val) => {
+    emit("orderUpdated", val);
+  });
+};
 const emit = defineEmits(["orderUpdated"]);
 const { formatDate } = date;
 const { localStorage, dialog } = useQuasar();
@@ -80,17 +81,6 @@ const showOrderCustomer = (order) => {
               <div>Address : ${order.address}.</div>
               <div>Note :${order.note ?? ""}</div>`,
     html: true,
-  });
-};
-
-const showOrderDetails = (order) => {
-  dialog({
-    component: OrderDetailsDialog,
-    componentProps: {
-      orderId: order.id,
-    },
-  }).onOk((val) => {
-    emit("orderUpdated", val);
   });
 };
 </script>

@@ -1,5 +1,6 @@
 import { useQuasar } from "quasar";
 import useUtil from "./util";
+import OrderDetailsDialog from "src/components/dialogs/OrderDetailsDialog.vue";
 
 export default function useOrder (order) {
   const { api } = useUtil()
@@ -73,11 +74,28 @@ export default function useOrder (order) {
       });
   }
 
+  const showOrderDetails = (order) => {
+    return new Promise((resolve, reject) => {
+      dialog({
+        component: OrderDetailsDialog,
+        componentProps: {
+          orderId: order.id,
+        },
+      }).onOk((val) => {
+        resolve(val)
+      }).onCancel(() => {
+        reject()
+      });
+    })
+
+  };
+
 
   return {
     saveOrder,
     clearData,
     syncOrder,
-    resetData
+    resetData,
+    showOrderDetails
   }
 }

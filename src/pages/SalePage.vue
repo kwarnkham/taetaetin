@@ -29,11 +29,13 @@ const order = ref({
   a_items: new Array(10),
 });
 
-const { saveOrder, clearData, syncOrder, resetData } = useOrder(order);
+const { saveOrder, clearData, syncOrder, resetData, showOrderDetails } =
+  useOrder(order);
 
 const submit = () => {
-  saveOrder().then(() => {
+  saveOrder().then((response) => {
     resetData();
+    showOrderDetails(response.data.order);
   });
 };
 </script>
