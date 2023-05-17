@@ -1,8 +1,8 @@
 <template>
-  <q-form @submit.prevent="submit">
+  <q-form @submit.prevent="submit" class="q-pa-md rounded-borders shadow-up-2">
     <div class="text-center">Add New User</div>
+    <q-input label="Username" v-model="form.username" required />
     <q-input label="Name" v-model="form.name" required />
-    <q-input label="Email" v-model="form.email" type="email" required />
     <div class="text-right">
       <q-btn label="Add" no-caps type="submit" class="q-mt-sm" />
     </div>
@@ -11,9 +11,9 @@
 
 <script setup>
 import useUtil from "src/composables/util";
-import { ref, inject } from "vue";
-const bus = inject("bus");
+import { ref } from "vue";
 
+const emit = defineEmits(["userAdded"]);
 const { api } = useUtil();
 const submit = () => {
   api({
@@ -21,16 +21,16 @@ const submit = () => {
     url: "users",
     data: {
       name: form.value.name,
-      email: form.value.email,
+      username: form.value.username,
     },
   }).then((response) => {
-    bus.emit("userAdded", response.data.user);
+    emit("userAdded", response.data.user);
     form.value.name = "";
-    form.value.email = "";
+    form.value.username = "";
   });
 };
 const form = ref({
   name: "",
-  email: "",
+  username: "",
 });
 </script>

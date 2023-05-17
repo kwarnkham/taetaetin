@@ -1,32 +1,30 @@
 <template>
-  <q-list bordered separator class="overflow-auto col">
-    <q-item v-for="user in pagination?.data" :key="user.id">
+  <q-list bordered separator class="overflow-auto">
+    <q-item v-for="user in users" :key="user.id">
       <q-item-section>
-        <q-item-label>{{ user.name }}</q-item-label>
+        <q-item-label>{{ user.username }} ({{ user.name }})</q-item-label>
         <q-item-label caption>{{ user.email }}</q-item-label>
         <div class="row q-gutter-x-xs">
           <q-badge
+            v-for="role in roles"
+            :key="role.id"
             class="cursor-pointer"
             :color="
-              user.roles.map((e) => e.name).includes('admin')
-                ? 'primary'
-                : 'grey'
+              user.roles.map((e) => e.id).includes(role.id) ? 'primary' : 'grey'
             "
+            @click="toggleRole(role, user)"
           >
-            admin
-          </q-badge>
-          <q-badge
-            class="cursor-pointer"
-            :color="
-              user.roles.map((e) => e.name).includes('sale')
-                ? 'primary'
-                : 'grey'
-            "
-            @click="toggleRole('sale', user)"
-          >
-            sale
+            {{ role.name }}
           </q-badge>
         </div>
+      </q-item-section>
+      <q-item-section side top>
+        <q-btn
+          icon="lock_reset"
+          @click="resetPassword(user)"
+          color="secondary"
+          flat
+        />
       </q-item-section>
     </q-item>
   </q-list>
@@ -34,21 +32,51 @@
 
 <script setup>
 import { useQuasar } from "quasar";
-import usePagination from "src/composables/pagination";
-import { inject, onMounted, onBeforeUnmount } from "vue";
+import useUtil from "src/composables/util";
 
-const { dialog } = useQuasar();
-const bus = inject("bus");
+const props = defineProps({
+  users: {
+    type: Array,
+    required: true,
+  },
+});
 
-const { pagination } = usePagination("users");
-const addUserToList = (user) => {
-  pagination.value.data.unshift(user);
+const emit = defineEmits(["userUpdated"]);
+const { api } = useUtil();
+const { dialog, localStorage, notify } = useQuasar();
+const roles = localStorage.getItem("roles");
+
+const resetPassword = (user) => {
+  dialog({
+    title: "Confirm",
+    message: `Do you want to reset the password of ${user.username} : ${user.name}?`,
+    cancel: true,
+    noBackdropDismiss: true,
+  }).onOk(() => {
+    api({
+      method: "POST",
+      url: `users/${user.id}/reset-password`,
+    }).then((response) => {
+      notify({
+        message: `Password has been reset. Now, password is "${response.data.password}"`,
+        type: "info",
+        timeout: 0,
+        closeBtn: true,
+      });
+    });
+  });
 };
-
 const toggleRole = (role, user) => {
-  let message = "Do you want to add the role " + role;
-  if (user.roles.map((e) => e.name).includes(role))
-    message = "Do you want to remove the role " + role;
+  if (role.name == "admin") {
+    notify({
+      message: "Cannot modify admin role",
+      type: "info",
+    });
+    return;
+  }
+  let message = "Do you want to add the role " + role.name;
+  if (user.roles.map((e) => e.id).includes(role.id))
+    message = "Do you want to remove the role " + role.name;
 
   dialog({
     title: "Confirm",
@@ -56,15 +84,12 @@ const toggleRole = (role, user) => {
     noBackdropDismiss: true,
     cancel: true,
   }).onOk(() => {
-    console.log(role);
+    api({
+      method: "POST",
+      url: `users/${user.id}/roles/${role.id}/toggle`,
+    }).then((response) => {
+      emit("userUpdated", response.data.user);
+    });
   });
 };
-
-onMounted(() => {
-  bus.on("userAdded", addUserToList);
-});
-
-onBeforeUnmount(() => {
-  bus.off("userAdded", addUserToList);
-});
 </script>

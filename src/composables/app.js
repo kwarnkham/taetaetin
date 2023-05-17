@@ -29,12 +29,17 @@ export default function useApp () {
           axios({
             method: "GET",
             url: "settings/1",
+          }),
+          axios({
+            method: "GET",
+            url: "roles",
           })
         ]);
         localStorage.set("paymentTypes", values[0].data.payment_types);
         localStorage.set("orderStatuses", values[1].data.statuses);
         localStorage.set("payments", values[2].data.data.data);
         localStorage.set("setting", values[3].data.setting);
+        localStorage.set("roles", values[4].data.roles);
         loading.hide()
         return true;
       } catch (error) {
