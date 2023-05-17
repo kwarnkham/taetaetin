@@ -67,7 +67,7 @@
               <q-btn
                 no-caps
                 flat
-                @click="showCreateAItem"
+                @click="createItem(search)"
                 v-if="!saleItems.map((e) => e.name).includes(search)"
               >
                 Create new item "{{ search }}"
@@ -79,7 +79,7 @@
           class="text-right q-mt-sm"
           v-else-if="aItems.length == 0 && search"
         >
-          <q-btn no-caps flat @click="showCreateAItem()">
+          <q-btn no-caps flat @click="createItem(search)">
             Create new item "{{ search }}"
           </q-btn>
         </div>
@@ -136,7 +136,15 @@ const isInOrder = (a_item) => {
 };
 
 defineEmits([...useDialogPluginComponent.emits]);
+const { showCreateAItem, submitItem } = useItem();
 
+const createItem = (name) => {
+  showCreateAItem(name).then((data) => {
+    submitItem(data).then((value) => {
+      aItems.value.unshift(value);
+    });
+  });
+};
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
 
@@ -164,96 +172,4 @@ const saleItems = computed(() => {
     isInOrder: isInOrder(e),
   }));
 });
-
-const showCreateAItem = () => {
-  dialog({
-    title: "Choose item type",
-    options: {
-      type: "radio",
-      model: "1",
-      items: [
-        { label: "Stocked", value: "1" },
-        { label: "Non Stocked", value: "2" },
-      ],
-    },
-  }).onOk((type) => {
-    dialog({
-      title: `What is the sale price for ${search.value}?`,
-      message: "After this you'll be asked to fill stock quantity",
-      position: "top",
-      noBackdropDismiss: true,
-      cancel: true,
-      prompt: {
-        model: "",
-        placeholder: "Sale Price",
-        type: "number",
-        inputmode: "numeric",
-        pattern: "[0-9]*",
-        isValid: (val) => val != "" && val >= 0,
-      },
-    }).onOk((salePrice) => {
-      if (type == "1")
-        dialog({
-          title: `What is the purchase price for ${search.value}?`,
-          message: "After this you'll be asked to fill sale price",
-          position: "top",
-          noBackdropDismiss: true,
-          cancel: true,
-          prompt: {
-            model: "",
-            placeholder: "Purchase Price",
-            type: "number",
-            inputmode: "numeric",
-            pattern: "[0-9]*",
-            isValid: (val) => val != "" && val >= 0,
-          },
-        }).onOk((purchasePrice) => {
-          dialog({
-            title: `How many of ${search.value} is going to inventory?`,
-            position: "top",
-            noBackdropDismiss: true,
-            cancel: true,
-            prompt: {
-              model: "",
-              placeholder: "Quantity",
-              type: "number",
-              inputmode: "numeric",
-              pattern: "[0-9]*",
-              isValid: (val) => val != "" && val > 0,
-            },
-          }).onOk((quantity) => {
-            const data = {
-              name: search.value,
-              purchase_price: purchasePrice,
-              price: salePrice,
-              stock: quantity,
-              type,
-            };
-            submitItem(data);
-          });
-        });
-      else
-        submitItem({
-          name: search.value,
-          purchase_price: 0,
-          price: salePrice,
-          stock: 0,
-          type,
-        });
-    });
-  });
-};
-
-const submitItem = (data) => {
-  api(
-    {
-      method: "POST",
-      url: "a-items",
-      data,
-    },
-    true
-  ).then((response) => {
-    aItems.value.unshift(response.data.a_item);
-  });
-};
 </script>
