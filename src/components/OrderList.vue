@@ -64,8 +64,8 @@ const props = defineProps({
 });
 const { showOrderDetails } = useOrder();
 const showOrder = (order) => {
-  showOrderDetails(order).then((val) => {
-    emit("orderUpdated", val);
+  showOrderDetails(order).then((order) => {
+    emit("orderUpdated", order);
   });
 };
 const emit = defineEmits(["orderUpdated"]);
@@ -77,8 +77,8 @@ const showOrderCustomer = (order) => {
   dialog({
     noBackdropDismiss: true,
     title: order.customer,
-    message: `<div>Phone : ${order.phone}. </div>
-              <div>Address : ${order.address}.</div>
+    message: `<div>Phone : ${order.phone ?? ""}. </div>
+              <div>Address : ${order.address ?? ""}.</div>
               <div>Note :${order.note ?? ""}</div>`,
     html: true,
   });

@@ -44,6 +44,7 @@
       :status="statusParam"
       class="col"
       :orders="pagination.data"
+      @order-updated="updateOrder"
       v-if="pagination"
     />
     <div
@@ -116,6 +117,11 @@ const { pagination, max, current, total, updateQueryAndFetch } = usePagination(
   }
 );
 const { search } = useSearchFilter({ updateQueryAndFetch });
+
+const updateOrder = (order) => {
+  const index = pagination.value.data.findIndex((e) => e.id == order.id);
+  pagination.value.data[index] = order;
+};
 
 watch(
   statuses,

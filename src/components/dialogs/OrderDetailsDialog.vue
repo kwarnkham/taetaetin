@@ -97,7 +97,14 @@
           color="accent"
           @click="showPrintAddressDialog"
         />
-        <q-btn icon="close" @click="onDialogOK(order)" />
+        <q-btn
+          icon="save"
+          no-caps
+          color="secondary"
+          @click="updateOrderInfo"
+          v-if="order.status == 5"
+        />
+        <q-btn icon="close" @click="onDialogOK(orderStore.getExistedOrder)" />
       </div>
       <div>
         <div class="text-center text-h6">
@@ -143,7 +150,8 @@ const orderStore = useOrderStore();
 const { api } = useUtil();
 const order = ref(null);
 
-const { syncOrder, saveOrder, clearData } = useOrder(order);
+const { syncOrder, saveOrder, clearData, assignOrder, resetData } =
+  useOrder(order);
 const updateOrder = () => {
   saveOrder(true).then((response) => {
     assignOrder(response.data.order);
@@ -167,6 +175,24 @@ const showExpenses = () => {
         disable: true,
       })),
     },
+  });
+};
+
+const updateOrderInfo = () => {
+  api(
+    {
+      method: "PUT",
+      url: "orders/" + order.value.id,
+      data: {
+        customer: order.value.customer,
+        phone: order.value.phone,
+        address: order.value.address,
+        note: order.value.note,
+      },
+    },
+    true
+  ).then((response) => {
+    assignOrder(response.data.order);
   });
 };
 
@@ -292,23 +318,6 @@ const deliverOrder = () => {
       assignOrder(response.data.order);
     });
   });
-};
-
-const assignOrder = (value) => {
-  order.value = value;
-  order.value.created_at = new Date(value.created_at).toJSON().slice(0, 10);
-  order.value.a_items = value.a_items.map((a_item) => ({
-    ...a_item,
-    quantity: a_item.pivot.quantity,
-    price: a_item.pivot.price,
-    name: a_item.pivot.name,
-    discount: a_item.pivot.discount,
-  }));
-
-  orderStore.setExistedItems(JSON.parse(JSON.stringify(order.value.a_items)));
-  orderStore.setExistedOrder(JSON.parse(JSON.stringify(order.value)));
-
-  order.value.a_items.push(null);
 };
 
 api({

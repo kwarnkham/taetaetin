@@ -1,9 +1,10 @@
 import { useQuasar } from "quasar";
 import useUtil from "./util";
 import OrderDetailsDialog from "src/components/dialogs/OrderDetailsDialog.vue";
-
+import { useOrderStore } from "src/stores/order-store"
 export default function useOrder (order) {
   const { api } = useUtil()
+  const orderStore = useOrderStore()
   const { dialog } = useQuasar()
   const saveOrder = async (update = false, status = undefined) => {
     return new Promise((resolve, reject) => {
@@ -52,18 +53,9 @@ export default function useOrder (order) {
   };
 
   const resetData = (value = null) => {
-    if (value) {
-      order.value = value;
-      order.value.created_at = new Date(value.created_at).toJSON().slice(0, 10);
-      order.value.a_items = value.a_items.map((a_item) => ({
-        ...a_item,
-        quantity: a_item.pivot.quantity,
-        price: a_item.pivot.price,
-        name: a_item.pivot.name,
-        discount: a_item.pivot.discount,
-      }));
-      order.value.a_items.push(null);
-    }
+    if (value)
+      assignOrder(value)
+
     else
       Object.keys(order.value).forEach((key) => {
         if (key == "created_at")
@@ -87,7 +79,23 @@ export default function useOrder (order) {
         reject()
       });
     })
+  };
 
+  const assignOrder = (value) => {
+    order.value = value;
+    order.value.created_at = new Date(value.created_at).toJSON().slice(0, 10);
+    order.value.a_items = value.a_items.filter(e => e != null).map((a_item) => ({
+      ...a_item,
+      quantity: a_item.pivot.quantity,
+      price: a_item.pivot.price,
+      name: a_item.pivot.name,
+      discount: a_item.pivot.discount,
+    }));
+
+    orderStore.setExistedItems(JSON.parse(JSON.stringify(order.value.a_items)));
+    orderStore.setExistedOrder(JSON.parse(JSON.stringify(order.value)));
+
+    order.value.a_items.push(null);
   };
 
 
@@ -96,6 +104,7 @@ export default function useOrder (order) {
     clearData,
     syncOrder,
     resetData,
-    showOrderDetails
+    showOrderDetails,
+    assignOrder
   }
 }
