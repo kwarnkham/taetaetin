@@ -11,7 +11,7 @@
           <q-item-label>
             {{ payment.number }}
           </q-item-label>
-          <q-item-label caption>
+          <q-item-label caption :class="{ 'text-red': payment.status == 2 }">
             {{ payment.payment_type.name }}
           </q-item-label>
           <q-item-label>
@@ -80,7 +80,7 @@ const showQR = (payment) => {
   dialog({
     noBackdropDismiss: true,
     title: `QR code for ${payment.payment_type.name} ${payment.number}`,
-    message: `<img src='${payment.qr}' width='280'>`,
+    message: `<div class="text-center"><img src='${payment.qr}' width='280'><div/>`,
     html: true,
   });
 };

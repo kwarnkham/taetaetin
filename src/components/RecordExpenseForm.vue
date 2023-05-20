@@ -11,7 +11,7 @@
       autofocus
     />
     <q-input v-model="formData.note" label="Note" required type="text" />
-    <FileInput v-model="formData.picture" />
+    <!-- <FileInput v-model="formData.picture" /> -->
     <div class="text-right q-gutter-x-sm">
       <q-btn label="Cancel" no-caps @click="$emit('closed')" />
       <q-btn label="Submit" no-caps type="submit" />
@@ -23,7 +23,7 @@
 import { ref } from "vue";
 import useUtil from "src/composables/util";
 import { useQuasar } from "quasar";
-import FileInput from "./FileInput.vue";
+// import FileInput from "./FileInput.vue";
 
 const { pickBy, api, buildForm } = useUtil();
 const { notify } = useQuasar();
@@ -41,7 +41,7 @@ const emit = defineEmits(["expenseRecorded", "closed"]);
 const formData = ref({
   price: "",
   note: "",
-  picture: null,
+  // picture: null,
 });
 
 const submit = () => {

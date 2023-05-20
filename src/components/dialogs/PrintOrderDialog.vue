@@ -2,7 +2,12 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide" no-backdrop-dismiss maximized>
     <q-card class="column items-center no-wrap">
       <div class="receipt text-grey-10 column justify-start" id="print-target">
-        <img :src="setting.print_logo" alt="print_logo" width="360" />
+        <img
+          :src="setting.print_logo"
+          alt="print_logo"
+          width="360"
+          v-if="setting.print_logo"
+        />
 
         <div class="row justify-between full-width no-wrap">
           <div class="col" v-if="order.customer">

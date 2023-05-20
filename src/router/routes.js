@@ -127,7 +127,7 @@ const routes = [
         meta: {
           requireAuth: true,
           role: 'sale',
-          navigation: true
+          navigation: false
         }
       },
       {

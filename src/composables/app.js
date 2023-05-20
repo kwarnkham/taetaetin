@@ -44,6 +44,7 @@ export default function useApp () {
         return true;
       } catch (error) {
         console.error(error)
+        alert(error.response.data.message)
         loading.hide()
         return false;
       }

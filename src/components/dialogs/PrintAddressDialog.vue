@@ -6,7 +6,12 @@
         id="print-target"
       >
         <div class="text-right">
-          <img :src="setting.delivery_logo" alt="print_logo" width="300" />
+          <img
+            :src="setting.delivery_logo"
+            alt="print_logo"
+            width="300"
+            v-if="setting.delivery_logo"
+          />
         </div>
         <div class="row items-center">
           {{ order.customer }}

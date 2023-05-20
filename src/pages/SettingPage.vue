@@ -14,7 +14,7 @@
           "
         >
           <q-card-section class="row items-center justify-between">
-            <div class="text-center text-h6">{{ setting.label }}</div>
+            <div class="text-center text-subtitle2">{{ setting.label }}</div>
             <q-icon :name="setting.icon" size="md" />
           </q-card-section>
         </q-card>
@@ -25,6 +25,11 @@
 
 <script setup>
 const settings = [
+  {
+    label: "Change Password",
+    icon: "lock",
+    route: "change-password",
+  },
   {
     label: "Printer",
     icon: "print",

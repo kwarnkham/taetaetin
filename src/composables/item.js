@@ -53,6 +53,9 @@ export default function useItem () {
     return new Promise((resolve) => {
       dialog({
         title: "Choose item type",
+        position: 'top',
+        noBackdropDismiss: true,
+        cancel: true,
         options: {
           type: "radio",
           model: "1",
@@ -65,7 +68,7 @@ export default function useItem () {
         dialog({
           title: `What is the sale price for ${name}?`,
           message: "After this you'll be asked to fill stock quantity",
-          position: "top",
+          position: 'top',
           noBackdropDismiss: true,
           cancel: true,
           prompt: {
