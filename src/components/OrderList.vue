@@ -21,7 +21,7 @@
           <span
             class="text-overline"
             :class="{
-              'text-white': order.status == 1,
+              'text-grey': order.status == 1,
               'text-deep-orange': order.status == 2,
               'text-primary': order.status == 3,
               'text-negative': order.status == 4,

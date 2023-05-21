@@ -34,6 +34,7 @@
                 icon="more"
                 dense
                 no-caps
+                v-if="item.type == 1"
                 @click="
                   $router.push({
                     name: 'item-details',

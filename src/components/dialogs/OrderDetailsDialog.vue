@@ -134,6 +134,7 @@ import CustomerInfo from "../CustomerInfo.vue";
 import OrderSaleItems from "../OrderSaleItems.vue";
 import useOrder from "src/composables/order";
 import { useOrderStore } from "src/stores/order-store";
+import OrderExpenseDialog from "./OrderExpenseDialog.vue";
 
 defineEmits([...useDialogPluginComponent.emits]);
 const props = defineProps({
@@ -162,19 +163,12 @@ const userStore = useUserStore();
 
 const showExpenses = () => {
   dialog({
-    title: "Expenses",
-    noBackdropDismiss: true,
-    options: {
-      type: "checkbox",
-      model: order.value.purchases.map((e) => e.id),
-      items: order.value.purchases.map((e) => ({
-        label: `${e.name} - ${e.price.toLocaleString()} x ${e.quantity} = ${(
-          e.price * e.quantity
-        ).toLocaleString()} `,
-        value: e.id,
-        disable: true,
-      })),
+    component: OrderExpenseDialog,
+    componentProps: {
+      purchases: order.value.purchases,
     },
+  }).onOk((purchases) => {
+    order.value.purchases = purchases;
   });
 };
 

@@ -30,7 +30,7 @@
           class="row justify-start q-gutter-x-sm q-mt-sm"
           v-if="purchase.status != 2"
         >
-          <q-btn round icon="cancel" dense @click="cancelPurchase(purchase)" />
+          <q-btn round icon="cancel" dense @click="cancel(purchase)" />
         </div>
       </q-item-section>
       <q-item-section side top>
@@ -53,8 +53,7 @@
 </template>
 
 <script setup>
-import useUtil from "src/composables/util";
-import { useQuasar } from "quasar";
+import usePurchase from "src/composables/purchase";
 
 const props = defineProps({
   purchases: {
@@ -65,28 +64,17 @@ const props = defineProps({
 
 const emit = defineEmits(["purchaseUpdated"]);
 
-const { api } = useUtil();
-const { dialog } = useQuasar();
+const { cancelPurchase } = usePurchase();
+
+const cancel = (purchase) => {
+  cancelPurchase(purchase).then((purchase) => {
+    emit("purchaseUpdated", purchase);
+  });
+};
 
 const purchaseType = {
   "App\\Models\\AItem": "Item",
   "App\\Models\\Expense": "Expense",
   "App\\Models\\Order": "Order",
-};
-
-const cancelPurchase = (purchase) => {
-  dialog({
-    title: "Confirmation",
-    message: "Do you want to cancel?",
-    noBackdropDismiss: true,
-    cancel: true,
-  }).onOk(() => {
-    api({
-      method: "POST",
-      url: `purchases/${purchase.id}/cancel`,
-    }).then((response) => {
-      emit("purchaseUpdated", response.data.purchase);
-    });
-  });
 };
 </script>
