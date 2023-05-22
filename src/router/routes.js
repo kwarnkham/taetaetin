@@ -38,6 +38,17 @@ const routes = [
         }
       },
       {
+        title: 'Absences',
+        path: 'absences/:user',
+        component: () => import('src/pages/AbsencesPage.vue'),
+        name: 'absences',
+        meta: {
+          requiresAuth: true,
+          role: 'admin',
+          navigation: false
+        }
+      },
+      {
         title: 'Expenses',
         icon: "request_quote",
         path: 'expenses',

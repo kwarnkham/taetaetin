@@ -17,6 +17,31 @@
             {{ role.name }}
           </q-badge>
         </div>
+        <div class="row q-gutter-x-xs q-mt-sm">
+          <q-btn
+            label="Record Absence"
+            no-caps
+            outline
+            @click="recordAbsence(user)"
+          />
+
+          <q-btn
+            label="Check Absence"
+            no-caps
+            outline
+            @click="
+              $router.push({
+                name: 'absences',
+                params: {
+                  user: user.id,
+                },
+                query: {
+                  name: user.name,
+                },
+              })
+            "
+          />
+        </div>
       </q-item-section>
       <q-item-section side top>
         <q-btn
@@ -66,6 +91,7 @@ const resetPassword = (user) => {
     });
   });
 };
+
 const toggleRole = (role, user) => {
   if (role.name == "admin") {
     notify({
@@ -89,6 +115,46 @@ const toggleRole = (role, user) => {
       url: `users/${user.id}/roles/${role.id}/toggle`,
     }).then((response) => {
       emit("userUpdated", response.data.user);
+    });
+  });
+};
+
+const recordAbsence = (user) => {
+  dialog({
+    title: `Record absence for "${user.name}"`,
+    position: "top",
+    cancel: true,
+    noBackdropDismiss: true,
+    prompt: {
+      label: "Absence date",
+      model: new Date().toJSON().slice(0, 10),
+      type: "date",
+      isValid: (val) => val != "",
+    },
+  }).onOk((date) => {
+    dialog({
+      title: "Reason for the absence",
+      position: "top",
+      cancel: true,
+      noBackdropDismiss: true,
+      prompt: {
+        model: "",
+      },
+    }).onOk((note) => {
+      api({
+        method: "POST",
+        url: "absences",
+        data: {
+          user_id: user.id,
+          note,
+          date,
+        },
+      }).then(() => {
+        notify({
+          message: "Success",
+          type: "positive",
+        });
+      });
     });
   });
 };
