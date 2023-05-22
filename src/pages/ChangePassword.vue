@@ -3,7 +3,7 @@
     <q-form @submit.prevent="submit" class="q-pa-sm">
       <div class="text-h6 text-center">Change password</div>
       <input
-        :value="userStore.getUser.username"
+        :value="userStore.getUser?.username"
         autocomplete="username"
         class="hidden"
       />
@@ -12,6 +12,7 @@
         v-model="form.password"
         :type="showPassword ? 'text' : 'password'"
         autocomplete="current-password"
+        autofocus
       />
       <q-input
         label="New Password"
