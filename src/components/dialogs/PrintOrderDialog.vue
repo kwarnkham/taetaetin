@@ -8,6 +8,9 @@
           width="360"
           v-if="setting.print_logo"
         />
+        <div class="row line-text q-mt-sm text-weight-bold text-h6" v-else>
+          Receipt
+        </div>
 
         <div class="row justify-between full-width no-wrap">
           <div class="col" v-if="order.customer">

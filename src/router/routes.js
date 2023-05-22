@@ -32,7 +32,7 @@ const routes = [
         component: () => import('src/pages/PurchasePage.vue'),
         name: 'purchases',
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
           role: 'admin',
           navigation: true
         }
@@ -44,7 +44,7 @@ const routes = [
         component: () => import('src/pages/ExpensePage.vue'),
         name: 'expenses',
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
           role: 'admin',
           navigation: true
         }
@@ -54,7 +54,7 @@ const routes = [
         component: () => import('src/pages/ManageCart.vue'),
         name: 'manage-cart',
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
           role: 'sale',
         }
       },
@@ -63,7 +63,7 @@ const routes = [
         component: () => import('src/pages/CheckoutCart.vue'),
         name: 'checkout-cart',
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
           role: 'sale'
         }
       },
@@ -74,7 +74,7 @@ const routes = [
         component: () => import('src/pages/SalePage.vue'),
         name: 'sale',
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
           role: 'sale',
           navigation: true
         }
@@ -86,7 +86,7 @@ const routes = [
         component: () => import('src/pages/OrderMenu.vue'),
         name: 'order-menu',
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
           role: 'sale',
           navigation: true
         }
@@ -97,7 +97,7 @@ const routes = [
         component: () => import('src/pages/OrderSetting.vue'),
         name: 'order-setting',
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
           role: 'admin',
         }
       },
@@ -108,7 +108,7 @@ const routes = [
         component: () => import('src/pages/UserMenu.vue'),
         name: 'users',
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
           role: 'admin',
           navigation: true
         }
@@ -125,7 +125,7 @@ const routes = [
         component: () => import('src/pages/ChangePassword.vue'),
         name: 'change-password',
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
           role: 'sale',
           navigation: false
         }
@@ -137,7 +137,7 @@ const routes = [
         component: () => import('src/pages/PrinterSetting.vue'),
         name: 'printer-setting',
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
           role: 'sale',
           navigation: false
         }
@@ -149,7 +149,7 @@ const routes = [
         component: () => import('src/pages/PaymentsPage.vue'),
         name: 'payments',
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
           role: 'sale',
           navigation: true
         }
@@ -161,7 +161,7 @@ const routes = [
         component: () => import('src/pages/SettingPage.vue'),
         name: 'settings',
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
           role: 'sale',
           navigation: true
         }

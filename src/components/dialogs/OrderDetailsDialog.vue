@@ -166,6 +166,7 @@ const showExpenses = () => {
     component: OrderExpenseDialog,
     componentProps: {
       purchases: order.value.purchases,
+      orderStatus: order.value.status,
     },
   }).onOk((purchases) => {
     order.value.purchases = purchases;

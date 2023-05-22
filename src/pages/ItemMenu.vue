@@ -1,6 +1,9 @@
 <template>
   <q-page padding :style-fn="vhPage" class="column">
-    <div class="text-center">
+    <div
+      class="text-center"
+      v-if="userStore.getUser?.roles.map((role) => role.name).includes('admin')"
+    >
       <q-btn label="Add a new item" no-caps outline @click="addANewItem" />
     </div>
     <div>
@@ -35,7 +38,9 @@ import useSearchFilter from "src/composables/searchFilter";
 import usePagination from "src/composables/pagination";
 import { useQuasar } from "quasar";
 import useItem from "src/composables/item";
+import { useUserStore } from "src/stores/user-store";
 
+const userStore = useUserStore();
 const { pagination, max, current, updateQueryAndFetch } =
   usePagination("a-items");
 const { search } = useSearchFilter({ updateQueryAndFetch });

@@ -12,6 +12,9 @@
             width="300"
             v-if="setting.delivery_logo"
           />
+          <div class="full-width text-center text-h6 bottom-dashed" v-else>
+            Address and note
+          </div>
         </div>
         <div class="row items-center">
           {{ order.customer }}
@@ -19,15 +22,15 @@
         <div class="row items-center">
           {{ order.phone }}
         </div>
-        <div class="row items-center">
+        <div class="row items-center bottom-dashed">
           {{ order.address }}
         </div>
-        <div class="row items-center">
+        <div class="row items-center bottom-dashed" v-if="order.note">
           {{ order.note }}
         </div>
       </div>
 
-      <div class="row justify-around receipt">
+      <div class="row justify-around receipt q-mt-sm">
         <q-btn icon="close" @click="onDialogHide"></q-btn>
         <q-btn
           v-if="!platform.is.iphone && !platform.is.ipad"
@@ -84,9 +87,8 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
 .receipt {
   width: 360px;
 }
-#print-target {
-  div {
-    border-bottom: 1px dashed $grey-10;
-  }
+
+.bottom-dashed {
+  border-bottom: 2px dashed $grey-10;
 }
 </style>

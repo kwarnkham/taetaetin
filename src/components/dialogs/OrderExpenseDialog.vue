@@ -9,7 +9,7 @@
       <div class="text-right">
         <q-btn icon="close" flat @click="onDialogOK(activePurchases)" />
       </div>
-      <q-list dense bordered padding>
+      <q-list dense bordered padding separator>
         <q-item v-for="purchase in activePurchases" :key="purchase.id">
           <q-item-section>
             <q-item-label>
@@ -18,7 +18,7 @@
             <q-item-label>
               {{ purchase.price }} x {{ purchase.quantity }}
             </q-item-label>
-            <div class="q-mt-sm">
+            <div class="q-mt-sm" v-if="orderStatus != 5">
               <q-btn label="Cancel" no-caps outline @click="cancel(purchase)" />
             </div>
           </q-item-section>
@@ -41,6 +41,10 @@ import { computed, ref } from "vue";
 const props = defineProps({
   purchases: {
     type: Array,
+    required: true,
+  },
+  orderStatus: {
+    type: Number,
     required: true,
   },
 });

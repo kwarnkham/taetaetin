@@ -7,7 +7,7 @@
           v-bind="link"
           :class="{
             hidden:
-              (!getUser && link.meta?.requireAuth) ||
+              (!getUser && link.meta?.requiresAuth) ||
               (getUser &&
                 link.meta?.requiresAuth &&
                 !getUser.roles.map((e) => e.name).includes(link.meta.role)),

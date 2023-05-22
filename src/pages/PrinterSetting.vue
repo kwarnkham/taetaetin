@@ -22,7 +22,7 @@
     </div>
     <div class="row justify-center full-width">
       <div class="text-grey-10" id="print-target" style="width: 360px">
-        <img :src="setting.print_logo" alt="print_logo" width="360" />
+        <q-icon name="print" size="10em" />
       </div>
     </div>
   </q-page>
@@ -35,7 +35,6 @@ import { ref, watch } from "vue";
 
 const { localStorage, notify } = useQuasar();
 const { printBit, printSize, sendPrinterData } = usePrinter();
-const setting = localStorage.getItem("setting");
 
 const printing = ref(false);
 

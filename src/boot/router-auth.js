@@ -6,7 +6,7 @@ export default boot(({ router, store }) => {
     const token = LocalStorage.getItem('token')
     const user = LocalStorage.getItem('user')
     const index = user?.roles?.findIndex(role => role.name == to.meta.role);
-    if (to.meta.requireAuth && !token) next({ name: 'index' })
+    if (to.meta.requiresAuth && !token) next({ name: 'index' })
     else if (to.meta.role && index <= -1) next({ name: 'index' })
     else next()
   })

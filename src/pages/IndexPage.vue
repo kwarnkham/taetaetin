@@ -20,6 +20,9 @@
         icon="request_quote"
         no-caps
         color="negative"
+        v-if="
+          userStore.getUser?.roles.map((role) => role.name).includes('admin')
+        "
         @click="
           $router.push({
             name: userStore.getUser ? 'expenses' : 'login',
@@ -27,8 +30,14 @@
         "
       />
     </div>
-    <BalanceReport v-if="userStore.getUser" class="q-mt-sm" />
-    <div v-else class="text-center q-mt-md">
+    <BalanceReport
+      v-if="
+        userStore.getUser &&
+        userStore.getUser.roles.map((role) => role.name).includes('admin')
+      "
+      class="q-mt-sm"
+    />
+    <div v-else-if="!userStore.getUser" class="text-center q-mt-md">
       <q-btn
         no-caps
         @click="
