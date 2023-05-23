@@ -18,20 +18,30 @@
 
       <q-list v-if="pagination" bordered dense separator>
         <div class="text-center text-h6">
-          Absence list of {{ route.query.name }}
+          Overtime list of {{ route.query.name }}
         </div>
         <q-separator spaced />
-        <q-item v-for="absence in pagination.data" :key="absence.id">
+        <q-item v-for="overtime in pagination.data" :key="overtime.id">
           <q-item-section>
             <q-item-label>
-              {{ formatDate(new Date(absence.date), "DD/MM/YYYY") }}
+              From :
+              <span class="text-weight-bold">
+                {{ new Date(overtime.from).toLocaleString() }}
+              </span>
             </q-item-label>
             <q-item-label>
-              {{ absence.note }}
+              To :
+              <span class="text-weight-bold">
+                {{ new Date(overtime.to).toLocaleString() }}
+              </span>
+            </q-item-label>
+
+            <q-item-label v-if="overtime.note">
+              Note : {{ overtime.note }}
             </q-item-label>
           </q-item-section>
           <q-item-section side top class="q-my-xs">
-            <q-btn icon="delete" @click="deleteAbsence(absence)" />
+            <q-btn icon="delete" @click="deleteOvertime(overtime)" />
           </q-item-section>
         </q-item>
       </q-list>
@@ -61,7 +71,7 @@ const { dialog } = useQuasar();
 const route = useRoute();
 const { from, to } = useDateFilter(new Date().getMonth());
 const { pagination, updateQueryAndFetch, current, max } = usePagination(
-  "absences",
+  "overtimes",
   {
     user_id: route.params.user,
     from: from.value,
@@ -69,7 +79,7 @@ const { pagination, updateQueryAndFetch, current, max } = usePagination(
   }
 );
 
-const deleteAbsence = (absence) => {
+const deleteOvertime = (overtime) => {
   dialog({
     title: "Confirm",
     message: "Do you want to delete record?",
@@ -78,9 +88,9 @@ const deleteAbsence = (absence) => {
   }).onOk(() => {
     api({
       method: "DELETE",
-      url: "absences/" + absence.id,
+      url: "overtimes/" + overtime.id,
     }).then((_) => {
-      const index = pagination.value.data.findIndex((e) => e.id == absence.id);
+      const index = pagination.value.data.findIndex((e) => e.id == overtime.id);
       pagination.value.data.splice(index, 1);
     });
   });

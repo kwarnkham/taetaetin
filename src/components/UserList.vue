@@ -19,6 +19,7 @@
         </div>
         <div class="row q-gutter-x-xs q-mt-sm">
           <q-btn
+            dense
             label="Record Absence"
             no-caps
             outline
@@ -26,12 +27,40 @@
           />
 
           <q-btn
+            dense
             label="Check Absence"
             no-caps
             outline
             @click="
               $router.push({
                 name: 'absences',
+                params: {
+                  user: user.id,
+                },
+                query: {
+                  name: user.name,
+                },
+              })
+            "
+          />
+        </div>
+        <div class="row q-gutter-x-xs q-mt-sm">
+          <q-btn
+            dense
+            label="Record Overtime"
+            no-caps
+            outline
+            @click="recordOvertime(user)"
+          />
+
+          <q-btn
+            dense
+            label="Check Overtime"
+            no-caps
+            outline
+            @click="
+              $router.push({
+                name: 'overtimes',
                 params: {
                   user: user.id,
                 },
@@ -58,7 +87,9 @@
 <script setup>
 import { useQuasar } from "quasar";
 import useUtil from "src/composables/util";
+import { date } from "quasar";
 
+const { addToDate } = date;
 const props = defineProps({
   users: {
     type: Array,
@@ -153,6 +184,64 @@ const recordAbsence = (user) => {
         notify({
           message: "Success",
           type: "positive",
+        });
+      });
+    });
+  });
+};
+
+const recordOvertime = (user) => {
+  dialog({
+    title: `Record overtime for "${user.name}"`,
+    position: "top",
+    cancel: true,
+    noBackdropDismiss: true,
+    prompt: {
+      label: "From",
+      model: addToDate(new Date(), { hours: 6, minutes: 30 })
+        .toJSON()
+        .slice(0, 16),
+      type: "datetime-local",
+      isValid: (val) => val != "",
+    },
+  }).onOk((from) => {
+    dialog({
+      title: `Record overtime for "${user.name}"`,
+      position: "top",
+      cancel: true,
+      noBackdropDismiss: true,
+      prompt: {
+        label: "To",
+        model: addToDate(new Date(), { hours: 6, minutes: 30 })
+          .toJSON()
+          .slice(0, 16),
+        type: "datetime-local",
+        isValid: (val) => val != "",
+      },
+    }).onOk((to) => {
+      dialog({
+        title: "Reason for the overtime",
+        position: "top",
+        cancel: true,
+        noBackdropDismiss: true,
+        prompt: {
+          model: "",
+        },
+      }).onOk((note) => {
+        api({
+          method: "POST",
+          url: "overtimes",
+          data: {
+            from: new Date(from).toJSON(),
+            to: new Date(to).toJSON(),
+            note,
+            user_id: user.id,
+          },
+        }).then(() => {
+          notify({
+            message: "Success",
+            type: "positive",
+          });
         });
       });
     });

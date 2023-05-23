@@ -49,6 +49,17 @@ const routes = [
         }
       },
       {
+        title: 'Overtime',
+        path: 'overtimes/:user',
+        component: () => import('src/pages/OvertimesPage.vue'),
+        name: 'overtimes',
+        meta: {
+          requiresAuth: true,
+          role: 'admin',
+          navigation: false
+        }
+      },
+      {
         title: 'Expenses',
         icon: "request_quote",
         path: 'expenses',
