@@ -1,6 +1,11 @@
 <template>
-  <q-page padding :style-fn="vhPage" class="column q-gutter-y-sm">
+  <q-page padding :style-fn="vhPage" class="column">
     <UserForm @user-added="addUserToList" />
+    <q-separator spaced />
+    <div class="row no-wrap">
+      <q-input v-model="search" label="Search" class="col" dense outlined />
+    </div>
+    <q-separator spaced />
     <UserList
       v-if="pagination"
       :users="pagination.data"
@@ -23,10 +28,14 @@
 import UserForm from "src/components/UserForm.vue";
 import UserList from "src/components/UserList.vue";
 import usePagination from "src/composables/pagination";
+import useSearchFilter from "src/composables/searchFilter";
 import useUtil from "src/composables/util";
 
 const { vhPage } = useUtil();
-const { pagination, current, max } = usePagination("users");
+
+const { pagination, current, max, updateQueryAndFetch } =
+  usePagination("users");
+const { search } = useSearchFilter({ updateQueryAndFetch });
 
 const addUserToList = (user) => {
   pagination.value.data.unshift(user);
