@@ -60,6 +60,30 @@ const routes = [
         }
       },
       {
+        title: 'Tasks',
+        icon: 'task',
+        path: 'tasks',
+        component: () => import('src/pages/TasksPage.vue'),
+        name: 'tasks',
+        meta: {
+          requiresAuth: true,
+          role: 'admin',
+          navigation: true
+        }
+      },
+      {
+        title: 'Task Details',
+        icon: 'task',
+        path: 'tasks/:task',
+        component: () => import('src/pages/TaskDetails.vue'),
+        name: 'task-details',
+        meta: {
+          requiresAuth: true,
+          role: 'admin',
+          navigation: false
+        }
+      },
+      {
         title: 'Expenses',
         icon: "request_quote",
         path: 'expenses',
