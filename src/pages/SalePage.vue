@@ -1,7 +1,7 @@
 <template>
   <q-page padding class="bg-white">
     <div class="row q-my-xs q-gutter-x-xs">
-      <q-btn icon="save" @click="submit()" outline />
+      <q-btn icon="save" @click="submit()" outline :disable="noItems" />
       <q-btn icon="cleaning_services" @click="clearData()" outline />
     </div>
     <q-separator spaced />
@@ -16,7 +16,7 @@
 import CustomerInfo from "src/components/CustomerInfo.vue";
 import OrderSaleItems from "src/components/OrderSaleItems.vue";
 import useOrder from "src/composables/order";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 const order = ref({
   phone: "",
@@ -38,4 +38,8 @@ const submit = () => {
     showOrderDetails(response.data.order);
   });
 };
+
+const noItems = computed(
+  () => order.value.a_items.filter((e) => e?.quantity > 0).length == 0
+);
 </script>

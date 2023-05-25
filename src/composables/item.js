@@ -67,7 +67,7 @@ export default function useItem () {
       }).onOk((type) => {
         dialog({
           title: `What is the sale price for ${name}?`,
-          message: "After this you'll be asked to fill stock quantity",
+          message: "After this you'll be asked to fill purchase price",
           position: 'top',
           noBackdropDismiss: true,
           cancel: true,
@@ -83,7 +83,7 @@ export default function useItem () {
           if (type == "1")
             dialog({
               title: `What is the purchase price for ${name}?`,
-              message: "After this you'll be asked to fill sale price",
+              message: "After this you'll be asked to fill stock quantity",
               position: "top",
               noBackdropDismiss: true,
               cancel: true,
