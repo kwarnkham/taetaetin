@@ -1,7 +1,17 @@
 <template>
   <q-page padding :style="vhPage" class="column">
-    <div>Name: {{ task?.name }}</div>
-    <div>Sort: {{ task?.sort }}</div>
+    <div class="q-mb-xs">
+      Name:
+      <q-btn no-caps outline @click="updateTask('name')">
+        {{ task?.name }}
+      </q-btn>
+    </div>
+    <div>
+      Sort:
+      <q-btn no-caps outline @click="updateTask('sort')">
+        {{ task?.sort }}
+      </q-btn>
+    </div>
     <div class="row justify-evenly q-my-xs">
       <q-btn
         v-for="role in roles"
@@ -60,6 +70,40 @@ const task = ref("");
 const { dialog, localStorage } = useQuasar();
 
 const roles = ref(localStorage.getItem("roles"));
+
+const updateTask = (key) => {
+  const title = key == "sort" ? "Task sorting" : "Edit name";
+  const prompt = {
+    model: task.value[key],
+  };
+  if (key == "sort") {
+    prompt.type = "number";
+    prompt.inputmode = "numeric";
+    prompt.pattern = "[0-9]*";
+    prompt.isValid = (val) => val != "" && val > 0;
+  }
+  const data = {
+    name: task.value.name,
+    sort: task.value.sort,
+  };
+
+  dialog({
+    title,
+    noBackdropDismiss: true,
+    cancel: true,
+    position: "top",
+    prompt,
+  }).onOk((value) => {
+    data[key] = value;
+    api({
+      method: "PUT",
+      url: `tasks/${task.value.id}`,
+      data,
+    }).then((response) => {
+      task.value = response.data.task;
+    });
+  });
+};
 
 const assignTask = (role) => {
   api({
