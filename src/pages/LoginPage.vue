@@ -23,6 +23,7 @@
           />
         </template>
       </q-input>
+      <q-input label="Space" v-model="tenant" required />
       <div class="text-right">
         <q-btn label="Login" no-caps type="submit" />
       </div>
@@ -39,6 +40,7 @@ import { useUserStore } from "stores/user-store";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 import useApp from "src/composables/app";
+
 const formData = ref({
   username: "",
   password: "",
@@ -50,9 +52,12 @@ const { api } = useUtil();
 const { init } = useApp();
 const { setUser } = useUserStore();
 const { getUser } = storeToRefs(useUserStore());
+const tenant = ref(localStorage.getItem("tenant") ?? "");
 
 const router = useRouter();
 const submit = () => {
+  localStorage.set("tenant", tenant.value);
+  axios.defaults.headers.common["Tenant"] = tenant.value;
   api(
     {
       method: "POST",

@@ -96,15 +96,6 @@ const routes = [
         }
       },
       {
-        path: 'manage-cart',
-        component: () => import('src/pages/ManageCart.vue'),
-        name: 'manage-cart',
-        meta: {
-          requiresAuth: true,
-          role: 'sale',
-        }
-      },
-      {
         path: 'checkout-cart',
         component: () => import('src/pages/CheckoutCart.vue'),
         name: 'checkout-cart',

@@ -4,12 +4,6 @@ import { api as axios } from "boot/axios";
 export default function useApp () {
   const { loading, localStorage } = useQuasar()
   return {
-    sumArray (array, key) {
-      return array.reduce((carry, el) => el[key] + carry, 0)
-    },
-    getTotalAmount (array, price, quantity) {
-      return array.reduce((carry, el) => (el[price] - (el.discount ?? 0)) * el[quantity] + carry, 0)
-    },
     async init () {
       loading.show()
       try {

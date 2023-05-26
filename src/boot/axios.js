@@ -15,20 +15,20 @@ const api = axios.create({ baseURL: process.env.API_URL })
 export default boot(async ({ app, store }) => {
   const userStore = useUserStore(store)
   const token = LocalStorage.getItem("token");
+  const tenant = LocalStorage.getItem("tenant");
   if (token) {
     api.defaults.headers.common['Authorization'] = "Bearer " + token;
+    api.defaults.headers.common['Tenant'] = tenant;
     try {
       const response = await api({
         method: "GET",
-        url: "user",
+        url: "users/user",
       })
       userStore.setUser(response.data.user)
     } catch (error) {
       LocalStorage.remove('token')
       api.defaults.headers.common['Authorization'] = undefined;
     }
-
-
   }
 
   // for use inside Vue files (Options API) through this.$axios and this.$api

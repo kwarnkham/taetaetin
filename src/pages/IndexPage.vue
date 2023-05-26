@@ -73,12 +73,13 @@ const { api } = useUtil();
 
 const roles = ref([]);
 
-api({
-  method: "GET",
-  url: "roles",
-}).then((response) => {
-  roles.value = response.data.roles;
-});
+if (userStore.getUser)
+  api({
+    method: "GET",
+    url: "roles",
+  }).then((response) => {
+    roles.value = response.data.roles;
+  });
 
 const tasks = computed(() => {
   const tasks = roles.value.map((role) => role.tasks).flat();
