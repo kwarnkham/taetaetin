@@ -3,9 +3,7 @@
     ref="dialogRef"
     @hide="onDialogHide"
     no-backdrop-dismiss
-    maximized
     no-route-dismiss
-    class="full-height"
     position="bottom"
   >
     <div

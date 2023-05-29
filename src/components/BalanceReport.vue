@@ -110,7 +110,7 @@ const getData = () => {
   setTimeout(() => {
     loading.value = false;
   }, 2000);
-  getOrders({ from: from.value, to: to.value });
-  getPurchases({ from: from.value, to: to.value });
+  getOrders({ from: from.value, to: to.value, status: 5 });
+  getPurchases({ from: from.value, to: to.value, status: 1 });
 };
 </script>
