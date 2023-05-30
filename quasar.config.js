@@ -160,10 +160,10 @@ module.exports = configure(function (ctx) {
 
 
       manifest: {
-        name: `Quasar App`,
-        short_name: `Quasar App`,
-        description: `A Quasar Project`,
-        display: 'standalone',
+        name: `Begeleider`,
+        short_name: `Begeleider`,
+        description: `Begeleider`,
+        display: 'fullscreen',
         orientation: 'portrait',
         background_color: '#ffffff',
         theme_color: '#027be3',
@@ -227,7 +227,7 @@ module.exports = configure(function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'taetaetin'
+        appId: 'begeleider'
       },
 
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain

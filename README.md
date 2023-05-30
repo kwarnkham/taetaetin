@@ -1,4 +1,4 @@
-# Quasar App (taetaetin)
+# Quasar App (Begeleider)
 
 A Quasar Project
 

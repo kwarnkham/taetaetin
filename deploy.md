@@ -1,7 +1,7 @@
 ```
-scp spa.zip root@coffee.book-mm.com:/root/
+scp pwa.zip root@coffee.book-mm.com:/root/
 
-cd /etc/nginx/html/taetaetin && rm -rf ./* && mv /root/spa.zip ./spa.zip && unzip spa.zip && rm -rf spa.zip && mv spa/* ./ && rm -rf spa
+cd /etc/nginx/html/begeleider && rm -rf ./* && mv /root/pwa.zip ./pwa.zip && unzip pwa.zip && rm -rf pwa.zip && mv pwa/* ./ && rm -rf pwa
 
 
 systemctl restart nginx
