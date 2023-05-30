@@ -4,7 +4,6 @@
     @hide="onDialogHide"
     no-backdrop-dismiss
     full-height
-    no-route-dismiss
     class="column"
   >
     <div

@@ -3,8 +3,7 @@
     ref="dialogRef"
     @hide="onDialogHide"
     no-backdrop-dismiss
-    no-route-dismiss
-    position="bottom"
+    position="top"
   >
     <div
       class="q-dialog-plugin q-pa-sm window-height column no-wrap bg-white"

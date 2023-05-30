@@ -35,7 +35,8 @@ export default function useOrder (order) {
 
   };
   const syncOrder = (key, value) => {
-    order.value[key] = value;
+    order.value[key] = value === '' ? null : value;
+
     if (key == 'a_items' && order.value.a_items.filter(e => !e).length == 0) {
       order.value.a_items.push(null)
     }

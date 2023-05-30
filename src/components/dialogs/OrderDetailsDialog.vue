@@ -1,17 +1,13 @@
 <template>
-  <q-dialog
-    ref="dialogRef"
-    @hide="onDialogHide"
-    no-backdrop-dismiss
-    maximized
-    no-route-dismiss
-  >
+  <q-dialog ref="dialogRef" @hide="onDialogHide" no-backdrop-dismiss maximized>
     <div class="q-pa-xs fit bg-white column no-wrap" v-if="order">
       <div class="row q-my-xs q-gutter-xs justify-between">
         <q-btn
           icon="save"
           @click="updateOrder()"
           v-if="[1, 2, 3, 6, 7].includes(order.status)"
+          :disable="!isDirty"
+          :color="isDirty ? 'primary' : 'grey'"
         />
         <q-btn
           icon="cleaning_services"
@@ -125,7 +121,7 @@
 
 <script setup>
 import useUtil from "src/composables/util";
-import { ref, onBeforeUnmount } from "vue";
+import { ref, onBeforeUnmount, computed } from "vue";
 import { useQuasar, useDialogPluginComponent } from "quasar";
 import PrintOrderDialog from "src/components/dialogs/PrintOrderDialog.vue";
 import PrintAddressDialog from "src/components/dialogs/PrintAddressDialog.vue";
@@ -151,8 +147,7 @@ const orderStore = useOrderStore();
 const { api } = useUtil();
 const order = ref(null);
 
-const { syncOrder, saveOrder, clearData, assignOrder, resetData } =
-  useOrder(order);
+const { syncOrder, saveOrder, clearData, assignOrder } = useOrder(order);
 const updateOrder = () => {
   saveOrder(true).then((response) => {
     assignOrder(response.data.order);
@@ -240,7 +235,7 @@ const addPurchase = () => {
             quantity,
           },
         }).then((response) => {
-          assignOrder(response.data.order);
+          order.value.purchases = response.data.order.purchases;
         });
       });
     });
@@ -314,6 +309,29 @@ const deliverOrder = () => {
     });
   });
 };
+
+const isDirty = computed(() => {
+  if (
+    orderStore.getExistedItems.length !=
+      order.value.a_items.filter((e) => !!e).length ||
+    order.value.phone != orderStore.getExistedOrder.phone ||
+    order.value.customer != orderStore.getExistedOrder.customer ||
+    order.value.address != orderStore.getExistedOrder.address ||
+    order.value.note != orderStore.getExistedOrder.note ||
+    order.value.created_at != orderStore.getExistedOrder.created_at ||
+    order.value.discount != orderStore.getExistedOrder.discount ||
+    order.value.paid != orderStore.getExistedOrder.paid
+  )
+    return true;
+  else {
+    const index = orderStore.getExistedItems.findIndex(
+      (item, key) =>
+        order.value.a_items[key].quantity != item.quantity ||
+        order.value.a_items[key].discount != item.discount
+    );
+    return index != -1;
+  }
+});
 
 api({
   method: "GET",
