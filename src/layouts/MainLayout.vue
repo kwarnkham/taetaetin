@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar>
+      <q-toolbar class="row">
         <q-btn
           flat
           dense
@@ -34,6 +34,8 @@
             "
           />
         </template>
+        <div class="col"></div>
+        <LanguageSwitcher />
       </q-toolbar>
     </q-header>
     <LeftDrawer v-model="leftDrawerOpen" />
@@ -47,6 +49,7 @@
 import { useQuasar } from "quasar";
 import LeftDrawer from "src/components/LeftDrawer.vue";
 import { ref } from "vue";
+import LanguageSwitcher from "src/components/LanguageSwitcher.vue";
 
 const { screen } = useQuasar();
 const leftDrawerOpen = ref(screen.gt.sm);

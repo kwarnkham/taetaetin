@@ -3,7 +3,7 @@
     <div
       class="text-center text-h5 q-py-sm q-my-sm rounded-borders bg-grey text-white"
     >
-      Welcome
+      Welcome {{ $t("success") }}
     </div>
     <div class="row justify-around">
       <q-btn
