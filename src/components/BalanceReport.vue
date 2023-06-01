@@ -1,10 +1,16 @@
 <template>
   <div class="bg-light-blue-2 rounded-borders q-pa-xs">
-    <div class="text-h5 text-center">Balance Report</div>
+    <div class="text-h5 text-center">{{ $t("balanceReport") }}</div>
     <div class="row no-wrap q-pa-sm">
-      <q-input type="date" v-model="from" dense class="col" label="From" />
+      <q-input
+        type="date"
+        v-model="from"
+        dense
+        class="col"
+        :label="$t('from')"
+      />
       <q-separator vertical spaced />
-      <q-input type="date" v-model="to" dense class="col" label="To" />
+      <q-input type="date" v-model="to" dense class="col" :label="$t('to')" />
       <q-btn
         icon="download"
         flat
@@ -18,8 +24,10 @@
       <div class="col-6 q-pr-xs">
         <q-card class="fit">
           <q-card-section>
-            <div class="text-h6">Orders</div>
-            <div class="text-overline">{{ orders.toLocaleString() }} MMK</div>
+            <div class="text-h6">{{ $t("order", 2) }}</div>
+            <div class="text-overline">
+              {{ orders.toLocaleString() }} {{ $t("mmk") }}
+            </div>
           </q-card-section>
           <q-card-actions align="right">
             <q-btn
@@ -32,9 +40,10 @@
                 })
               "
               no-caps
-              flat
+              outline
+              color="primary"
             >
-              Details
+              {{ $t("details") }}
             </q-btn>
           </q-card-actions>
         </q-card>
@@ -42,9 +51,9 @@
       <div class="col-6 q-pl-xs">
         <q-card class="col-6">
           <q-card-section>
-            <div class="text-h6">Purchases</div>
+            <div class="text-h6">{{ $t("purchase", 2) }}</div>
             <div class="text-overline">
-              {{ purchases.toLocaleString() }} MMK
+              {{ purchases.toLocaleString() }} {{ $t("mmk") }}
             </div>
           </q-card-section>
           <q-card-actions align="right">
@@ -55,9 +64,10 @@
                 })
               "
               no-caps
-              flat
+              outline
+              color="primary"
             >
-              Details
+              {{ $t("details") }}
             </q-btn>
           </q-card-actions>
         </q-card>
@@ -65,11 +75,20 @@
 
       <q-card class="col-12">
         <q-card-section>
-          <div class="text-h6 text-center">Summary</div>
+          <div class="text-h6 text-center">{{ $t("summary") }}</div>
           <div class="text-overline text-right">
-            <div>Ordres: {{ orders.toLocaleString() }} MMK</div>
-            <div>Purchases: {{ purchases.toLocaleString() }} MMK</div>
-            <div>Balance: {{ (orders - purchases).toLocaleString() }} MMK</div>
+            <div>
+              {{ $t("order", 2) }}: {{ orders.toLocaleString() }}
+              {{ $t("mmk") }}
+            </div>
+            <div>
+              {{ $t("purchase", 2) }}: {{ purchases.toLocaleString() }}
+              {{ $t("mmk") }}
+            </div>
+            <div>
+              {{ $t("balance") }}: {{ (orders - purchases).toLocaleString() }}
+              {{ $t("mmk") }}
+            </div>
           </div>
         </q-card-section>
       </q-card>

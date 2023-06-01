@@ -3,7 +3,7 @@
     <div
       class="text-center text-h5 q-py-sm q-my-sm rounded-borders bg-grey text-white"
     >
-      Welcome {{ $t("success") }}
+      {{ $t("welcome") }}
     </div>
     <div class="row justify-around">
       <q-btn
@@ -47,7 +47,7 @@
         "
         outline
       >
-        Login to see the reports
+        {{ $t("loginToSeeReports") }}
       </q-btn>
     </div>
     <div>

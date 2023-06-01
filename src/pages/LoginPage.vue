@@ -1,31 +1,37 @@
 <template>
   <q-page padding>
-    <q-form @submit.prevent="submit" class="q-gutter-y-sm" v-if="!getUser">
+    <q-form
+      @submit.prevent="submit"
+      class="q-gutter-y-sm q-pa-xs"
+      v-if="!getUser"
+    >
       <q-input
-        label="Username"
+        :label="$t('username')"
         v-model="formData.username"
         autocomplete="username"
         required
         autofocus
       />
       <q-input
-        label="Password"
+        :label="$t('password')"
         v-model="formData.password"
-        :type="isPwd ? 'password' : 'text'"
+        :type="showPassword ? 'text' : 'password'"
         autocomplete="password"
         required
-      >
-        <template v-slot:append>
-          <q-icon
-            :name="isPwd ? 'visibility_off' : 'visibility'"
-            class="cursor-pointer"
-            @click="isPwd = !isPwd"
-          />
-        </template>
-      </q-input>
-      <q-input label="Space" v-model="tenant" required />
+      />
+
+      <q-input :label="$t('space')" v-model="tenant" required />
       <div class="text-right">
-        <q-btn label="Login" no-caps type="submit" />
+        <q-checkbox v-model="showPassword" :label="$t('showPassword')" />
+      </div>
+      <div class="text-right">
+        <q-btn
+          :label="$t('login')"
+          no-caps
+          type="submit"
+          outline
+          color="primary"
+        />
       </div>
     </q-form>
   </q-page>
@@ -46,14 +52,13 @@ const formData = ref({
   password: "",
 });
 
-const isPwd = ref(true);
 const { localStorage } = useQuasar();
 const { api } = useUtil();
 const { init } = useApp();
 const { setUser } = useUserStore();
 const { getUser } = storeToRefs(useUserStore());
 const tenant = ref(localStorage.getItem("tenant") ?? "");
-
+const showPassword = ref(false);
 const router = useRouter();
 const submit = () => {
   localStorage.set("tenant", tenant.value);

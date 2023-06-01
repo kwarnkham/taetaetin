@@ -1,7 +1,18 @@
-// This is just an example,
-// so you can safely delete all default props below
-
 export default {
-  failed: 'Action failed',
-  success: 'Action was successful'
+  welcome: 'Welcome',
+  loginToSeeReports: 'Login to see reports',
+  username: "Username",
+  password: "Password",
+  space: "Space",
+  login: "Login",
+  showPassword: "Show password",
+  balanceReport: "Balance Report",
+  from: "From",
+  to: "To",
+  order: "Order | Orders",
+  purchase: "purchase | purchases",
+  details: "Details",
+  mmk: "MMK",
+  summary: "Summary",
+  balance: "Balance"
 }
