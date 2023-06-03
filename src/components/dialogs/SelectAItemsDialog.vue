@@ -10,11 +10,13 @@
       style="width: 500px; max-width: 100vw"
     >
       <div class="row justify-between items-center">
-        <div class="text-weight-bold text-subtitle1">Select Item for Sale</div>
+        <div class="text-weight-bold text-subtitle1">
+          {{ $t("selectProductForSale") }}
+        </div>
         <q-btn icon="close" flat @click="onDialogCancel" dense />
       </div>
       <div class="col column">
-        <q-input label="Prodcut Name" v-model="search" autofocus />
+        <q-input :label="$t('productName')" v-model="search" autofocus />
         <q-list
           v-if="saleItems.length"
           class="overflow-auto col"
@@ -30,7 +32,7 @@
               <q-item-label overline>{{ a_item.price }}</q-item-label>
               <div class="q-mt-sm q-gutter-x-xs">
                 <q-btn
-                  label="Select"
+                  :label="$t('select')"
                   no-caps
                   @click="onDialogOK(a_item)"
                   :disable="a_item.realStock < 1 && a_item.type == 1"
@@ -39,7 +41,7 @@
                   "
                 />
                 <q-btn
-                  label="Re-stock"
+                  :label="$t('restock')"
                   no-caps
                   @click="addStock(a_item)"
                   color="secondary"
@@ -53,9 +55,11 @@
               :class="{ 'text-red': a_item.realStock < 1 }"
             >
               <span v-if="a_item.type == 1">
-                Stock:{{ a_item.realStock }}
+                {{ $t("stock") }} : {{ a_item.realStock }}
               </span>
-              <span v-else class="text-grey"> Non stocked item </span>
+              <span v-else class="text-grey">
+                {{ $t("nonStockedProduct") }}
+              </span>
             </q-item-section>
           </q-item>
           <q-item v-if="search">
@@ -67,7 +71,7 @@
                 @click="createItem(search)"
                 v-if="!saleItems.map((e) => e.name).includes(search)"
               >
-                Create new item "{{ search }}"
+                {{ $t("createNewProduct") }} ({{ search }})
               </q-btn>
             </q-item-section>
           </q-item>
@@ -77,7 +81,7 @@
           v-else-if="aItems.length == 0 && search"
         >
           <q-btn no-caps flat @click="createItem(search)">
-            Create new item "{{ search }}"
+            {{ $t("createNewProduct") }} ({{ search }})
           </q-btn>
         </div>
       </div>
@@ -86,13 +90,12 @@
 </template>
 
 <script setup>
-import { debounce, useDialogPluginComponent, useQuasar } from "quasar";
+import { debounce, useDialogPluginComponent } from "quasar";
 import useUtil from "src/composables/util";
 import useItem from "src/composables/item";
 import { useOrderStore } from "src/stores/order-store";
 import { computed, watch, ref } from "vue";
 
-const { dialog } = useQuasar();
 const { api } = useUtil();
 const { reStock } = useItem();
 

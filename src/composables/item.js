@@ -1,13 +1,15 @@
 import { useQuasar } from "quasar";
 import useUtil from "./util";
+import { useI18n } from "vue-i18n";
 
 export default function useItem () {
   const { api } = useUtil()
   const { dialog } = useQuasar()
+  const { t } = useI18n()
   const reStock = (a_item) => {
     return new Promise((resolve, reject) => {
       dialog({
-        title: `Purchase price for ${a_item.name}`,
+        title: `${t('purchasePrice')} (${a_item.name})`,
         position: "top",
         cancel: true,
         noBackdropDismiss: true,
@@ -20,7 +22,7 @@ export default function useItem () {
         },
       }).onOk((purchasePrice) => {
         dialog({
-          title: `Restock quantity for ${a_item.name}`,
+          title: `${t('restockQuantity')}  (${a_item.name})`,
           position: "top",
           cancel: true,
           noBackdropDismiss: true,
@@ -52,7 +54,7 @@ export default function useItem () {
   const showCreateAItem = (name) => {
     return new Promise((resolve) => {
       dialog({
-        title: "Choose item type",
+        title: t('chooseProductType'),
         position: 'top',
         noBackdropDismiss: true,
         cancel: true,
@@ -60,20 +62,19 @@ export default function useItem () {
           type: "radio",
           model: "1",
           items: [
-            { label: "Stocked", value: "1" },
-            { label: "Non Stocked", value: "2" },
+            { label: t('stocked'), value: "1" },
+            { label: t('nonStocked'), value: "2" },
           ],
         },
       }).onOk((type) => {
         dialog({
-          title: `What is the sale price for ${name}?`,
-          message: "After this you'll be asked to fill purchase price",
+          title: `${t('salePrice')} (${name})`,
           position: 'top',
           noBackdropDismiss: true,
           cancel: true,
           prompt: {
             model: "",
-            placeholder: "Sale Price",
+            placeholder: t('salePrice'),
             type: "number",
             inputmode: "numeric",
             pattern: "[0-9]*",
@@ -82,14 +83,13 @@ export default function useItem () {
         }).onOk((salePrice) => {
           if (type == "1")
             dialog({
-              title: `What is the purchase price for ${name}?`,
-              message: "After this you'll be asked to fill stock quantity",
+              title: `${t('purchasePrice')} (${name})`,
               position: "top",
               noBackdropDismiss: true,
               cancel: true,
               prompt: {
                 model: "",
-                placeholder: "Purchase Price",
+                placeholder: t('purchasePrice'),
                 type: "number",
                 inputmode: "numeric",
                 pattern: "[0-9]*",
@@ -97,13 +97,13 @@ export default function useItem () {
               },
             }).onOk((purchasePrice) => {
               dialog({
-                title: `How many of ${name} is going to inventory?`,
+                title: `${t('restockQuantity')} (${name})`,
                 position: "top",
                 noBackdropDismiss: true,
                 cancel: true,
                 prompt: {
                   model: "",
-                  placeholder: "Quantity",
+                  placeholder: t('quantity'),
                   type: "number",
                   inputmode: "numeric",
                   pattern: "[0-9]*",

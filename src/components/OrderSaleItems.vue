@@ -10,10 +10,10 @@
       <thead>
         <tr>
           <th class="text-left number-column">#</th>
-          <th class="text-left">Name</th>
-          <th class="text-right">Qty</th>
-          <th class="text-right">Price(-Dis)</th>
-          <th class="text-right">Amt</th>
+          <th class="text-left">{{ $t("name") }}</th>
+          <th class="text-right">{{ $t("qty") }}</th>
+          <th class="text-right">{{ $t("price") }}(-{{ $t("dis") }})</th>
+          <th class="text-right">{{ $t("amt") }}</th>
         </tr>
       </thead>
       <tbody>
@@ -26,19 +26,19 @@
           :a_items="a_items"
         />
         <tr>
-          <td colspan="4" class="text-right">Total</td>
+          <td colspan="4" class="text-right">{{ $t("total") }}</td>
           <td class="text-right">{{ total.toLocaleString() }}</td>
         </tr>
         <tr @click="applyOrderPaid">
-          <td colspan="4" class="text-right">Paid</td>
+          <td colspan="4" class="text-right">{{ $t("paid") }}</td>
           <td class="text-right">{{ paid.toLocaleString() }}</td>
         </tr>
         <tr @click="applyOrderDiscount">
-          <td colspan="4" class="text-right">Discount</td>
+          <td colspan="4" class="text-right">{{ $t("discount") }}</td>
           <td class="text-right">{{ discount.toLocaleString() }}</td>
         </tr>
         <tr>
-          <td colspan="4" class="text-right">Remaining</td>
+          <td colspan="4" class="text-right">{{ $t("remaining") }}</td>
           <td
             class="text-right"
             :class="{ 'text-red': total - paid - discount < 0 }"

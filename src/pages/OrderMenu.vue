@@ -6,22 +6,22 @@
         :key="status.id"
         dense
         v-model="status.value"
-        :label="status.label"
+        :label="$t(status.translateKey)"
         :disable="String(statusParam).length == 1 && status.value"
       />
     </div>
 
     <div v-if="total" class="text-center text-subtitle2 q-mt-sm">
-      Total: {{ total.toLocaleString() }} MMK
+      {{ $t("total") }}: {{ total.toLocaleString() }} {{ $t("mmk") }}
     </div>
 
     <div
       class="row justify-between items-end q-pa-xs"
       :class="{ 'bg-info rounded-borders': $route.query.report }"
     >
-      <q-input v-model="from" type="date" label="From" class="col" />
+      <q-input v-model="from" type="date" :label="$t('from')" class="col" />
       <q-separator vertical spaced />
-      <q-input v-model="to" type="date" label="To" class="col" />
+      <q-input v-model="to" type="date" :label="$t('to')" class="col" />
       <div class="q-my-sm">
         <q-btn
           icon="search"
@@ -37,7 +37,7 @@
     </div>
 
     <div>
-      <q-input v-model="search" placeholder="Search by phone number or ID" />
+      <q-input v-model="search" :placeholder="$t('searchByPhoneNumberOrID')" />
     </div>
 
     <OrderList
@@ -82,7 +82,18 @@ const statuses = ref(
     .filter((e) =>
       setting.active_order_status.split(",").includes(String(e.id))
     )
-    .map((e) => ({ ...e, value: true }))
+    .map((e) => ({
+      ...e,
+      value: true,
+      translateKey: e.label
+        .split(" ")
+        .map((e, index) =>
+          index == 0
+            ? e.toLowerCase()
+            : e.toLowerCase().charAt(0).toUpperCase() + e.slice(1)
+        )
+        .join(""),
+    }))
 );
 if (selectedStatuses)
   selectedStatuses.forEach((e) => {

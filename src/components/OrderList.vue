@@ -6,39 +6,58 @@
           <q-icon name="person" /> {{ order.customer }}
         </q-item-label>
         <q-item-label v-if="![3, 4, 5].includes(order.status)">
-          Remaining:
+          {{ $t("remaining") }}:
           {{ (order.amount - order.discount - order.paid).toLocaleString() }}
-          MMK
+          {{ $t("mmk") }}
         </q-item-label>
         <q-item-label>
-          Amount:
+          {{ $t("amount") }}:
           {{ (order.amount - order.discount).toLocaleString() }}
-          MMK
+          {{ $t("mmk") }}
           <q-badge align="top">#{{ order.id }}</q-badge>
         </q-item-label>
-        <q-item-label class="bg-grey-4 rounded-borders">
-          Order is
+        <q-item-label class="bg-grey-4 rounded-borders row justify-between">
           <span
             class="text-overline"
             :class="{
-              'text-grey': order.status == 1,
-              'text-deep-orange': order.status == 2,
+              'text-brown': order.status == 1,
+              'text-indigo': order.status == 2,
               'text-primary': order.status == 3,
               'text-negative': order.status == 4,
               'text-positive': order.status == 5,
-              'text-accent': order.status == 6,
+              'text-amber-10': order.status == 6,
+              'text-green-10': order.status == 7,
             }"
           >
-            {{ orderStatuses.find((e) => e.id == order.status).label }}
+            {{
+              $t(
+                orderStatuses
+                  .find((e) => e.id == order.status)
+                  .label.split(" ")
+                  .map((e, index) =>
+                    index == 0
+                      ? e.toLowerCase()
+                      : e.toLowerCase().charAt(0).toUpperCase() + e.slice(1)
+                  )
+                  .join("")
+              )
+            }}
           </span>
-          at
+
           <span class="text-weight-bold">
-            {{ formatDate(order.updated_at, "hh:mm:ss A DD/MM/YYYY") }}
+            <q-icon name="access_time_filled" />
+            {{ formatDate(order.updated_at, "DD/MM/YYYY hh:mm:ss A") }}
           </span>
         </q-item-label>
 
         <div class="row justify-start q-gutter-x-sm q-mt-sm">
-          <q-btn rounded no-caps label="See more" @click="showOrder(order)" />
+          <q-btn
+            outline
+            color="primary"
+            no-caps
+            :label="$t('details')"
+            @click="showOrder(order)"
+          />
           <q-btn
             v-if="order.customer"
             rounded

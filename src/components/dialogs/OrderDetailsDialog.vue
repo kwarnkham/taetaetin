@@ -131,6 +131,7 @@ import OrderSaleItems from "../OrderSaleItems.vue";
 import useOrder from "src/composables/order";
 import { useOrderStore } from "src/stores/order-store";
 import OrderExpenseDialog from "./OrderExpenseDialog.vue";
+import { useI18n } from "vue-i18n";
 
 defineEmits([...useDialogPluginComponent.emits]);
 const props = defineProps({
@@ -142,6 +143,7 @@ const props = defineProps({
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
 
+const { t } = useI18n();
 const { localStorage, dialog } = useQuasar();
 const orderStore = useOrderStore();
 const { api } = useUtil();
@@ -260,7 +262,7 @@ const showPrintAddressDialog = () => {
 };
 const cancelOrder = () => {
   dialog({
-    title: "Confirmation",
+    title: t("confirmation"),
     message: "Do you want to cancel the order?",
     noBackdropDismiss: true,
     cancel: true,
@@ -273,7 +275,7 @@ const cancelOrder = () => {
 
 const completeOrder = () => {
   dialog({
-    title: "Confirmation",
+    title: t("confirmation"),
     message: "Do you want to complete the order?",
     noBackdropDismiss: true,
     cancel: true,
@@ -286,7 +288,7 @@ const completeOrder = () => {
 
 const packOrder = () => {
   dialog({
-    title: "Confirmation",
+    title: t("confirmation"),
     message: "Do you want to pack the order?",
     noBackdropDismiss: true,
     cancel: true,
@@ -299,7 +301,7 @@ const packOrder = () => {
 
 const deliverOrder = () => {
   dialog({
-    title: "Confirmation",
+    title: t("confirmation"),
     message: "Do you want to delivery the order?",
     noBackdropDismiss: true,
     cancel: true,
