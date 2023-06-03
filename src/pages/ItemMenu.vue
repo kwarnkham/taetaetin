@@ -4,10 +4,16 @@
       class="text-center"
       v-if="userStore.getUser?.roles.map((role) => role.name).includes('admin')"
     >
-      <q-btn label="Add a new item" no-caps outline @click="addANewItem" />
+      <q-btn
+        :label="$t('addANewProduct')"
+        no-caps
+        outline
+        @click="addANewItem"
+        color="primary"
+      />
     </div>
     <div>
-      <q-input v-model.trim="search" label="Search">
+      <q-input v-model.trim="search" :label="$t('search')">
         <template v-slot:append>
           <q-icon name="search" />
         </template>
@@ -39,7 +45,9 @@ import usePagination from "src/composables/pagination";
 import { useQuasar } from "quasar";
 import useItem from "src/composables/item";
 import { useUserStore } from "src/stores/user-store";
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
 const userStore = useUserStore();
 const { pagination, max, current, updateQueryAndFetch } =
   usePagination("a-items");
@@ -54,7 +62,7 @@ const updateItem = (item) => {
 
 const addANewItem = () => {
   dialog({
-    title: "Create a new item",
+    title: t("createANewProduct"),
     position: "top",
     persistent: true,
     cancel: true,

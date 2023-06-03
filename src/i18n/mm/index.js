@@ -60,5 +60,12 @@ export default {
   expenseList: "အကုန်အကျ အမျိုးစားများ",
   cancel: "ပျက်ဖျက်မည်",
   note: "မှတ်ချက်",
-  recordExpenseForm: "အကုန်အကျကို မှတ်တမ်းတင်ခြင်း"
+  recordExpenseForm: "အကုန်အကျကို မှတ်တမ်းတင်ခြင်း",
+  addANewProduct: "ပစ္စည်းအသစ်ထည့်မည်",
+  editProduct: "ပစ္စည်း ပြင်ဆင်",
+  chooseAnOption: "တစ်ခုရွေးပါ",
+  createANewProduct: "ပစ္စည်းအသစ် ဖန်တီးမည်",
+  purchasedQuantity: "ဝယ်ထားပြီး အရေအတွက်",
+  soldQuantity: "ရောင်းပြီး အရေအတွက်",
+  remainingQuantity: "ကျန်ရှိ အရေအတွက်",
 }

@@ -7,7 +7,7 @@
             {{ item.name }}
           </q-item-label>
           <q-item-label caption v-if="item.type == 1">
-            Stock : {{ item.stock }}
+            {{ $t("stock") }} : {{ item.stock }}
           </q-item-label>
           <div class="row justify-start q-gutter-x-sm q-mt-sm">
             <template
@@ -48,12 +48,14 @@
           </div>
         </q-item-section>
         <q-item-section side top>
-          <q-item-label> Price : {{ item.price }} </q-item-label>
+          <q-item-label>
+            {{ $t("salePrice") }} : {{ item.price }}
+          </q-item-label>
           <q-item-label
             caption
             v-if="item.type == 1 && userStore.getUser && item.latest_purchase"
           >
-            Purchase price: {{ item.latest_purchase.price }}
+            {{ $t("purchasePrice") }}: {{ item.latest_purchase.price }}
           </q-item-label>
         </q-item-section>
       </q-item>
@@ -67,6 +69,7 @@ import { useQuasar } from "quasar";
 import { useUserStore } from "src/stores/user-store";
 import useItem from "src/composables/item";
 import useUtil from "src/composables/util";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps({
   items: {
@@ -79,6 +82,7 @@ const { dialog } = useQuasar();
 const userStore = useUserStore();
 const { reStock } = useItem();
 const { api } = useUtil();
+const { t } = useI18n();
 
 const showRestockProductDialog = (item) => {
   if (item.type == 1)
@@ -89,15 +93,15 @@ const showRestockProductDialog = (item) => {
 
 const showEditItemDialog = (item) => {
   dialog({
-    title: `Edit item ${item.name}`,
-    message: "Choose an option:",
+    title: `${t("editProduct")} (${item.name})`,
+    message: t("chooseAnOption") + ":",
     position: "top",
     options: {
       type: "radio",
       model: "name",
       items: [
-        { label: "Name", value: "name" },
-        { label: "Price", value: "price" },
+        { label: t("name"), value: "name" },
+        { label: t("salePrice"), value: "price" },
       ],
     },
     cancel: true,
@@ -115,7 +119,9 @@ const showEditItemDialog = (item) => {
       prompt.pattern = "[0-9]*";
     }
     dialog({
-      title: `Edit item ${item.name} - ${option}`,
+      title: `${t("editProduct")} (${item.name} - ${t(
+        option == "price" ? "salePrice" : option
+      )})`,
       position: "top",
       prompt,
       cancel: true,
