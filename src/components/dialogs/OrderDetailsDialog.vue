@@ -99,6 +99,7 @@
           color="secondary"
           @click="updateOrderInfo"
           v-if="order.status == 5"
+          :disable="!orderInfoIsDirty"
         />
         <q-btn icon="close" @click="onDialogOK(orderStore.getExistedOrder)" />
       </div>
@@ -111,6 +112,7 @@
         <CustomerInfo v-bind="order" @dataUpdated="syncOrder" />
         <OrderSaleItems
           class="q-mt-xs"
+          :class="{ 'no-pointer-events': [4, 5].includes(order.status) }"
           v-bind="order"
           @dataUpdated="syncOrder"
         />
@@ -312,10 +314,8 @@ const deliverOrder = () => {
   });
 };
 
-const isDirty = computed(() => {
-  if (
-    orderStore.getExistedItems.length !=
-      order.value.a_items.filter((e) => !!e).length ||
+const orderInfoIsDirty = computed(
+  () =>
     order.value.phone != orderStore.getExistedOrder.phone ||
     order.value.customer != orderStore.getExistedOrder.customer ||
     order.value.address != orderStore.getExistedOrder.address ||
@@ -323,6 +323,12 @@ const isDirty = computed(() => {
     order.value.created_at != orderStore.getExistedOrder.created_at ||
     order.value.discount != orderStore.getExistedOrder.discount ||
     order.value.paid != orderStore.getExistedOrder.paid
+);
+const isDirty = computed(() => {
+  if (
+    orderStore.getExistedItems.length !=
+      order.value.a_items.filter((e) => !!e).length ||
+    orderInfoIsDirty.value
   )
     return true;
   else {

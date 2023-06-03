@@ -58,13 +58,6 @@
             :label="$t('details')"
             @click="showOrder(order)"
           />
-          <q-btn
-            v-if="order.customer"
-            rounded
-            no-caps
-            icon="person"
-            @click="showOrderCustomer(order)"
-          />
         </div>
       </q-item-section>
     </q-item>
@@ -89,17 +82,6 @@ const showOrder = (order) => {
 };
 const emit = defineEmits(["orderUpdated"]);
 const { formatDate } = date;
-const { localStorage, dialog } = useQuasar();
+const { localStorage } = useQuasar();
 const orderStatuses = localStorage.getItem("orderStatuses");
-
-const showOrderCustomer = (order) => {
-  dialog({
-    noBackdropDismiss: true,
-    title: order.customer,
-    message: `<div>Phone : ${order.phone ?? ""}. </div>
-              <div>Address : ${order.address ?? ""}.</div>
-              <div>Note :${order.note ?? ""}</div>`,
-    html: true,
-  });
-};
 </script>
