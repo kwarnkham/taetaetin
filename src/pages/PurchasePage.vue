@@ -1,7 +1,7 @@
 <template>
   <q-page padding class="column" :style-fn="vhPage">
     <div v-if="total" class="text-center text-h6 text-weight-bold">
-      Total:
+      {{ $t("total") }}:
       {{
         (
           total -
@@ -11,15 +11,21 @@
           )
         ).toLocaleString()
       }}
-      MMK
+      {{ $t("mmk") }}
     </div>
     <div>
-      <q-input v-model.trim="search" label="Search" dense />
+      <q-input v-model.trim="search" :label="$t('search')" dense />
     </div>
     <div class="row justify-between items-end">
-      <q-input v-model="from" type="date" label="From" class="col" dense />
+      <q-input
+        v-model="from"
+        type="date"
+        :label="$t('from')"
+        class="col"
+        dense
+      />
       <q-separator vertical spaced />
-      <q-input v-model="to" type="date" label="To" class="col" dense />
+      <q-input v-model="to" type="date" :label="$t('to')" class="col" dense />
       <div class="q-my-sm">
         <q-btn icon="search" @click="updateQueryAndFetch({ from, to })" flat />
       </div>
@@ -30,7 +36,7 @@
       emit-value
       option-value="value"
       option-label="label"
-      label="Type"
+      :label="$t('type')"
       v-model="type"
       map-options
     />
@@ -55,23 +61,24 @@
 <script setup>
 import PurchaseList from "src/components/PurchaseList.vue";
 import usePagination from "src/composables/pagination";
-import { useQuasar } from "quasar";
 import { useRoute } from "vue-router";
 import useSearchFilter from "src/composables/searchFilter";
 import useDateFilter from "src/composables/dateFilter";
 import { watch, ref } from "vue";
 import useUtil from "src/composables/util";
+import { useI18n } from "vue-i18n";
 
 const { vhPage } = useUtil();
+const { t } = useI18n();
 const route = useRoute();
 const type = ref(route.query.type ?? "All");
 const purchaseTypes = [
-  { label: "All", value: "All" },
-  { label: "Item", value: "App\\Models\\AItem" },
-  { label: "Expense", value: "App\\Models\\Expense" },
-  { label: "Order", value: "App\\Models\\Order" },
+  { label: t("all"), value: "All" },
+  { label: t("product"), value: "App\\Models\\AItem" },
+  { label: t("expense"), value: "App\\Models\\Expense" },
+  { label: t("order"), value: "App\\Models\\Order" },
 ];
-const { screen } = useQuasar();
+
 const { from, to } = useDateFilter(new Date().getMonth());
 const { pagination, max, current, total, updateQueryAndFetch } = usePagination(
   "purchases",

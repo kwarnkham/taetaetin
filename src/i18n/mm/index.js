@@ -45,5 +45,20 @@ export default {
   salePrice: "ရောင်းစျေး",
   quantity: "အရေအတွက်",
   createNewProduct: "ပစ္စည်းအသစ်ထည့်မည်",
-  amount: "ပမာဏ"
+  amount: "ပမာဏ",
+  type: "အမျိုးအစား",
+  search: "ရှာမည်",
+  product: "ပစ္စည်း",
+  all: "အားလုံး",
+  expense: "အကုန်အကျ",
+  order: "အော်ဒါ",
+  status: "အခြေအနေ",
+  submit: "လုပ်မည်",
+  close: "ပိတ်မည်",
+  createNewExpense: "အကုန်အကျ အသစ် ဖန်တီးခြင်း",
+  updateExpense: "အကုန်အကျ ပြုပြင်ခြင်း",
+  expenseList: "အကုန်အကျ အမျိုးစားများ",
+  cancel: "ပျက်ဖျက်မည်",
+  note: "မှတ်ချက်",
+  recordExpenseForm: "အကုန်အကျကို မှတ်တမ်းတင်ခြင်း"
 }

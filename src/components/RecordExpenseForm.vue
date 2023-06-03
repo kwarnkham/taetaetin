@@ -1,20 +1,22 @@
 <template>
   <q-form @submit.prevent="submit" class="q-gutter-y-sm">
     <div class="text-h6 text-center text-weight-bold">
-      Record Expense {{ expense.name }}
+      {{ $t("recordExpenseForm") }} ({{ expense.name }})
     </div>
     <q-input
       v-model.number="formData.price"
-      label="Price"
+      :label="$t('price')"
       required
-      type="tel"
+      type="number"
+      inputmode="numeric"
+      pattern="[0-9]*"
       autofocus
     />
-    <q-input v-model="formData.note" label="Note" required type="text" />
+    <q-input v-model="formData.note" :label="$t('note')" required type="text" />
     <!-- <FileInput v-model="formData.picture" /> -->
     <div class="text-right q-gutter-x-sm">
-      <q-btn label="Cancel" no-caps @click="$emit('closed')" />
-      <q-btn label="Submit" no-caps type="submit" />
+      <q-btn :label="$t('cancel')" no-caps @click="$emit('closed')" />
+      <q-btn :label="$t('submit')" no-caps type="submit" />
     </div>
   </q-form>
 </template>

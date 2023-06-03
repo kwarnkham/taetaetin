@@ -1,6 +1,8 @@
 <template>
   <div class="column">
-    <div class="text-subtitle1 text-weight-bold text-center">Expense List</div>
+    <div class="text-subtitle1 text-weight-bold text-center">
+      {{ $t("expenseList") }}
+    </div>
     <q-list bordered separator class="overflow-auto col">
       <q-item v-for="expense in pagination?.data" :key="expense.id">
         <q-item-section>

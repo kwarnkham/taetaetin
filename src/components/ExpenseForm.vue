@@ -5,21 +5,21 @@
     :class="{ 'shadow-1': !update }"
   >
     <div class="text-h6 text-center text-weight-bold" v-if="update">
-      Update Expense {{ expense.name }}
+      {{ $t("updateExpense") }} ({{ expense.name }})
     </div>
     <div class="text-h6 text-center text-weight-bold" v-else>
-      Create new expense type
+      {{ $t("createNewExpense") }}
     </div>
-    <q-input v-model="formData.name" label="Name" required />
+    <q-input v-model="formData.name" :label="$t('name')" required />
     <div class="text-right q-gutter-x-sm">
       <q-btn
-        label="Close"
+        :label="$t('close')"
         no-caps
         @click="$emit('closed')"
         v-if="update"
         outline
       />
-      <q-btn label="Submit" no-caps type="submit" outline />
+      <q-btn :label="$t('submit')" no-caps type="submit" outline />
     </div>
   </q-form>
 </template>

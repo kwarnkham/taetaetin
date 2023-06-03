@@ -21,10 +21,10 @@
           {{ purchase.purchasable.item?.name }}
         </q-item-label>
         <q-item-label>
-          Type: {{ purchaseType[purchase.purchasable_type] }}
+          {{ $t("type") }}: {{ purchaseType[purchase.purchasable_type] }}
         </q-item-label>
         <q-item-label v-if="purchase.note">
-          Note: {{ purchase.note }}
+          {{ $t("note") }}: {{ purchase.note }}
         </q-item-label>
         <div
           class="row justify-start q-gutter-x-sm q-mt-sm"
@@ -35,17 +35,18 @@
       </q-item-section>
       <q-item-section side top>
         <q-item-label>
-          Price: {{ purchase.price.toLocaleString() }}</q-item-label
-        >
-        <q-item-label>Quantity: {{ purchase.quantity }}</q-item-label>
-        <q-item-label
-          >Amount:
-          {{
-            (purchase.quantity * purchase.price).toLocaleString()
-          }}</q-item-label
-        >
+          {{ $t("price") }} :
+          {{ purchase.price.toLocaleString() }}
+        </q-item-label>
+        <q-item-label>
+          {{ $t("quantity") }} : {{ purchase.quantity }}
+        </q-item-label>
+        <q-item-label>
+          {{ $t("amount") }} :
+          {{ (purchase.quantity * purchase.price).toLocaleString() }}
+        </q-item-label>
         <q-item-label v-if="purchase.status == 2">
-          Status: Canceled
+          {{ $t("status") }} : {{ $t("canceled") }}
         </q-item-label>
       </q-item-section>
     </q-item>
@@ -54,6 +55,7 @@
 
 <script setup>
 import usePurchase from "src/composables/purchase";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps({
   purchases: {
@@ -72,9 +74,10 @@ const cancel = (purchase) => {
   });
 };
 
+const { t } = useI18n();
 const purchaseType = {
-  "App\\Models\\AItem": "Item",
-  "App\\Models\\Expense": "Expense",
-  "App\\Models\\Order": "Order",
+  "App\\Models\\AItem": t("product"),
+  "App\\Models\\Expense": t("expense"),
+  "App\\Models\\Order": t("order"),
 };
 </script>
