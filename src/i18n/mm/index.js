@@ -70,11 +70,8 @@ export default {
   remainingQuantity: "ကျန်ရှိ အရေအတွက်",
   confirmation: "အတည်ပြုခြင်း",
   doYouWantToCancelTheOrder: "အရောင်းအော်ဒါ ပျယ်ဖျက်မှာလား",
-  orderIsCanceled: "အရောင်းအော်ဒါကို ပျက်ဖျက်လိုက်ပါပြီ",
   doYouWantToCompleteTheOrder: "အရောင်းအော်ဒါ ပြီးဆုံးပြီလို့ သတ်မှတ်မှာလား",
-  orderIsCompleted: "အရောင်းအော်ဒါ ပြီးဆုံးသွားပါပြီ",
   doYouWantToPackTheOrder: "အော်ဒါ ထုပ်ပိုးမှာလား",
-  orderIsPacked: "အော်ဒါကို ထုပ်ပိုးလိုက်ပါပြီ",
   doYouWantToDeliverTheOrder: "အော်ဒါကို ပို့တော့မှာလား",
   doYouWanToResetTheOrder: "အော်ဒါကို နဂိုအတိုင်းပြန်ထားမှာလား",
   expenseOfOrder: "အော်ဒါရဲ့ အကုန်အကျ"

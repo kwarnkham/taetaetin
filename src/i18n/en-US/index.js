@@ -68,6 +68,11 @@ export default {
   purchasedQuantity: "Purchased quantity",
   soldQuantity: "Sold quantity",
   remainingQuantity: "Remaining quantity",
-  confirmation: "Confirmation"
+  confirmation: "Confirmation",
+  doYouWantToCancelTheOrder: "Do you want to cancel the order",
+  doYouWantToCompleteTheOrder: "Do you want to complete the order",
+  doYouWantToPackTheOrder: "Do you want to pack the order",
+  doYouWantToDeliverTheOrder: "Do you want to deliver the order",
+  doYouWanToResetTheOrder: "Do you want to reset the order",
+  expenseOfOrder: "Expense of order"
 }
-
