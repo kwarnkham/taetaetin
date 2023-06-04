@@ -19,7 +19,7 @@
               {{ purchase.price }} x {{ purchase.quantity }}
             </q-item-label>
             <div class="q-mt-sm" v-if="orderStatus != 5">
-              <q-btn label="Cancel" no-caps outline @click="cancel(purchase)" />
+              <q-btn icon="cancel" no-caps outline @click="cancel(purchase)" />
             </div>
           </q-item-section>
           <q-item-section side top>

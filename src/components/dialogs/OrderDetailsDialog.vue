@@ -192,8 +192,8 @@ const updateOrderInfo = () => {
 
 const addPurchase = () => {
   dialog({
-    title: "Expense for order",
-    message: "Name",
+    title: t("expenseOfOrder"),
+    message: t("name"),
     position: "top",
     noBackdropDismiss: true,
     cancel: true,
@@ -203,8 +203,8 @@ const addPurchase = () => {
     },
   }).onOk((name) => {
     dialog({
-      title: "Expense for order",
-      message: "Amount",
+      title: t("expenseOfOrder"),
+      message: t("amount"),
       position: "top",
       noBackdropDismiss: true,
       cancel: true,
@@ -217,8 +217,8 @@ const addPurchase = () => {
       },
     }).onOk((price) => {
       dialog({
-        title: "Expense for order",
-        message: "Quantity",
+        title: t("expenseOfOrder"),
+        message: t("quantity"),
         position: "top",
         noBackdropDismiss: true,
         cancel: true,
@@ -265,7 +265,7 @@ const showPrintAddressDialog = () => {
 const cancelOrder = () => {
   dialog({
     title: t("confirmation"),
-    message: "Do you want to cancel the order?",
+    message: t("doYouWantToCancelTheOrder") + "?",
     noBackdropDismiss: true,
     cancel: true,
   }).onOk(() => {
@@ -278,7 +278,7 @@ const cancelOrder = () => {
 const completeOrder = () => {
   dialog({
     title: t("confirmation"),
-    message: "Do you want to complete the order?",
+    message: t("doYouWantToCompleteTheOrder") + "?",
     noBackdropDismiss: true,
     cancel: true,
   }).onOk(() => {
@@ -291,7 +291,7 @@ const completeOrder = () => {
 const packOrder = () => {
   dialog({
     title: t("confirmation"),
-    message: "Do you want to pack the order?",
+    message: t("doYouWantToPackTheOrder") + "?",
     noBackdropDismiss: true,
     cancel: true,
   }).onOk(() => {
@@ -304,7 +304,7 @@ const packOrder = () => {
 const deliverOrder = () => {
   dialog({
     title: t("confirmation"),
-    message: "Do you want to delivery the order?",
+    message: t("doYouWantToDeliverTheOrder") + "?",
     noBackdropDismiss: true,
     cancel: true,
   }).onOk(() => {

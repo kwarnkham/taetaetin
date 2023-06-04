@@ -2,10 +2,12 @@ import { useQuasar } from "quasar";
 import useUtil from "./util";
 import OrderDetailsDialog from "src/components/dialogs/OrderDetailsDialog.vue";
 import { useOrderStore } from "src/stores/order-store"
+import { useI18n } from "vue-i18n";
 export default function useOrder (order) {
   const { api } = useUtil()
   const orderStore = useOrderStore()
   const { dialog } = useQuasar()
+  const { t } = useI18n()
   const saveOrder = async (update = false, status = undefined) => {
     return new Promise((resolve, reject) => {
       const url = update ? `orders/record/${order.value.id}` : "orders/record"
@@ -44,8 +46,8 @@ export default function useOrder (order) {
 
   const clearData = (value = null) => {
     dialog({
-      title: "Confirm",
-      message: "Reset all order data",
+      title: t('confirmation'),
+      message: t('doYouWanToResetTheOrder') + "?",
       cancel: true,
       noBackdropDismiss: true,
     }).onOk(() => {

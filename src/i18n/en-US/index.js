@@ -68,4 +68,6 @@ export default {
   purchasedQuantity: "Purchased quantity",
   soldQuantity: "Sold quantity",
   remainingQuantity: "Remaining quantity",
+  confirmation: "Confirmation"
 }
+
