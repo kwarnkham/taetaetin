@@ -3,8 +3,18 @@
     <q-expansion-item v-model="showForm" label="Add a new tenant">
       <q-form @submit.prevent="submit" class="q-pa-sm">
         <q-input v-model.trim="form.name" label="Name" required />
-        <q-input v-model.trim="form.domain" label="Domain" required />
-        <q-input v-model.trim="form.database" label="Database" required>
+        <q-input
+          v-model.trim="form.domain"
+          label="Domain"
+          required
+          @keydown.space.prevent
+        />
+        <q-input
+          v-model.trim="form.database"
+          label="Database"
+          required
+          @keydown.space.prevent
+        >
           <template v-slot:prepend>
             <span class="text-body2 text-weight-bold">facile.</span></template
           >
@@ -59,13 +69,20 @@
       <q-item v-for="tenant in pagination.data" :key="tenant.id">
         <q-item-section>
           <q-item-label> {{ tenant.name }} </q-item-label>
-          <q-item-label>
+          <q-item-label
+            :class="{
+              'text-negative':
+                Date.now() > new Date(tenant.expires_on).getTime(),
+            }"
+          >
             Expires on {{ new Date(tenant.expires_on).toLocaleString("en-GB") }}
           </q-item-label>
-          <div class="row justify-evenly q-gutter-x-sm q-mt-sm">
+          <div
+            class="row justify-evenly q-gutter-x-sm q-mt-sm"
+            v-if="tenant.type == 1"
+          >
             <q-btn icon="add" round @click="addSubscription(tenant)" />
-            <q-btn icon="delete" round />
-            <q-btn icon="cancel" round />
+            <q-btn icon="delete" round @click="deleteTenant(tenant)" />
           </div>
         </q-item-section>
       </q-item>
@@ -126,6 +143,11 @@ const submit = () => {
     },
     true
   ).then((response) => {
+    form.value.name = "";
+    form.value.domain = "";
+    form.value.database = "";
+    form.value.days = "30";
+    form.value.price = "10000";
     notify({
       message: "Finish",
       type: "positive",
@@ -171,6 +193,38 @@ const addSubscription = (tenant) => {
           (e) => e.id == response.data.tenant.id
         );
         pagination.value.data[index] = response.data.tenant;
+      });
+    });
+  });
+};
+
+const deleteTenant = (tenant) => {
+  if (tenant.type == 2) return;
+  dialog({
+    title: "Confirmation",
+    message: `Type in '${tenant.name}' to confirm.`,
+    cancel: true,
+    noBackdropDismiss: true,
+    position: "top",
+    prompt: {
+      model: "",
+      isValid: (val) => val == tenant.name,
+    },
+  }).onOk((val) => {
+    if (val != tenant.name) return;
+    api(
+      {
+        method: "DELETE",
+        url: `tenants/${tenant.id}`,
+      },
+      true
+    ).then((_) => {
+      const index = pagination.value.data.findIndex((e) => e.id == tenant.id);
+      pagination.value.data.splice(index, 1);
+
+      notify({
+        message: "Deleted",
+        type: "positive",
       });
     });
   });
