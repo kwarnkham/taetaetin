@@ -10,7 +10,8 @@
               (!getUser && link.meta?.requiresAuth) ||
               (getUser &&
                 link.meta?.requiresAuth &&
-                !getUser.roles.map((e) => e.name).includes(link.meta.role)),
+                !getUser.roles.map((e) => e.name).includes(link.meta.role)) ||
+              (link.meta.owner && tenant.type != 2),
           }"
         />
       </template>
@@ -49,6 +50,7 @@ const toggle = (value) => {
 };
 const { api } = useUtil();
 const { notify, localStorage, dialog } = useQuasar();
+const tenant = localStorage.getItem("tenant");
 const { setUser } = useUserStore();
 const { getUser } = storeToRefs(useUserStore());
 const router = useRouter();

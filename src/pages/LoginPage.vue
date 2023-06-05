@@ -57,11 +57,11 @@ const { api } = useUtil();
 const { init } = useApp();
 const { setUser } = useUserStore();
 const { getUser } = storeToRefs(useUserStore());
-const tenant = ref(localStorage.getItem("tenant") ?? "");
+const tenant = ref(localStorage.getItem("tenantSpace") ?? "");
 const showPassword = ref(false);
 const router = useRouter();
 const submit = () => {
-  localStorage.set("tenant", tenant.value);
+  localStorage.set("tenantSpace", tenant.value);
   axios.defaults.headers.common["Tenant"] = tenant.value;
   api(
     {
@@ -73,6 +73,7 @@ const submit = () => {
   )
     .then((response) => {
       localStorage.set("token", response.data.token);
+      localStorage.set("tenant", response.data.tenant);
       axios.defaults.headers.common["Authorization"] =
         "Bearer " + response.data.token;
       setUser(response.data.user);

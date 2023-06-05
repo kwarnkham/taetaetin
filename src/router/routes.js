@@ -16,11 +16,11 @@ const routes = [
       },
 
       {
-        title: 'Items',
+        title: 'Products',
         icon: 'inventory_2',
-        path: 'items',
+        path: 'products',
         component: () => import('pages/ItemMenu.vue'),
-        name: 'items',
+        name: 'products',
         meta: {
           navigation: true
         }
@@ -189,6 +189,19 @@ const routes = [
           requiresAuth: true,
           role: 'admin',
           navigation: true
+        }
+      },
+      {
+        title: 'Tenants',
+        icon: 'manage_accounts',
+        path: 'tenants',
+        component: () => import('src/pages/TenantsPage.vue'),
+        name: 'tenants',
+        meta: {
+          requiresAuth: true,
+          role: 'admin',
+          navigation: true,
+          owner: true
         }
       },
       {

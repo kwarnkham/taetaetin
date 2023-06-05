@@ -15,16 +15,17 @@ const api = axios.create({ baseURL: process.env.API_URL })
 export default boot(async ({ app, store }) => {
   const userStore = useUserStore(store)
   const token = LocalStorage.getItem("token");
-  const tenant = LocalStorage.getItem("tenant");
+  const tenantSpace = LocalStorage.getItem("tenantSpace");
   if (token) {
     api.defaults.headers.common['Authorization'] = "Bearer " + token;
-    api.defaults.headers.common['Tenant'] = tenant;
+    api.defaults.headers.common['Tenant'] = tenantSpace;
     try {
       const response = await api({
         method: "GET",
         url: "users/user",
       })
       userStore.setUser(response.data.user)
+      LocalStorage.set("tenant", response.data.tenant);
     } catch (error) {
       LocalStorage.remove('token')
       api.defaults.headers.common['Authorization'] = undefined;
