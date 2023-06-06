@@ -44,7 +44,7 @@ import { ref } from "vue";
 import { api as axios } from "boot/axios";
 import { useUserStore } from "stores/user-store";
 import { useTenantStore } from "stores/tenant-store";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import useApp from "src/composables/app";
 
 const formData = ref({
@@ -57,8 +57,13 @@ const { api } = useUtil();
 const { init } = useApp();
 const userStore = useUserStore();
 const { setTenant } = useTenantStore();
+const route = useRoute();
+
+if (route.query.tenant !== undefined)
+  localStorage.set("tenantSpace", route.query.tenant);
 
 const tenant = ref(localStorage.getItem("tenantSpace") ?? "");
+
 const showPassword = ref(false);
 const router = useRouter();
 const submit = () => {

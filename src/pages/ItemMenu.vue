@@ -46,15 +46,25 @@ import { useQuasar } from "quasar";
 import useItem from "src/composables/item";
 import { useUserStore } from "src/stores/user-store";
 import { useI18n } from "vue-i18n";
+import { useRoute } from "vue-router";
 
 const { t } = useI18n();
+const { dialog, localStorage } = useQuasar();
+const route = useRoute();
+if (route.query.tenant !== undefined)
+  localStorage.set("tenantSpace", route.query.tenant);
 const userStore = useUserStore();
-const { pagination, max, current, updateQueryAndFetch } =
-  usePagination("a-items");
+const { pagination, max, current, updateQueryAndFetch } = usePagination(
+  "a-items",
+  {
+    tenant: localStorage.getItem("tenantSpace") ?? undefined,
+  }
+);
 const { search } = useSearchFilter({ updateQueryAndFetch });
-const { dialog } = useQuasar();
+
 const { vhPage } = useUtil();
 const { showCreateAItem, submitItem } = useItem();
+
 const updateItem = (item) => {
   const index = pagination.value.data.findIndex((e) => e.id == item.id);
   pagination.value.data[index] = item;
