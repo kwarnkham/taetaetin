@@ -3,7 +3,7 @@
     <q-form
       @submit.prevent="submit"
       class="q-gutter-y-sm q-pa-xs"
-      v-if="!getUser"
+      v-if="!userStore.getUser"
     >
       <q-input
         :label="$t('username')"
@@ -43,7 +43,7 @@ import useUtil from "src/composables/util";
 import { ref } from "vue";
 import { api as axios } from "boot/axios";
 import { useUserStore } from "stores/user-store";
-import { storeToRefs } from "pinia";
+import { useTenantStore } from "stores/tenant-store";
 import { useRouter } from "vue-router";
 import useApp from "src/composables/app";
 
@@ -55,8 +55,9 @@ const formData = ref({
 const { localStorage } = useQuasar();
 const { api } = useUtil();
 const { init } = useApp();
-const { setUser } = useUserStore();
-const { getUser } = storeToRefs(useUserStore());
+const userStore = useUserStore();
+const { setTenant } = useTenantStore();
+
 const tenant = ref(localStorage.getItem("tenantSpace") ?? "");
 const showPassword = ref(false);
 const router = useRouter();
@@ -73,10 +74,10 @@ const submit = () => {
   )
     .then((response) => {
       localStorage.set("token", response.data.token);
-      localStorage.set("tenant", response.data.tenant);
       axios.defaults.headers.common["Authorization"] =
         "Bearer " + response.data.token;
-      setUser(response.data.user);
+      userStore.setUser(response.data.user);
+      setTenant(response.data.tenant);
       formData.value.password = "";
       init().finally(() => {
         router.replace({

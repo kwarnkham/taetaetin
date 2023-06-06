@@ -1,22 +1,27 @@
 <template>
   <q-drawer bordered :modelValue="modelValue" @update:model-value="toggle">
     <q-list>
-      <q-item-label header> {{ getUser?.name ?? "Welcome" }}</q-item-label>
+      <q-item-label header>
+        {{ userStore.getUser?.name ?? "Welcome" }}
+        {{ tenantStore.getTenant?.name }}</q-item-label
+      >
       <template v-for="link in links" :key="link.name">
         <LeftDrawerLink
           v-bind="link"
           :class="{
             hidden:
-              (!getUser && link.meta?.requiresAuth) ||
-              (getUser &&
+              (!userStore.getUser && link.meta?.requiresAuth) ||
+              (userStore.getUser &&
                 link.meta?.requiresAuth &&
-                !getUser.roles.map((e) => e.name).includes(link.meta.role)) ||
-              (link.meta.owner && tenant.type != 2),
+                !userStore.getUser.roles
+                  .map((e) => e.name)
+                  .includes(link.meta.role)) ||
+              (link.meta.owner && tenantStore.getTenant.type != 2),
           }"
         />
       </template>
 
-      <q-item clickable tag="div" @click="logout" v-if="getUser">
+      <q-item clickable tag="div" @click="logout" v-if="userStore.getUser">
         <q-item-section avatar>
           <q-icon :name="'logout'" />
         </q-item-section>
@@ -31,11 +36,11 @@
 </template>
 
 <script setup>
-import { storeToRefs } from "pinia";
 import { useQuasar } from "quasar";
 import LeftDrawerLink from "src/components/LeftDrawerLink.vue";
 import useUtil from "src/composables/util";
 import { useUserStore } from "src/stores/user-store";
+import { useTenantStore } from "src/stores/tenant-store";
 import { useRouter } from "vue-router";
 import routes from "src/router/routes";
 
@@ -50,9 +55,8 @@ const toggle = (value) => {
 };
 const { api } = useUtil();
 const { notify, localStorage, dialog } = useQuasar();
-const tenant = localStorage.getItem("tenant");
-const { setUser } = useUserStore();
-const { getUser } = storeToRefs(useUserStore());
+const userStore = useUserStore();
+const tenantStore = useTenantStore();
 const router = useRouter();
 const logout = () => {
   dialog({
@@ -70,7 +74,8 @@ const logout = () => {
         type: "positive",
       });
       localStorage.remove("token");
-      setUser(null);
+      userStore.setUser(null);
+      tenantStore.setTenant(null);
       router.replace({ name: "index" });
     });
   });

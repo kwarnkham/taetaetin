@@ -11,7 +11,6 @@ export const useUserStore = defineStore('user', {
   actions: {
     setUser (payload) {
       this.user = payload;
-      LocalStorage.set('user', payload)
     },
   },
 });

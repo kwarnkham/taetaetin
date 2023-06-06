@@ -2,6 +2,7 @@ import { boot } from 'quasar/wrappers'
 import axios from 'axios'
 import { LocalStorage } from 'quasar'
 import { useUserStore } from 'src/stores/user-store'
+import { useTenantStore } from 'src/stores/tenant-store'
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -14,6 +15,7 @@ const api = axios.create({ baseURL: process.env.API_URL })
 
 export default boot(async ({ app, store }) => {
   const userStore = useUserStore(store)
+  const tenantStore = useTenantStore(store)
   const token = LocalStorage.getItem("token");
   const tenantSpace = LocalStorage.getItem("tenantSpace");
   if (token) {
@@ -25,7 +27,7 @@ export default boot(async ({ app, store }) => {
         url: "users/user",
       })
       userStore.setUser(response.data.user)
-      LocalStorage.set("tenant", response.data.tenant);
+      tenantStore.setTenant(response.data.tenant)
     } catch (error) {
       LocalStorage.remove('token')
       api.defaults.headers.common['Authorization'] = undefined;
