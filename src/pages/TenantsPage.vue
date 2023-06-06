@@ -26,7 +26,7 @@
           type="number"
           inputmode="numeric"
           pattern="[0-9]*"
-        ></q-input>
+        />
         <q-input
           v-model.number="form.price"
           label="Price"
@@ -34,7 +34,15 @@
           type="number"
           inputmode="numeric"
           pattern="[0-9]*"
-        ></q-input>
+        />
+        <q-select
+          v-if="planPagination"
+          :options="
+            planPagination.data.map((e) => ({ label: e.name, value: e.id }))
+          "
+          label="Plan"
+          v-model="form.selectedPlan"
+        />
         <div class="text-right q-mt-sm">
           <q-btn label="Submit" outline color="primary" type="submit" no-caps />
         </div>
@@ -68,7 +76,9 @@
     >
       <q-item v-for="tenant in pagination.data" :key="tenant.id">
         <q-item-section>
-          <q-item-label> {{ tenant.name }} </q-item-label>
+          <q-item-label>
+            {{ tenant.name }} ({{ tenant.plan.name }})
+          </q-item-label>
           <q-item-label
             :class="{
               'text-negative':
@@ -76,6 +86,11 @@
             }"
           >
             Expires on {{ new Date(tenant.expires_on).toLocaleString("en-GB") }}
+          </q-item-label>
+          <q-separator spaced />
+          <q-item-label>
+            Starts from
+            {{ new Date(tenant.created_at).toLocaleString("en-GB") }}
           </q-item-label>
           <div
             class="row justify-evenly q-gutter-x-sm q-mt-sm"
@@ -112,7 +127,11 @@ const form = ref({
   domain: "",
   database: "",
   days: "30",
-  price: "10000",
+  price: "15000",
+  selectedPlan: {
+    label: "entry",
+    value: 1,
+  },
 });
 const selected = ref({
   label: "All",
@@ -133,8 +152,11 @@ const { api } = useUtil();
 const showForm = ref(false);
 const { pagination, max, current, updateQueryAndFetch } =
   usePagination("tenants");
+const { pagination: planPagination } = usePagination("plans");
 const { search } = useSearchFilter({ updateQueryAndFetch });
 const submit = () => {
+  form.value.plan_id = form.value.selectedPlan.value;
+  form.value.selectedPlan = undefined;
   api(
     {
       method: "POST",
@@ -147,7 +169,12 @@ const submit = () => {
     form.value.domain = "";
     form.value.database = "";
     form.value.days = "30";
-    form.value.price = "10000";
+    form.value.price = "15000";
+    form.value.selectedPlan = {
+      label: "entry",
+      value: 1,
+    };
+
     notify({
       message: "Finish",
       type: "positive",
@@ -181,18 +208,33 @@ const addSubscription = (tenant) => {
       cancel: true,
       noBackdropDismiss: true,
     }).onOk((price) => {
-      api({
-        method: "POST",
-        url: `tenants/${tenant.id}/renew-subscription`,
-        data: {
-          price,
-          days,
+      dialog({
+        title: "Plan",
+        options: {
+          model: tenant.plan.id,
+          items: planPagination.value.data.map((e) => ({
+            label: e.name,
+            value: e.id,
+          })),
         },
-      }).then((response) => {
-        const index = pagination.value.data.findIndex(
-          (e) => e.id == response.data.tenant.id
-        );
-        pagination.value.data[index] = response.data.tenant;
+        position: "top",
+        cancel: true,
+        noBackdropDismiss: true,
+      }).onOk((plan_id) => {
+        api({
+          method: "POST",
+          url: `tenants/${tenant.id}/renew-subscription`,
+          data: {
+            price,
+            days,
+            plan_id,
+          },
+        }).then((response) => {
+          const index = pagination.value.data.findIndex(
+            (e) => e.id == response.data.tenant.id
+          );
+          pagination.value.data[index] = response.data.tenant;
+        });
       });
     });
   });
