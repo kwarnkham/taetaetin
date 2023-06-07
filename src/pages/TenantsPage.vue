@@ -156,7 +156,6 @@ const { pagination: planPagination } = usePagination("plans");
 const { search } = useSearchFilter({ updateQueryAndFetch });
 const submit = () => {
   form.value.plan_id = form.value.selectedPlan.value;
-  form.value.selectedPlan = undefined;
   api(
     {
       method: "POST",

@@ -32,7 +32,7 @@
           <q-item-label>{{ $t("logout") }}</q-item-label>
         </q-item-section>
       </q-item>
-      <LeftDrawerLink title="Login" icon="login" name="login" v-else />
+      <LeftDrawerLink title="login" icon="login" name="login" v-else />
     </q-list>
   </q-drawer>
 </template>
