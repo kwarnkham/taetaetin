@@ -48,7 +48,7 @@ export default {
   amount: "Amount",
   type: "Type",
   search: "Search",
-  product: "Product",
+  product: "Product | Products",
   all: "All",
   expense: "Expense",
   order: "Order",
@@ -74,5 +74,15 @@ export default {
   doYouWantToPackTheOrder: "Do you want to pack the order",
   doYouWantToDeliverTheOrder: "Do you want to deliver the order",
   doYouWanToResetTheOrder: "Do you want to reset the order",
-  expenseOfOrder: "Expense of order"
+  expenseOfOrder: "Expense of order",
+  home: "Home",
+  sale: "Sale",
+  user: "User",
+  payment: "Payment",
+  task: "Task",
+  setting: "Setting",
+  login: "Login",
+  tenant: "Tenant",
+  logout: "Logout"
 }
+

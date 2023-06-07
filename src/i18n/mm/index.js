@@ -48,7 +48,7 @@ export default {
   amount: "ပမာဏ",
   type: "အမျိုးအစား",
   search: "ရှာမည်",
-  product: "ပစ္စည်း",
+  product: "ပစ္စည်း | ပစ္စည်းများ",
   all: "အားလုံး",
   expense: "အကုန်အကျ",
   order: "အော်ဒါ",
@@ -74,5 +74,14 @@ export default {
   doYouWantToPackTheOrder: "အော်ဒါ ထုပ်ပိုးမှာလား",
   doYouWantToDeliverTheOrder: "အော်ဒါကို ပို့တော့မှာလား",
   doYouWanToResetTheOrder: "အော်ဒါကို နဂိုအတိုင်းပြန်ထားမှာလား",
-  expenseOfOrder: "အော်ဒါရဲ့ အကုန်အကျ"
+  expenseOfOrder: "အော်ဒါရဲ့ အကုန်အကျ",
+  home: "ပင်မ",
+  sale: "အရောင်း",
+  user: "User",
+  payment: "ငွေပေးချေမှု",
+  task: "အလုပ်",
+  setting: "Setting",
+  login: "ဝင်ရန်",
+  tenant: "Tenant",
+  logout: "ထွက်မည်"
 }

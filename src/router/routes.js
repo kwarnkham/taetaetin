@@ -1,4 +1,3 @@
-
 const routes = [
   {
     path: '/',
@@ -11,7 +10,8 @@ const routes = [
         component: () => import('pages/IndexPage.vue'),
         name: 'index',
         meta: {
-          navigation: true
+          navigation: true,
+          translateKey: 'home'
         }
       },
 
@@ -22,7 +22,9 @@ const routes = [
         component: () => import('pages/ItemMenu.vue'),
         name: 'products',
         meta: {
-          navigation: true
+          navigation: true,
+          translateKey: 'product'
+
         }
       },
       {
@@ -34,7 +36,8 @@ const routes = [
         meta: {
           requiresAuth: true,
           role: 'admin',
-          navigation: true
+          navigation: true,
+          translateKey: 'purchase'
         }
       },
       {
@@ -45,7 +48,7 @@ const routes = [
         meta: {
           requiresAuth: true,
           role: 'admin',
-          navigation: false
+          navigation: false,
         }
       },
       {
@@ -80,16 +83,8 @@ const routes = [
         meta: {
           requiresAuth: true,
           role: 'admin',
-          navigation: true
-        }
-      },
-      {
-        path: 'checkout-cart',
-        component: () => import('src/pages/CheckoutCart.vue'),
-        name: 'checkout-cart',
-        meta: {
-          requiresAuth: true,
-          role: 'sale'
+          navigation: true,
+          translateKey: 'expense'
         }
       },
       {
@@ -101,7 +96,8 @@ const routes = [
         meta: {
           requiresAuth: true,
           role: 'sale',
-          navigation: true
+          navigation: true,
+          translateKey: 'sale'
         }
       },
       {
@@ -113,7 +109,9 @@ const routes = [
         meta: {
           requiresAuth: true,
           role: 'sale',
-          navigation: true
+          navigation: true,
+          translateKey: 'order'
+
         }
       },
       {
@@ -135,7 +133,8 @@ const routes = [
         meta: {
           requiresAuth: true,
           role: 'admin',
-          navigation: true
+          navigation: true,
+          translateKey: 'user'
         }
       },
       {
@@ -176,7 +175,8 @@ const routes = [
         meta: {
           requiresAuth: true,
           role: 'sale',
-          navigation: true
+          navigation: true,
+          translateKey: 'payment'
         }
       },
       {
@@ -188,7 +188,8 @@ const routes = [
         meta: {
           requiresAuth: true,
           role: 'admin',
-          navigation: true
+          navigation: true,
+          translateKey: 'task'
         }
       },
       {
@@ -201,7 +202,8 @@ const routes = [
           requiresAuth: true,
           role: 'admin',
           navigation: true,
-          owner: true
+          owner: true,
+          translateKey: 'tenant'
         }
       },
       {
@@ -213,7 +215,8 @@ const routes = [
         meta: {
           requiresAuth: true,
           role: 'sale',
-          navigation: true
+          navigation: true,
+          translateKey: 'setting'
         }
       },
       {
@@ -223,7 +226,8 @@ const routes = [
         component: () => import('pages/LoginPage.vue'),
         name: 'login',
         meta: {
-          navigation: true
+          navigation: true,
+          translateKey: 'login'
         }
       },
     ]

@@ -7,7 +7,9 @@
       >
       <template v-for="link in links" :key="link.name">
         <LeftDrawerLink
-          v-bind="link"
+          :name="link.name"
+          :icon="link.icon"
+          :title="link.meta.translateKey"
           :class="{
             hidden:
               (!userStore.getUser && link.meta?.requiresAuth) ||
@@ -27,7 +29,7 @@
         </q-item-section>
 
         <q-item-section>
-          <q-item-label>Logout</q-item-label>
+          <q-item-label>{{ $t("logout") }}</q-item-label>
         </q-item-section>
       </q-item>
       <LeftDrawerLink title="Login" icon="login" name="login" v-else />
