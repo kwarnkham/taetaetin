@@ -67,6 +67,7 @@
 <script setup>
 import { useQuasar, date } from "quasar";
 import useOrder from "src/composables/order";
+import { useRouter } from "vue-router";
 
 const props = defineProps({
   orders: {
@@ -75,9 +76,17 @@ const props = defineProps({
   },
 });
 const { showOrderDetails } = useOrder();
+const router = useRouter();
 const showOrder = (order) => {
   showOrderDetails(order).then((order) => {
-    emit("orderUpdated", order);
+    if (typeof order == "string")
+      router.push({
+        name: "sale",
+        query: {
+          copy: "1",
+        },
+      });
+    else emit("orderUpdated", order);
   });
 };
 const emit = defineEmits(["orderUpdated"]);

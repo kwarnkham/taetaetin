@@ -13,11 +13,15 @@
 </template>
 
 <script setup>
+import { useQuasar } from "quasar";
 import CustomerInfo from "src/components/CustomerInfo.vue";
 import OrderSaleItems from "src/components/OrderSaleItems.vue";
 import useOrder from "src/composables/order";
 import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
 
+const route = useRoute();
+const { localStorage } = useQuasar();
 const order = ref({
   phone: "",
   created_at: new Date().toJSON().slice(0, 10),
@@ -28,7 +32,19 @@ const order = ref({
   discount: 0,
   a_items: new Array(10),
 });
-
+if (route.query.copy) {
+  const copiedOrder = localStorage.getItem("copiedOrder");
+  if (copiedOrder) {
+    order.value.phone = copiedOrder.phone;
+    order.value.customer = copiedOrder.customer;
+    order.value.address = copiedOrder.address;
+    order.value.note = copiedOrder.note;
+    order.value.paid = copiedOrder.paid;
+    order.value.discount = copiedOrder.discount;
+    order.value.a_items = copiedOrder.a_items;
+  }
+  console.log(order.value);
+}
 const { saveOrder, clearData, syncOrder, resetData, showOrderDetails } =
   useOrder(order);
 

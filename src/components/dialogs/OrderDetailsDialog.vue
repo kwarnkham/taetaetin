@@ -101,6 +101,14 @@
           v-if="order.status == 5"
           :disable="!orderInfoIsDirty"
         />
+
+        <q-btn
+          icon="content_copy"
+          no-caps
+          color="light-blue"
+          @click="copyOrder"
+        />
+
         <q-btn icon="close" @click="onDialogOK(orderStore.getExistedOrder)" />
       </div>
       <div>
@@ -134,6 +142,7 @@ import useOrder from "src/composables/order";
 import { useOrderStore } from "src/stores/order-store";
 import OrderExpenseDialog from "./OrderExpenseDialog.vue";
 import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
 
 defineEmits([...useDialogPluginComponent.emits]);
 const props = defineProps({
@@ -150,6 +159,7 @@ const { localStorage, dialog } = useQuasar();
 const orderStore = useOrderStore();
 const { api } = useUtil();
 const order = ref(null);
+const router = useRouter();
 
 const { syncOrder, saveOrder, clearData, assignOrder } = useOrder(order);
 const updateOrder = () => {
@@ -159,6 +169,11 @@ const updateOrder = () => {
 };
 const orderStatuses = localStorage.getItem("orderStatuses");
 const userStore = useUserStore();
+
+const copyOrder = () => {
+  localStorage.set("copiedOrder", order.value);
+  onDialogOK("copyOrder");
+};
 
 const showExpenses = () => {
   dialog({
