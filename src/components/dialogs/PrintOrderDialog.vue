@@ -6,7 +6,10 @@
         id="print-target"
         :style="{ width: printing ? getPrintWidth() + 'px' : '360px' }"
       >
-        <div class="text-center row justify-center full-width">
+        <div
+          class="text-center row justify-center full-width"
+          v-if="setting.print_logo"
+        >
           <img :src="setting.print_logo" alt="print_logo" width="360" />
         </div>
 
@@ -15,6 +18,7 @@
           :style="{
             fontSize: (printing ? getPrintWidth() * 0.08 : '20') + 'px',
           }"
+          v-else
         >
           Receipt
         </div>
@@ -348,7 +352,7 @@ const setting = localStorage.getItem("setting");
 const { sendPrinterData, printTime, printing, sendTextData, getPrintWidth } =
   usePrinter();
 
-printing.value = true;
+// printing.value = true;
 
 const print = () => {
   printing.value = true;
