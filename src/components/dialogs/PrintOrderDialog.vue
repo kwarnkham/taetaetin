@@ -6,15 +6,12 @@
         id="print-target"
         :style="{ width: printing ? getPrintWidth() + 'px' : '360px' }"
       >
-        <img
-          :src="setting.print_logo"
-          alt="print_logo"
-          width="360"
-          v-if="setting.print_logo"
-        />
+        <div class="text-center row justify-center full-width">
+          <img :src="setting.print_logo" alt="print_logo" width="360" />
+        </div>
+
         <div
           class="row line-text q-mt-sm text-weight-bold"
-          v-else
           :style="{
             fontSize: (printing ? getPrintWidth() * 0.08 : '20') + 'px',
           }"
@@ -28,10 +25,10 @@
             fontSize: (printing ? getPrintWidth() * 0.05 : '16') + 'px',
           }"
         >
-          <div class="col" v-if="order.customer">
+          <div class="col-6" v-if="order.customer">
             <q-icon name="person" class="q-mr-xs" />{{ order.customer }}
           </div>
-          <div class="text-right" v-if="order.phone">
+          <div class="text-right col-6" v-if="order.phone">
             <q-icon name="phone_iphone" class="q-mr-xs" />{{ order.phone }}
           </div>
         </div>
@@ -41,10 +38,10 @@
             fontSize: (printing ? getPrintWidth() * 0.05 : '16') + 'px',
           }"
         >
-          <div class="col">
+          <div class="col-6">
             <span>#{{ order.id }}</span>
           </div>
-          <div class="text-right">
+          <div class="text-right col-6">
             <q-icon name="calendar_month" class="q-mr-xs" />{{
               formatDate(order.updated_at, "DD-MM-YYYY")
             }}
@@ -351,7 +348,7 @@ const setting = localStorage.getItem("setting");
 const { sendPrinterData, printTime, printing, sendTextData, getPrintWidth } =
   usePrinter();
 
-// printing.value = true;
+printing.value = true;
 
 const print = () => {
   printing.value = true;
