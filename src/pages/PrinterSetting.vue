@@ -14,15 +14,22 @@
         error.
       </div>
       <q-badge color="accent"> Format: {{ printBit }} </q-badge>
-      <q-slider v-model="printBit" markers :min="1" :max="5" color="accent" />
+      <q-slider v-model="printBit" markers :min="1" :max="8" color="accent" />
     </div>
     <q-separator spaced />
     <div class="text-center">
       <q-btn label="Test Print" no-caps @click="print" :disabled="printing" />
     </div>
+    <div class="row no-wrap justify-between q-my-xs">
+      <q-btn icon="print" @click="testIcon = 'print'" />
+      <q-btn icon="favorite" @click="testIcon = 'favorite'" />
+      <q-btn icon="person" @click="testIcon = 'person'" />
+      <q-btn icon="send" @click="testIcon = 'send'" />
+      <q-btn icon="save" @click="testIcon = 'save'" />
+    </div>
     <div class="row justify-center full-width">
       <div class="text-grey-10" id="print-target" style="width: 360px">
-        <q-icon name="print" size="10em" />
+        <q-icon :name="testIcon" size="360px" />
       </div>
     </div>
   </q-page>
@@ -35,7 +42,7 @@ import { ref, watch } from "vue";
 
 const { localStorage, notify } = useQuasar();
 const { printBit, printSize, sendPrinterData } = usePrinter();
-
+const testIcon = ref("print");
 const printing = ref(false);
 
 watch(printSize, () => {
@@ -46,7 +53,7 @@ watch(printBit, () => {
 });
 const print = () => {
   printing.value = true;
-  sendPrinterData(document.getElementById("print-target"))
+  sendPrinterData({ node: document.getElementById("print-target") })
     .catch((error) => {
       if (error) notify(error);
       else notify("Printer has disconnected");

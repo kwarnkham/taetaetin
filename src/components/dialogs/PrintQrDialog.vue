@@ -38,7 +38,7 @@ const { sendPrinterData, printing } = usePrinter();
 
 const print = () => {
   printing.value = true;
-  sendPrinterData(document.getElementById("print-target"))
+  sendPrinterData({ node: document.getElementById("print-target") })
     .then(() => {
       // sendTextData("\u000A\u000D");
     })

@@ -22,6 +22,8 @@ export default function usePrinter () {
     }, 1000);
   });
 
+  const getPrintWidth = () => 360 + ((printSize.value * 40) - 40)
+
   const sendTextData = (input) => {
     loading.show()
     return new Promise((resolve, reject) => {
@@ -47,7 +49,8 @@ export default function usePrinter () {
       spinner: QSpinnerHourglass,
       message: "Printing...",
     });
-    height.value = Math.round((node.clientHeight * width.value) / 360);
+    // height.value = Math.round((node.clientHeight * getPrintWidth()) / 360);
+    height.value = node.clientHeight
     const dataUrl = await domtoimage.toPng(node)
 
     const printTarget = new Image();
@@ -60,7 +63,7 @@ export default function usePrinter () {
     // Use the canvas to get image data
     const canvas = document.createElement("canvas");
     // Canvas dimensions need to be a multiple of 40 for this printer
-    canvas.width = width.value;
+    canvas.width = getPrintWidth();
     canvas.height = height.value;
     const context = canvas.getContext("2d");
     context.drawImage(document.getElementById(printId), 0, 0, canvas.width, canvas.height);
@@ -73,9 +76,9 @@ export default function usePrinter () {
   }
   const getDarkPixel = (x, y, imageData) => {
     // Return the pixels that will be printed black
-    let red = imageData[(width.value * y + x) * 4];
-    let green = imageData[(width.value * y + x) * 4 + 1];
-    let blue = imageData[(width.value * y + x) * 4 + 2];
+    let red = imageData[(getPrintWidth() * y + x) * 4];
+    let green = imageData[(getPrintWidth() * y + x) * 4 + 1];
+    let blue = imageData[(getPrintWidth() * y + x) * 4 + 2];
     return red + green + blue > 0 ? 1 : 0;
   }
   const getImagePrintData = (imageData) => {
@@ -84,20 +87,20 @@ export default function usePrinter () {
       return new Uint8Array([]);
     }
     // Each 8 pixels in a row is represented by a byte
-    let printData = new Uint8Array((width.value / 8) * height.value + 8);
+    let printData = new Uint8Array((getPrintWidth() / 8) * height.value + 8);
     // Set the header bytes for printing the image
     printData[0] = 29; // Print raster bitmap
     printData[1] = 118; // Print raster bitmap
     printData[2] = 48; // Print raster bitmap
     printData[3] = 0; // Normal 203.2 DPI
-    printData[4] = width.value / 8; // Number of horizontal data bits (LSB)
+    printData[4] = getPrintWidth() / 8; // Number of horizontal data bits (LSB)
     printData[5] = 0; // Number of horizontal data bits (MSB)
     printData[6] = height.value % 256; // Number of vertical data bits (LSB)
     printData[7] = height.value / 256; // Number of vertical data bits (MSB)
     let offset = 7;
     // Loop through image rows in bytes
     for (let i = 0; i < height.value; ++i) {
-      for (let k = 0; k < width.value / 8; ++k) {
+      for (let k = 0; k < getPrintWidth() / 8; ++k) {
         let k8 = k * 8;
         //  Pixel to bit position mapping
         printData[++offset] =
@@ -123,9 +126,14 @@ export default function usePrinter () {
         2: 2,
         3: 4,
         4: 8,
-        5: 16
+        5: 16,
+        6: 32,
+        7: 64,
+        8: 128
       }
       const max = 512 / bits[printBit.value];
+      if (index == 0)
+        console.log(max, printBit.value, 'bit')
       if (index + max < imagePrintData.length) {
         try {
           if (!printer.value) reject('no printer conneted')
@@ -167,8 +175,8 @@ export default function usePrinter () {
     });
 
   }
-  const sendPrinterData = (node) => {
-    width.value += (printSize.value * 40) - 40;
+  const sendPrinterData = ({ node, text }) => {
+    console.log(getPrintWidth(), printSize.value, 'width')
     return new Promise((resolve, reject) => {
       if (!printer.value) {
         navigator.bluetooth
@@ -195,22 +203,36 @@ export default function usePrinter () {
           .then((characteristic) => {
             // Cache the characteristic
             printerStore.setPrinter(characteristic)
-            sendImageData(node).then(() => {
-              resolve()
-            }).catch(e => {
-              reject(e)
-            });
+            if (node)
+              sendImageData(node).then(() => {
+                resolve()
+              }).catch(e => {
+                reject(e)
+              });
+            else
+              sendTextData(text).then(() => {
+                resolve()
+              }).catch(e => {
+                reject(e)
+              });
           })
           .catch(e => {
             console.log(e)
             reject()
           })
       } else {
-        sendImageData(node).then(() => {
-          resolve()
-        }).catch(e => {
-          reject(e)
-        });
+        if (node)
+          sendImageData(node).then(() => {
+            resolve()
+          }).catch(e => {
+            reject(e)
+          });
+        else
+          sendTextData(text).then(() => {
+            resolve()
+          }).catch(e => {
+            reject(e)
+          });
       }
     })
 
@@ -225,7 +247,8 @@ export default function usePrinter () {
     printSize,
     printBit,
     printing,
-    printTime
+    printTime,
+    getPrintWidth
   }
 }
 

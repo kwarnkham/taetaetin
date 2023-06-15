@@ -2,8 +2,9 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide" no-backdrop-dismiss maximized>
     <q-card class="column no-wrap items-center">
       <div
-        class="receipt text-grey-10 column justify-start text-h4"
+        class="text-grey-10 column justify-start text-h4"
         id="print-target"
+        :style="{ width: printing ? getPrintWidth() + 'px' : '360px' }"
       >
         <div class="text-right">
           <img
@@ -30,7 +31,7 @@
         </div>
       </div>
 
-      <div class="row justify-around receipt q-mt-sm">
+      <div class="row justify-around q-mt-sm" style="width: 360px">
         <q-btn icon="close" @click="onDialogHide"></q-btn>
         <q-btn
           v-if="!platform.is.iphone && !platform.is.ipad"
@@ -58,10 +59,10 @@ const props = defineProps({
 const { notify, platform, localStorage } = useQuasar();
 const setting = localStorage.getItem("setting");
 
-const { sendPrinterData, printing, sendTextData } = usePrinter();
+const { sendPrinterData, printing, sendTextData, getPrintWidth } = usePrinter();
 const print = () => {
   printing.value = true;
-  sendPrinterData(document.getElementById("print-target"))
+  sendPrinterData({ node: document.getElementById("print-target") })
     .then(() => {
       sendTextData("");
     })
@@ -84,10 +85,6 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
 </script>
 
 <style lang="scss" scoped>
-.receipt {
-  width: 360px;
-}
-
 .bottom-dashed {
   border-bottom: 2px dashed $grey-10;
 }

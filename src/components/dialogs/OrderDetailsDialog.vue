@@ -1,7 +1,7 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide" no-backdrop-dismiss maximized>
     <div class="q-pa-xs fit bg-white column no-wrap" v-if="order">
-      <div class="row q-my-xs q-gutter-xs justify-between">
+      <div class="row q-mb-xs q-gutter-x-md q-gutter-y-sm justify-between">
         <q-btn
           icon="save"
           @click="updateOrder()"
@@ -93,6 +93,7 @@
           color="accent"
           @click="showPrintAddressDialog"
         />
+        <q-btn icon="note" no-caps color="accent" @click="showPrintNote" />
         <q-btn
           icon="save"
           no-caps
@@ -142,7 +143,7 @@ import useOrder from "src/composables/order";
 import { useOrderStore } from "src/stores/order-store";
 import OrderExpenseDialog from "./OrderExpenseDialog.vue";
 import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
+import usePrinter from "src/composables/printer";
 
 defineEmits([...useDialogPluginComponent.emits]);
 const props = defineProps({
@@ -154,17 +155,54 @@ const props = defineProps({
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
 
+const { sendPrinterData, getPrintWidth, sendTextData } = usePrinter();
+
 const { t } = useI18n();
 const { localStorage, dialog } = useQuasar();
 const orderStore = useOrderStore();
 const { api } = useUtil();
 const order = ref(null);
-const router = useRouter();
 
 const { syncOrder, saveOrder, clearData, assignOrder } = useOrder(order);
 const updateOrder = () => {
   saveOrder(true).then((response) => {
     assignOrder(response.data.order);
+  });
+};
+
+const showPrintNote = () => {
+  dialog({
+    position: "top",
+    noBackdropDismiss: true,
+    prompt: {
+      placeholder: "Note",
+      model: localStorage.getItem("printNote"),
+      type: "textarea",
+      rows: 10,
+      isValid: (val) => val != "",
+    },
+    ok: {
+      icon: "print",
+      label: "",
+      flat: true,
+    },
+    cancel: {
+      label: "",
+      icon: "close",
+      flat: true,
+    },
+  }).onOk((value) => {
+    localStorage.set("printNote", value);
+    const el = document.createElement("div");
+    el.innerHTML = value;
+    el.style.width = getPrintWidth() + "px";
+    el.style.color = "grey";
+    el.style.fontSize = "24px";
+    document.body.appendChild(el);
+    sendPrinterData({ node: el }).then(() => {
+      sendTextData("");
+      el.remove();
+    });
   });
 };
 const orderStatuses = localStorage.getItem("orderStatuses");

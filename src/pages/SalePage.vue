@@ -43,7 +43,6 @@ if (route.query.copy) {
     order.value.discount = copiedOrder.discount;
     order.value.a_items = copiedOrder.a_items;
   }
-  console.log(order.value);
 }
 const { saveOrder, clearData, syncOrder, resetData, showOrderDetails } =
   useOrder(order);
