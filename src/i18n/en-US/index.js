@@ -10,7 +10,7 @@ export default {
   from: "From",
   to: "To",
   order: "Order | Orders",
-  purchase: "purchase | purchases",
+  purchase: "Purchase | Purchases",
   details: "Details",
   mmk: "MMK",
   summary: "Summary",

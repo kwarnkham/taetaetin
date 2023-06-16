@@ -88,7 +88,7 @@
                     'px !important',
                 }"
               >
-                Price(Dis)
+                Price<span v-if="showDiscount">(Dis)</span>
               </th>
               <th
                 class="text-right"
@@ -138,8 +138,10 @@
                     (item.pivot.price - item.pivot.discount).toLocaleString()
                   }}
                   <span v-if="item.pivot.discount">
-                    (-{{ item.pivot.discount }})</span
-                  >
+                    <span v-if="showDiscount">
+                      (-{{ item.pivot.discount }})
+                    </span>
+                  </span>
                 </td>
                 <td
                   class="text-right"
@@ -319,14 +321,15 @@
       </div>
 
       <div class="row justify-around" style="width: 360px">
-        <q-btn icon="close" @click="onDialogHide"></q-btn>
+        <q-btn icon="close" @click="onDialogHide" />
+        <q-btn label="Discount" no-caps @click="showDiscount = !showDiscount" />
         <q-btn
           v-if="!platform.is.iphone && !platform.is.ipad"
           :icon="'print'"
           @click="print"
           :disabled="printing"
           color="primary"
-        ></q-btn>
+        />
       </div>
 
       <div class="col"></div>
@@ -337,6 +340,7 @@
 <script setup>
 import { useDialogPluginComponent, date, useQuasar } from "quasar";
 import usePrinter from "src/composables/printer";
+import { ref } from "vue";
 
 const { formatDate } = date;
 const props = defineProps({
@@ -348,6 +352,7 @@ const props = defineProps({
 
 const { notify, platform, localStorage } = useQuasar();
 const setting = localStorage.getItem("setting");
+const showDiscount = ref(true);
 
 const { sendPrinterData, printTime, printing, sendTextData, getPrintWidth } =
   usePrinter();
