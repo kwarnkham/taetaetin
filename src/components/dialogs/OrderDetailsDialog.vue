@@ -93,7 +93,23 @@
           color="accent"
           @click="showPrintAddressDialog"
         />
-        <q-btn icon="note" no-caps color="accent" @click="showPrintNote" />
+
+        <q-btn icon="note" no-caps color="accent">
+          <q-popup-proxy v-model="dialogModel">
+            <q-dialog position="top" v-model="dialogModel" no-backdrop-dismiss>
+              <q-card>
+                <q-card-section>
+                  <q-editor v-model="editor" min-height="5rem" />
+                </q-card-section>
+                <q-card-actions>
+                  <q-btn icon="print" @click="printNote" />
+                  <q-btn icon="close" v-close-popup />
+                </q-card-actions>
+              </q-card>
+            </q-dialog>
+          </q-popup-proxy>
+        </q-btn>
+
         <q-btn
           icon="save"
           no-caps
@@ -162,6 +178,8 @@ const { localStorage, dialog } = useQuasar();
 const orderStore = useOrderStore();
 const { api } = useUtil();
 const order = ref(null);
+const editor = ref(localStorage.getItem("printNote") ?? "");
+const dialogModel = ref(false);
 
 const { syncOrder, saveOrder, clearData, assignOrder } = useOrder(order);
 const updateOrder = () => {
@@ -170,39 +188,17 @@ const updateOrder = () => {
   });
 };
 
-const showPrintNote = () => {
-  dialog({
-    position: "top",
-    noBackdropDismiss: true,
-    prompt: {
-      placeholder: "Note",
-      model: localStorage.getItem("printNote") ?? "",
-      type: "textarea",
-      rows: 10,
-      isValid: (val) => val.trim() != "",
-    },
-    ok: {
-      icon: "print",
-      label: "",
-      flat: true,
-    },
-    cancel: {
-      label: "",
-      icon: "close",
-      flat: true,
-    },
-  }).onOk((value) => {
-    localStorage.set("printNote", value);
-    const el = document.createElement("div");
-    el.innerHTML = value;
-    el.style.width = getPrintWidth() + "px";
-    el.style.color = "grey";
-    el.style.fontSize = "24px";
-    document.body.appendChild(el);
-    sendPrinterData({ node: el }).then(() => {
-      sendTextData("");
-      el.remove();
-    });
+const printNote = () => {
+  localStorage.set("printNote", editor.value);
+  const el = document.createElement("div");
+  el.innerHTML = editor.value;
+  el.style.width = getPrintWidth() + "px";
+  el.style.color = "grey";
+  el.style.fontSize = "24px";
+  document.body.appendChild(el);
+  sendPrinterData({ node: el }).then(() => {
+    sendTextData("");
+    el.remove();
   });
 };
 const orderStatuses = localStorage.getItem("orderStatuses");

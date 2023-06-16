@@ -22,6 +22,15 @@
         >
           Receipt
         </div>
+        <div
+          class="row justify-center text-weight-light"
+          :style="{
+            fontSize: (printing ? getPrintWidth() * 0.05 : '16') + 'px',
+          }"
+          v-if="tenantStore.getTenant.phone"
+        >
+          {{ tenantStore.getTenant.phone }}
+        </div>
 
         <div
           class="row justify-between full-width no-wrap"
@@ -340,7 +349,8 @@
 <script setup>
 import { useDialogPluginComponent, date, useQuasar } from "quasar";
 import usePrinter from "src/composables/printer";
-import { ref } from "vue";
+import { useTenantStore } from "src/stores/tenant-store";
+import { ref, watch } from "vue";
 
 const { formatDate } = date;
 const props = defineProps({
@@ -352,8 +362,11 @@ const props = defineProps({
 
 const { notify, platform, localStorage } = useQuasar();
 const setting = localStorage.getItem("setting");
-const showDiscount = ref(true);
-
+const showDiscount = ref(localStorage.getItem("showDiscount") ?? true);
+watch(showDiscount, () => {
+  localStorage.set("showDiscount", showDiscount.value);
+});
+const tenantStore = useTenantStore();
 const { sendPrinterData, printTime, printing, sendTextData, getPrintWidth } =
   usePrinter();
 
