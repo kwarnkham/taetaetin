@@ -176,10 +176,10 @@ const showPrintNote = () => {
     noBackdropDismiss: true,
     prompt: {
       placeholder: "Note",
-      model: localStorage.getItem("printNote"),
+      model: localStorage.getItem("printNote") ?? "",
       type: "textarea",
       rows: 10,
-      isValid: (val) => val != "",
+      isValid: (val) => val.trim() != "",
     },
     ok: {
       icon: "print",

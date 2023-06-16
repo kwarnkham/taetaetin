@@ -51,7 +51,20 @@ const submit = () => {
   saveOrder().then((response) => {
     resetData();
     if (route.query.copy) localStorage.remove("copiedOrder");
-    showOrderDetails(response.data.order);
+    showOrderDetails(response.data.order).then((data) => {
+      if (typeof data == "string") {
+        const copiedOrder = localStorage.getItem("copiedOrder");
+        if (copiedOrder) {
+          order.value.phone = copiedOrder.phone;
+          order.value.customer = copiedOrder.customer;
+          order.value.address = copiedOrder.address;
+          order.value.note = copiedOrder.note;
+          order.value.paid = copiedOrder.paid;
+          order.value.discount = copiedOrder.discount;
+          order.value.a_items = copiedOrder.a_items;
+        }
+      }
+    });
   });
 };
 
