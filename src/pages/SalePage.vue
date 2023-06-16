@@ -50,6 +50,7 @@ const { saveOrder, clearData, syncOrder, resetData, showOrderDetails } =
 const submit = () => {
   saveOrder().then((response) => {
     resetData();
+    if (route.query.copy) localStorage.remove("copiedOrder");
     showOrderDetails(response.data.order);
   });
 };
