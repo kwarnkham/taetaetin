@@ -339,6 +339,7 @@
           :disabled="printing"
           color="primary"
         />
+        <q-btn icon="content_copy" @click="copyForPrint" color="secondary" />
       </div>
 
       <div class="col"></div>
@@ -351,6 +352,7 @@ import { useDialogPluginComponent, date, useQuasar } from "quasar";
 import usePrinter from "src/composables/printer";
 import { useTenantStore } from "src/stores/tenant-store";
 import { ref, watch } from "vue";
+import { copyToClipboard } from "quasar";
 
 const { formatDate } = date;
 const props = defineProps({
@@ -369,6 +371,48 @@ watch(showDiscount, () => {
 const tenantStore = useTenantStore();
 const { sendPrinterData, printTime, printing, sendTextData, getPrintWidth } =
   usePrinter();
+
+const copyForPrint = () => {
+  const order = {
+    id: props.order.id,
+    amount: props.order.amount,
+    discount: props.order.discount,
+    customer: props.order.customer,
+    phone: props.order.phone,
+    address: props.order.address,
+    note: props.order.note,
+    paid: props.order.paid,
+    created_at: props.order.created_at,
+    logo: localStorage.getItem("setting")?.print_logo ?? "",
+    logo_phone: tenantStore.getTenant.phone,
+    a_items: props.order.a_items
+      .filter((v) => !!v)
+      .map((e) => ({
+        id: e.id,
+        name: e.name,
+        price: e.price,
+        pivot: {
+          price: e.pivot.price,
+          quantity: e.pivot.quantity,
+          discount: e.pivot.discount,
+        },
+      })),
+  };
+
+  copyToClipboard(JSON.stringify(order))
+    .then(() => {
+      notify({
+        message: "Copied",
+        type: "positive",
+      });
+    })
+    .catch(() => {
+      notify({
+        message: "Copy Failed",
+        type: "negative",
+      });
+    });
+};
 
 // printing.value = true;
 
