@@ -384,7 +384,8 @@ const isDirty = computed(() => {
     const index = orderStore.getExistedItems.findIndex(
       (item, key) =>
         order.value.a_items[key].quantity != item.quantity ||
-        order.value.a_items[key].discount != item.discount
+        order.value.a_items[key].discount != item.discount ||
+        order.value.a_items[key].price != item.price
     );
     return index != -1;
   }

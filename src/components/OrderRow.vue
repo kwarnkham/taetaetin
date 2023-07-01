@@ -17,7 +17,7 @@
     </td>
     <td
       class="text-right"
-      @click="applyItemDiscount(item)"
+      @click="editPrice(item)"
       :class="{ 'text-indigo': item?.discount }"
     >
       <span v-if="item?.price">
@@ -94,8 +94,8 @@ const editQuantity = (item) => {
     });
 };
 
-const applyItemDiscount = (item) => {
-  if (item)
+const editPrice = (item) => {
+  if (item?.type == 1)
     dialog({
       title: "Discount for " + item.name,
       message: `Normal price is ${item.price}`,
@@ -114,6 +114,25 @@ const applyItemDiscount = (item) => {
       const discount = item.price - price;
       const a_items = JSON.parse(JSON.stringify(props.a_items));
       a_items[props.number].discount = discount;
+      emit("dataUpdated", "a_items", a_items);
+    });
+  else if (item?.type == 2)
+    dialog({
+      title: "Edit price for " + item.name,
+      position: "top",
+      noBackdropDismiss: true,
+      cancel: true,
+      prompt: {
+        model: item.price - (item.discount || 0),
+        type: "number",
+        inputmode: "numeric",
+        pattern: "[0-9]*",
+        isValid: (val) => val != "" && val >= 0,
+      },
+    }).onOk((price) => {
+      price = Number(price);
+      const a_items = JSON.parse(JSON.stringify(props.a_items));
+      a_items[props.number].price = price;
       emit("dataUpdated", "a_items", a_items);
     });
 };
