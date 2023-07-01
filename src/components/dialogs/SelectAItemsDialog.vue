@@ -16,7 +16,17 @@
         <q-btn icon="close" flat @click="onDialogCancel" dense />
       </div>
       <div class="col column">
-        <q-input :label="$t('productName')" v-model="search" autofocus />
+        <q-input
+          :label="$t('productName')"
+          v-model="search"
+          autofocus
+          clearable
+        />
+        <div>
+          <q-radio v-model="aItemType" label="Stocked" val="1" />
+          <q-radio v-model="aItemType" label="Non stocked" val="2" />
+        </div>
+
         <q-list
           v-if="saleItems.length"
           class="overflow-auto col"
@@ -98,7 +108,7 @@ import { computed, watch, ref } from "vue";
 
 const { api } = useUtil();
 const { reStock } = useItem();
-
+const aItemType = ref("1");
 const addStock = (aItem) => {
   reStock(aItem).then((response) => {
     const index = aItems.value.findIndex(
@@ -139,7 +149,7 @@ defineEmits([...useDialogPluginComponent.emits]);
 const { showCreateAItem, submitItem } = useItem();
 
 const createItem = (name) => {
-  showCreateAItem(name).then((data) => {
+  showCreateAItem(name, aItemType.value).then((data) => {
     submitItem(data).then((value) => {
       aItems.value.unshift(value);
     });
@@ -155,6 +165,7 @@ const fetch = () => {
     params: {
       search: search.value || undefined,
       per_page: 10,
+      type: aItemType.value,
     },
   }).then((response) => {
     aItems.value = response.data.data.data;
@@ -164,6 +175,9 @@ const fetch = () => {
 fetch();
 
 watch(search, debounce(fetch, 700));
+watch(aItemType, () => {
+  fetch();
+});
 
 const saleItems = computed(() => {
   return aItems.value.map((e) => ({

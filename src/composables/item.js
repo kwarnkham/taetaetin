@@ -51,87 +51,72 @@ export default function useItem () {
     })
   };
 
-  const showCreateAItem = (name) => {
+  const showCreateAItem = (name, type = '1') => {
     return new Promise((resolve) => {
       dialog({
-        title: t('chooseProductType'),
+        title: `${t('salePrice')} (${name})`,
         position: 'top',
         noBackdropDismiss: true,
         cancel: true,
-        options: {
-          type: "radio",
-          model: "1",
-          items: [
-            { label: t('stocked'), value: "1" },
-            { label: t('nonStocked'), value: "2" },
-          ],
+        prompt: {
+          model: "",
+          placeholder: t('salePrice'),
+          type: "number",
+          inputmode: "numeric",
+          pattern: "[0-9]*",
+          isValid: (val) => val != "" && val >= 0,
         },
-      }).onOk((type) => {
-        dialog({
-          title: `${t('salePrice')} (${name})`,
-          position: 'top',
-          noBackdropDismiss: true,
-          cancel: true,
-          prompt: {
-            model: "",
-            placeholder: t('salePrice'),
-            type: "number",
-            inputmode: "numeric",
-            pattern: "[0-9]*",
-            isValid: (val) => val != "" && val >= 0,
-          },
-        }).onOk((salePrice) => {
-          if (type == "1")
+      }).onOk((salePrice) => {
+        if (type == "1")
+          dialog({
+            title: `${t('purchasePrice')} (${name})`,
+            position: "top",
+            noBackdropDismiss: true,
+            cancel: true,
+            prompt: {
+              model: "",
+              placeholder: t('purchasePrice'),
+              type: "number",
+              inputmode: "numeric",
+              pattern: "[0-9]*",
+              isValid: (val) => val != "" && val >= 0,
+            },
+          }).onOk((purchasePrice) => {
             dialog({
-              title: `${t('purchasePrice')} (${name})`,
+              title: `${t('restockQuantity')} (${name})`,
               position: "top",
               noBackdropDismiss: true,
               cancel: true,
               prompt: {
                 model: "",
-                placeholder: t('purchasePrice'),
+                placeholder: t('quantity'),
                 type: "number",
                 inputmode: "numeric",
                 pattern: "[0-9]*",
-                isValid: (val) => val != "" && val >= 0,
+                isValid: (val) => val != "" && val > 0,
               },
-            }).onOk((purchasePrice) => {
-              dialog({
-                title: `${t('restockQuantity')} (${name})`,
-                position: "top",
-                noBackdropDismiss: true,
-                cancel: true,
-                prompt: {
-                  model: "",
-                  placeholder: t('quantity'),
-                  type: "number",
-                  inputmode: "numeric",
-                  pattern: "[0-9]*",
-                  isValid: (val) => val != "" && val > 0,
-                },
-              }).onOk((quantity) => {
-                const data = {
-                  name,
-                  purchase_price: purchasePrice,
-                  price: salePrice,
-                  stock: quantity,
-                  type,
-                };
-                resolve(data)
-              });
+            }).onOk((quantity) => {
+              const data = {
+                name,
+                purchase_price: purchasePrice,
+                price: salePrice,
+                stock: quantity,
+                type,
+              };
+              resolve(data)
             });
-          else
-            resolve({
-              name,
-              purchase_price: 0,
-              price: salePrice,
-              stock: 0,
-              type,
-            })
-        });
+          });
+        else
+          resolve({
+            name,
+            purchase_price: 0,
+            price: salePrice,
+            stock: 0,
+            type,
+          })
       });
-    })
 
+    })
   };
 
   const submitItem = (data) => {

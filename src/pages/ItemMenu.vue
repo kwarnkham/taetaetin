@@ -18,6 +18,10 @@
           <q-icon name="search" />
         </template>
       </q-input>
+      <div>
+        <q-radio v-model="aItemType" label="Stocked" val="1" />
+        <q-radio v-model="aItemType" label="Non stocked" val="2" />
+      </div>
     </div>
     <ItemList
       :items="pagination.data"
@@ -47,8 +51,10 @@ import useItem from "src/composables/item";
 import { useUserStore } from "src/stores/user-store";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
+import { ref, watch } from "vue";
 
 const { t } = useI18n();
+const aItemType = ref("1");
 const { dialog, localStorage } = useQuasar();
 const route = useRoute();
 if (route.query.tenant !== undefined)
@@ -58,9 +64,13 @@ const { pagination, max, current, updateQueryAndFetch } = usePagination(
   "a-items",
   {
     tenant: localStorage.getItem("tenantSpace") ?? undefined,
+    type: aItemType.value,
   }
 );
 const { search } = useSearchFilter({ updateQueryAndFetch });
+watch(aItemType, () => {
+  updateQueryAndFetch({ type: aItemType.value });
+});
 
 const { vhPage } = useUtil();
 const { showCreateAItem, submitItem } = useItem();
@@ -81,7 +91,7 @@ const addANewItem = () => {
       isValid: (val) => val != "",
     },
   }).onOk((name) => {
-    showCreateAItem(name).then((data) => {
+    showCreateAItem(name, aItemType.value).then((data) => {
       submitItem(data).then((value) => {
         pagination.value.data.unshift(value);
       });
