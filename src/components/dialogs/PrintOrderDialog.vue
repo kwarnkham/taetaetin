@@ -331,15 +331,18 @@
 
       <div class="row justify-around" style="width: 360px">
         <q-btn icon="close" @click="onDialogHide" />
-        <q-btn label="Discount" no-caps @click="showDiscount = !showDiscount" />
         <q-btn
-          v-if="!platform.is.iphone && !platform.is.ipad"
+          label="Discount"
+          no-caps
+          @click="showDiscount = !showDiscount"
+          :color="showDiscount ? 'info' : 'grey'"
+        />
+        <q-btn
           :icon="'print'"
-          @click="print"
+          @click="copyForPrint"
           :disabled="printing"
           color="primary"
         />
-        <q-btn icon="content_copy" @click="copyForPrint" color="secondary" />
       </div>
 
       <div class="col"></div>
@@ -362,15 +365,14 @@ const props = defineProps({
   },
 });
 
-const { notify, platform, localStorage } = useQuasar();
+const { notify, localStorage } = useQuasar();
 const setting = localStorage.getItem("setting");
 const showDiscount = ref(localStorage.getItem("showDiscount") ?? true);
 watch(showDiscount, () => {
   localStorage.set("showDiscount", showDiscount.value);
 });
 const tenantStore = useTenantStore();
-const { sendPrinterData, printTime, printing, sendTextData, getPrintWidth } =
-  usePrinter();
+const { printTime, printing, getPrintWidth } = usePrinter();
 
 const copyForPrint = () => {
   const order = {
@@ -401,10 +403,7 @@ const copyForPrint = () => {
 
   copyToClipboard(JSON.stringify(order))
     .then(() => {
-      notify({
-        message: "Copied",
-        type: "positive",
-      });
+      window.open("https://printy.book-mm.com");
     })
     .catch(() => {
       notify({
@@ -414,22 +413,20 @@ const copyForPrint = () => {
     });
 };
 
-// printing.value = true;
-
-const print = () => {
-  printing.value = true;
-  sendPrinterData({ node: document.getElementById("print-target") })
-    .then(() => {
-      sendTextData("\u000A\u000D");
-    })
-    .catch((error) => {
-      if (error) notify(error);
-      else notify("Printer has disconnected");
-    })
-    .finally(() => {
-      printing.value = false;
-    });
-};
+// const print = () => {
+//   printing.value = true;
+//   sendPrinterData({ node: document.getElementById("print-target") })
+//     .then(() => {
+//       sendTextData("\u000A\u000D");
+//     })
+//     .catch((error) => {
+//       if (error) notify(error);
+//       else notify("Printer has disconnected");
+//     })
+//     .finally(() => {
+//       printing.value = false;
+//     });
+// };
 
 defineEmits([...useDialogPluginComponent.emits]);
 
