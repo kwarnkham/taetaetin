@@ -12,6 +12,17 @@
         {{ Number(item.stock) + Number(item.ordered_quantity) - purchasedQty }}
       </div>
     </div>
+
+    <q-separator spaced />
+    <div class="row">
+      <q-btn
+        :label="item.status == 2 ? 'Enable' : 'Disable'"
+        no-caps
+        class="col"
+        :color="item.status == 2 ? 'info' : 'warning'"
+        @click="toggleStatus"
+      />
+    </div>
     <q-separator spaced />
     <div class="justify-evenly row">
       <q-btn icon="add" @click="correctStock(1)" />
@@ -57,6 +68,23 @@ const item = ref(null);
 const route = useRoute();
 const { dialog } = useQuasar();
 const { t } = useI18n();
+
+const toggleStatus = () => {
+  dialog({
+    title: `${item.value.status == 1 ? "Disable" : "Enable"} the product ${
+      item.value.name
+    }?`,
+    cancel: true,
+    noBackdropDismiss: true,
+  }).onOk(() => {
+    api({
+      method: "POST",
+      url: `a-items/${route.params.item}/toggle-status`,
+    }).then((response) => {
+      item.value.status = response.data.a_item.status;
+    });
+  });
+};
 
 const purchasedQty = computed(() => {
   if (!item.value) return 0;

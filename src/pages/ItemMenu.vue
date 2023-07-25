@@ -22,6 +22,10 @@
         <q-radio v-model="aItemType" label="Stocked" val="1" />
         <q-radio v-model="aItemType" label="Non stocked" val="2" />
       </div>
+      <div>
+        <q-radio v-model="status" label="Endabled" val="1" />
+        <q-radio v-model="status" label="Disabled" val="2" />
+      </div>
     </div>
     <ItemList
       :items="pagination.data"
@@ -55,6 +59,7 @@ import { ref, watch } from "vue";
 
 const { t } = useI18n();
 const aItemType = ref("1");
+const status = ref("1");
 const { dialog, localStorage } = useQuasar();
 const route = useRoute();
 if (route.query.tenant !== undefined)
@@ -65,11 +70,16 @@ const { pagination, max, current, updateQueryAndFetch } = usePagination(
   {
     tenant: localStorage.getItem("tenantSpace") ?? undefined,
     type: aItemType.value,
+    status: status.value,
   }
 );
 const { search } = useSearchFilter({ updateQueryAndFetch });
 watch(aItemType, () => {
   updateQueryAndFetch({ type: aItemType.value });
+});
+
+watch(status, () => {
+  updateQueryAndFetch({ status: status.value });
 });
 
 const { vhPage } = useUtil();

@@ -5,6 +5,7 @@
         <q-item-section>
           <q-item-label :class="{ 'text-indigo': item.type == 2 }">
             {{ item.name }}
+            <q-icon name="do_not_disturb_on" v-if="item.status == 2" />
           </q-item-label>
           <q-item-label caption v-if="item.type == 1">
             {{ $t("stock") }} : {{ item.stock }}
@@ -28,6 +29,12 @@
                 icon="edit"
                 dense
                 @click="showEditItemDialog(item)"
+              />
+              <q-btn
+                round
+                :icon="item.status == 1 ? 'do_not_disturb_on' : 'check'"
+                dense
+                @click="toggleStatus(item)"
               />
               <q-btn
                 flat
@@ -89,6 +96,23 @@ const showRestockProductDialog = (item) => {
     reStock(item).then((response) => {
       emit("itemUpdated", response.data.a_item);
     });
+};
+
+const toggleStatus = (item) => {
+  dialog({
+    title: `${item.status == 1 ? "Disable" : "Enable"} the product ${
+      item.name
+    }?`,
+    cancel: true,
+    noBackdropDismiss: true,
+  }).onOk(() => {
+    api({
+      method: "POST",
+      url: `a-items/${item.id}/toggle-status`,
+    }).then((response) => {
+      emit("itemUpdated", { ...item, status: response.data.a_item.status });
+    });
+  });
 };
 
 const showEditItemDialog = (item) => {

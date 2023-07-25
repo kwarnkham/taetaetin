@@ -166,6 +166,7 @@ const fetch = () => {
       search: search.value || undefined,
       per_page: 10,
       type: aItemType.value,
+      status: 1,
     },
   }).then((response) => {
     aItems.value = response.data.data.data;
